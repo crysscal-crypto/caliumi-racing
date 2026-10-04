@@ -10,7 +10,6 @@ const navLinks = [
   { href: "/gallery", label: "Gallery" },
   { href: "/articoli", label: "Articoli" },
   { href: "/notizie", label: "Notizie" },
-  { href: "/press", label: "Press & Media" },
 ];
 
 export default function Header() {
