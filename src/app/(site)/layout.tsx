@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Il sito ufficiale di Cristian Caliumi, pilota motociclistico di Carpi: carriera, gallery storica, classifiche Trofeo Gilera e Sport Production, notizie dal mondo delle corse.",
 };
 
-export default function RootLayout({
+export default function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
