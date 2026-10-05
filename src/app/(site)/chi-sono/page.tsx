@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import Link from "next/link";
 import { racingFont } from "@/sanity/lib/fonts";
 
 // ===== FOTO A LATO =====
@@ -102,6 +103,26 @@ export default function ChiSonoPage() {
                 ))}
               </div>
             ))}
+
+            <Link
+              href="/moto"
+              className="block rounded-lg border border-racing-yellow/40 bg-carbon-900 p-5 text-center transition hover:bg-carbon-800"
+            >
+              <span className={`${racingFont.className} text-2xl text-racing-yellow`}>Le mie moto →</span>
+              <span className="mt-1 block text-sm text-white/70">
+                Dalla Aprilia AF1 125 alla Ducati 996 RS: schede tecniche e ricordi di pista
+              </span>
+            </Link>
+
+            <Link
+              href="/campionati"
+              className="block rounded-lg border border-racing-yellow/40 bg-carbon-900 p-5 text-center transition hover:bg-carbon-800"
+            >
+              <span className={`${racingFont.className} text-2xl text-racing-yellow`}>I campionati →</span>
+              <span className="mt-1 block text-sm text-white/70">
+                Trofeo Gilera, Sport Production, GP e Superbike: com&apos;erano e chi li ha vinti
+              </span>
+            </Link>
           </div>
 
           {foto && (

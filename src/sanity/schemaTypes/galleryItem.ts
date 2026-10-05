@@ -55,6 +55,13 @@ export default defineType({
         ],
       },
     }),
+    defineField({
+      name: 'moto',
+      title: 'Moto (facoltativo)',
+      description: 'Collega la foto a una delle tue moto: comparirà nella sua pagina',
+      type: 'reference',
+      to: [{ type: 'moto' }],
+    }),
   ],
   preview: {
     select: { title: 'title', subtitle: 'year', media: 'image' },
