@@ -12,7 +12,8 @@
  *
  * Uso:   node --env-file=.env.local scripts/importa-gallery.mjs
  * Le foto caricate vengono spostate in foto-gallery/fatte (così non si caricano due volte).
- * Le foto vengono ridimensionate (max 2400 px) e alleggerite prima del caricamento.
+ * Le foto vengono migliorate (contrasto, colori, nitidezza), ridimensionate (max 2400 px)
+ * e alleggerite prima del caricamento. Con --originali vengono caricate senza ritocchi.
  * Le foto vengono PUBBLICATE subito. Titoli e testi si possono migliorare dopo nello Studio.
  */
 import fs from "node:fs";
@@ -28,12 +29,32 @@ try {
   console.log("Per attivarlo: npm install sharp --legacy-peer-deps\n");
 }
 
+// Miglioramento automatico leggero (per foto e scansioni d'epoca):
+// contrasto e colori ravvivati, nitidezza, ingrandimento delle foto piccole.
+// Per caricare le foto senza ritocchi:  node --env-file=.env.local scripts/importa-gallery.mjs --originali
+const ORIGINALI = process.argv.includes("--originali");
+
 async function prepara(file) {
   if (!sharp) return fs.createReadStream(file);
-  return sharp(file)
-    .rotate()
+  let img = sharp(file).rotate();
+  const { width = 0, height = 0 } = await img.metadata();
+  const latoLungo = Math.max(width, height);
+
+  if (!ORIGINALI) {
+    // le foto piccole (vecchie scansioni) vengono raddoppiate, fino a 2400 px
+    if (latoLungo > 0 && latoLungo < 1600) {
+      const nuovo = Math.min(2400, latoLungo * 2);
+      img = img.resize({ width: width >= height ? nuovo : null, height: height > width ? nuovo : null, kernel: "lanczos3" });
+    }
+    img = img
+      .normalise({ lower: 1, upper: 99 }) // livelli: neri più neri, bianchi più puliti
+      .modulate({ saturation: 1.08 }) // colori leggermente più vivi
+      .sharpen({ sigma: 0.9, m1: 0.6, m2: 2 }); // più definizione, senza esagerare
+  }
+
+  return img
     .resize({ width: 2400, height: 2400, fit: "inside", withoutEnlargement: true })
-    .jpeg({ quality: 82, mozjpeg: true })
+    .jpeg({ quality: 85, mozjpeg: true })
     .toBuffer();
 }
 
