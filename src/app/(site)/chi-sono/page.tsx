@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { racingFont } from "@/sanity/lib/fonts";
+
+// ===== FOTO A LATO =====
+// Metti la foto in: public/chi-sono.jpg (verticale, circa 900x1200 pixel)
+const FOTO = "/chi-sono.jpg";
+const DIDASCALIA = "Cristian Caliumi in pista";
+const TESTO_ALT = "Cristian Caliumi, pilota di Carpi, in sella alla sua moto da corsa";
+// =======================
 
 export const metadata: Metadata = {
   title: "Chi Sono – Cristian Caliumi | Carriera motociclistica",
@@ -49,9 +58,25 @@ Nel 1999 arriva l'ingresso nel Team RCGM, dove Cristian guida una Aprilia RSV 25
 ];
 
 export default function ChiSonoPage() {
+  const fotoPresente = existsSync(path.join(process.cwd(), "public", FOTO));
+
+  const foto = fotoPresente ? (
+    <figure className="overflow-hidden rounded-lg border border-racing-yellow/30 bg-carbon-800 shadow-2xl">
+      <img
+        src={FOTO}
+        alt={TESTO_ALT}
+        className="w-full object-cover"
+        loading="eager"
+      />
+      <figcaption className="px-4 py-3 text-center text-sm italic text-white/70">
+        {DIDASCALIA}
+      </figcaption>
+    </figure>
+  ) : null;
+
   return (
     <section className="carbon-bg">
-      <div className="content-panel mx-auto max-w-3xl px-4 py-16 sm:px-6">
+      <div className="content-panel mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <h1
           className={`${racingFont.className} mb-2 text-center text-3xl text-racing-yellow sm:text-4xl`}
         >
@@ -61,19 +86,29 @@ export default function ChiSonoPage() {
           Nato a Carpi (MO) il 13 agosto 1972 — carriera motociclistica
         </p>
 
-        <div className="space-y-10">
-          {sections.map((section) => (
-            <div key={section.title}>
-              <h2 className="mb-3 text-xl font-semibold text-white">
-                {section.title}
-              </h2>
-              {section.text.split("\n\n").map((paragraph, i) => (
-                <p key={i} className="mb-3 text-white/80">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          ))}
+        <div className={fotoPresente ? "lg:grid lg:grid-cols-[1fr_340px] lg:gap-12" : "mx-auto max-w-3xl"}>
+          {foto && <div className="mx-auto mb-10 max-w-sm lg:hidden">{foto}</div>}
+
+          <div className="space-y-10">
+            {sections.map((section) => (
+              <div key={section.title}>
+                <h2 className="mb-3 text-xl font-semibold text-white">
+                  {section.title}
+                </h2>
+                {section.text.split("\n\n").map((paragraph, i) => (
+                  <p key={i} className="mb-3 text-white/80">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {foto && (
+            <aside className="hidden lg:block">
+              <div className="sticky top-28">{foto}</div>
+            </aside>
+          )}
         </div>
       </div>
     </section>
