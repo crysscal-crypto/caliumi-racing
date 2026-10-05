@@ -1,8 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { racingFont } from "@/sanity/lib/fonts";
+import CardNotizia from "@/components/CardNotizia";
+import Pubblicita from "@/components/Pubblicita";
+import {
+  getNotizie,
+  getCommenti,
+  mappaCommenti,
+  pulisciLink,
+} from "@/sanity/lib/notizie";
 
-export default function HomePage() {
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const [notizie, commenti] = await Promise.all([getNotizie(9), getCommenti()]);
+  const commentiPerLink = mappaCommenti(commenti);
+
   return (
     <>
       {/* Hero */}
@@ -40,6 +53,35 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Ultime notizie */}
+      {notizie.length > 0 && (
+        <section className="carbon-bg">
+          <div className="content-panel mx-auto max-w-6xl px-4 py-12 sm:px-6">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <h2 className={`${racingFont.className} text-2xl text-racing-yellow sm:text-3xl`}>
+                Ultime notizie MotoGP e Superbike
+              </h2>
+              <Link
+                href="/notizie"
+                className="text-sm font-semibold text-racing-yellow hover:underline"
+              >
+                Tutte le notizie →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {notizie.map((n) => (
+                <CardNotizia
+                  key={n.id}
+                  notizia={n}
+                  commento={commentiPerLink.get(pulisciLink(n.link))?.commento}
+                />
+              ))}
+            </div>
+            <Pubblicita posizione="home-notizie" className="mt-8" />
+          </div>
+        </section>
+      )}
 
       {/* Breve intro */}
       <section className="carbon-bg">

@@ -5,6 +5,7 @@ import { PortableText } from "@portabletext/react";
 import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import { newsBodyFont, newsHeadlineFont } from "@/sanity/lib/fonts";
+import Pubblicita from "@/components/Pubblicita";
 
 export const revalidate = 60;
 
@@ -277,6 +278,8 @@ export default async function ArticoloPage({
             </div>
           )}
         </article>
+
+        <Pubblicita posizione="articolo-fondo" className="mt-10" />
       </div>
     </section>
   );
