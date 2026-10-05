@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/chi-sono", label: "Chi Sono" },
   { href: "/gallery", label: "Gallery" },
   { href: "/articoli", label: "Articoli" },
+  { href: "/motogp", label: "MotoGP" },
   { href: "/notizie", label: "Notizie" },
 ];
 

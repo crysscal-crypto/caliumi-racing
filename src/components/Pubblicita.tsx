@@ -13,6 +13,8 @@ const SLOT: Record<Posizione, string> = {
   "notizia-sotto-testo": "",
   "notizia-fondo": "",
   "articolo-fondo": "",
+  "motogp-classifica": "",
+  "motogp-gp": "",
 };
 // ===================================
 
@@ -21,7 +23,9 @@ type Posizione =
   | "notizie-elenco"
   | "notizia-sotto-testo"
   | "notizia-fondo"
-  | "articolo-fondo";
+  | "articolo-fondo"
+  | "motogp-classifica"
+  | "motogp-gp";
 
 declare global {
   interface Window {

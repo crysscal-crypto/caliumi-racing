@@ -40,6 +40,7 @@ export default function Footer() {
             <Link href="/chi-sono" className="nav-link">Chi Sono</Link>
             <Link href="/gallery" className="nav-link">Gallery</Link>
             <Link href="/articoli" className="nav-link">Articoli</Link>
+            <Link href="/motogp" className="nav-link">MotoGP</Link>
             <Link href="/notizie" className="nav-link">Notizie</Link>
           </nav>
 
