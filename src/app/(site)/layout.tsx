@@ -44,8 +44,42 @@ export default function SiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="it">
-      <body className="flex min-h-screen flex-col bg-carbon-950">
+    <html lang="it" suppressHydrationWarning>
+      <body className="flex min-h-screen flex-col bg-carbon-950" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": `${SITO}/#sito`,
+                  url: SITO,
+                  name: "Caliumi Racing",
+                  inLanguage: "it",
+                  publisher: { "@id": `${SITO}/#cristian` },
+                },
+                {
+                  "@type": "Person",
+                  "@id": `${SITO}/#cristian`,
+                  name: "Cristian Caliumi",
+                  url: `${SITO}/chi-sono`,
+                  image: `${SITO}/icon-512.png`,
+                  birthDate: "1972-08-13",
+                  birthPlace: { "@type": "Place", name: "Carpi, Modena, Italia" },
+                  jobTitle: "Ex pilota motociclistico e direttore sportivo",
+                  description:
+                    "Ex pilota di Carpi: Trofeo Gilera, Sport Production, Campionato Italiano ed Europeo GP, wild card nel Motomondiale 125 (Mugello 1995) e nel Mondiale Superbike 2002. Direttore Sportivo del Team Azione Corse dal 2007 al 2014.",
+                  sameAs: [
+                    "https://www.facebook.com/CaliumiCristianRider",
+                    "https://www.instagram.com/crysscal/",
+                  ],
+                },
+              ],
+            }),
+          }}
+        />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

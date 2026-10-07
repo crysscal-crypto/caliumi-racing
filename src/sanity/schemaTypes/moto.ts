@@ -28,6 +28,24 @@ export default defineType({
       options: { hotspot: true },
       fields: [defineField({ name: 'alt', title: 'Testo alternativo (SEO)', type: 'string' })],
     }),
+    defineField({
+      name: 'altreFoto',
+      title: 'Altre foto della moto',
+      description: 'Trascina qui quante foto vuoi: compaiono nella pagina della moto, ingrandibili.',
+      type: 'array',
+      group: 'generale',
+      options: { layout: 'grid' },
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({ name: 'alt', title: 'Testo alternativo (SEO)', type: 'string' }),
+            defineField({ name: 'didascalia', title: 'Didascalia (facoltativa)', type: 'string' }),
+          ],
+        },
+      ],
+    }),
     testo('motore', 'Motore'),
     testo('cilindrata', 'Cilindrata'),
     testo('alesaggioCorsa', 'Alesaggio x corsa'),

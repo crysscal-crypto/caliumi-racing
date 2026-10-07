@@ -40,6 +40,29 @@ export default async function SchedaMotoPage({ params }: Props) {
   const succ = pos >= 0 && pos < tutte.length - 1 ? tutte[pos + 1] : undefined;
   const righe = CAMPI_TECNICI.filter(([k]) => m[k]);
 
+  const tutteLeFoto = [
+    ...(m.altreFoto ?? [])
+      .filter((f) => f.asset)
+      .map((f) => ({
+        id: f._key,
+        titolo: f.didascalia || m.nome,
+        anno: m.annoInizio,
+        descrizione: undefined as string | undefined,
+        alt: f.alt || f.didascalia || `${m.nome} di Cristian Caliumi`,
+        anteprima: builder.image(f).width(600).height(450).url(),
+        grande: builder.image(f).width(2000).fit("max").auto("format").url(),
+      })),
+    ...foto.map((f) => ({
+      id: f._id,
+      titolo: f.title,
+      anno: f.year,
+      descrizione: f.description,
+      alt: f.image?.alt || f.title,
+      anteprima: builder.image(f.image).width(600).height(450).url(),
+      grande: builder.image(f.image).width(2000).fit("max").auto("format").url(),
+    })),
+  ];
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Vehicle",
@@ -105,20 +128,10 @@ export default async function SchedaMotoPage({ params }: Props) {
           )}
         </div>
 
-        {foto.length > 0 && (
+        {tutteLeFoto.length > 0 && (
           <div className="mt-14">
             <h2 className={`${racingFont.className} mb-4 text-2xl text-racing-yellow`}>Foto</h2>
-            <GalleryGrid
-              foto={foto.map((f) => ({
-                id: f._id,
-                titolo: f.title,
-                anno: f.year,
-                descrizione: f.description,
-                alt: f.image?.alt || f.title,
-                anteprima: builder.image(f.image).width(600).height(450).url(),
-                grande: builder.image(f.image).width(2000).fit("max").auto("format").url(),
-              }))}
-            />
+            <GalleryGrid foto={tutteLeFoto} />
           </div>
         )}
 

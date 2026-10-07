@@ -11,6 +11,7 @@ export type Moto = {
   riassunto?: string;
   racconto?: string;
   foto?: any;
+  altreFoto?: { _key: string; alt?: string; didascalia?: string; asset: any }[];
   notaDati?: string;
   motore?: string;
   cilindrata?: string;
