@@ -25,12 +25,16 @@ export type ArticoloLista = {
   source?: string;
   summary?: string;
   coverImage?: any;
+  publishedAt?: string;
+  coverRef?: string;
+  scanRef?: string;
 };
 
 export async function getTuttiArticoli(): Promise<ArticoloLista[]> {
   return client.fetch(
     `*[_type == "articolo" && defined(slug.current)] | order(year desc, publishedAt desc) {
-      _id, title, slug, category, year, source, summary, coverImage
+      _id, title, slug, category, year, source, summary, coverImage, publishedAt,
+      "coverRef": coverImage.asset._ref, "scanRef": scans[0].asset._ref
     }`
   );
 }

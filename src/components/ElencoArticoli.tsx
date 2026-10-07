@@ -1,7 +1,7 @@
 import Link from "next/link";
 import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
-import { racingFont } from "@/sanity/lib/fonts";
+import { racingFont, newsHeadlineFont, newsBodyFont } from "@/sanity/lib/fonts";
 import { categoryLabels, type ArticoloLista } from "@/sanity/lib/articoli";
 
 const builder = imageUrlBuilder(client);
@@ -39,6 +39,47 @@ function Chip({
     >
       {children}
     </Link>
+  );
+}
+
+const carta = {
+  backgroundColor: "#eadfc4",
+  backgroundImage:
+    "radial-gradient(ellipse at top left, rgba(255,255,255,0.45), transparent 55%), radial-gradient(ellipse at bottom right, rgba(120,80,30,0.25), transparent 60%)",
+};
+
+function dataBreve(iso?: string, anno?: number) {
+  if (!iso) return anno ? String(anno) : "";
+  return new Date(iso).toLocaleDateString("it-IT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+// Copertina "ritaglio di giornale" generata dal testo: usata quando l'articolo non ha una foto propria
+function CopertinaGiornale({ articolo }: { articolo: ArticoloLista }) {
+  return (
+    <div
+      className={`${newsBodyFont.className} relative flex h-48 flex-col justify-between overflow-hidden px-5 py-4 text-[#2a1f14] transition duration-300 group-hover:brightness-105`}
+      style={carta}
+    >
+      <div className="border-y-2 border-double border-[#2a1f14]/70 py-1 text-center text-[10px] font-bold uppercase tracking-[0.25em]">
+        {articolo.source || "Dall'archivio"}
+        {articolo.publishedAt || articolo.year ? ` · ${dataBreve(articolo.publishedAt, articolo.year)}` : ""}
+      </div>
+      <p
+        className={`${newsHeadlineFont.className} line-clamp-3 text-center text-xl font-black leading-tight`}
+      >
+        {articolo.title}
+      </p>
+      <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest text-[#2a1f14]/70">
+        <span className="h-px w-8 bg-[#2a1f14]/50" />
+        {articolo.category ? categoryLabels[articolo.category] ?? "" : "Archivio"}
+        <span className="h-px w-8 bg-[#2a1f14]/50" />
+      </div>
+    </div>
   );
 }
 
@@ -124,7 +165,7 @@ export default function ElencoArticoli({
                 href={`/articoli/${articolo.slug.current}`}
                 className="group overflow-hidden rounded-lg bg-carbon-800 transition hover:scale-[1.02]"
               >
-                {articolo.coverImage && (
+                {articolo.coverImage && articolo.coverRef !== articolo.scanRef ? (
                   <img
                     src={urlFor(articolo.coverImage)
                       .width(600)
@@ -132,7 +173,10 @@ export default function ElencoArticoli({
                       .url()}
                     alt={articolo.coverImage?.alt || articolo.title}
                     className="h-48 w-full object-cover"
+                    loading="lazy"
                   />
+                ) : (
+                  <CopertinaGiornale articolo={articolo} />
                 )}
                 <div className="p-4">
                   <p className="text-sm text-racing-yellow">
