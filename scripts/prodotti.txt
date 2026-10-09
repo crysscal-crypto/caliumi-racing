@@ -1,0 +1,8 @@
+# Un link Amazon per riga, copiato dalla barra degli indirizzi del browser.
+# Le righe che iniziano con # vengono ignorate.
+# Se il nome del prodotto non basta a capire la categoria, scrivila davanti al link:
+# caschi, guanti, tute, stivali, accessori
+# Esempio:
+# accessori https://www.amazon.it/nome-del-prodotto/dp/XXXXXXXXXX/
+amazon.it/Alpinestars-Smx-1-Air-Guanti-Nero/dp/B078HFRQNK/ref=sr_1_6?crid=1QQ4WO3GLAAQL&dib=eyJ2IjoiMSJ9.IHWvJNnrpJTlX3RcYqH38yRa1lxfM5IChOsc-rNgz7DhvyXSqAt-VdzDpK7b0mWCs5bOMVhxRsZ4xA1Uk3fxFc2r3nHLspQXynMPgmMThkSMC6T0PNo1aqQyK3Ytfc3wHcleiz9InJIokQFTcoABHiVNHnm25m8i2nbflaa9RhRjZgxswFjm3cl3SZsUB56whP07xaz1V5e1Po-tXxwJz6Ho-edTq5akZXdtZ31FF1dqGkxfx4_xKdY82U1edq2x7Wj0NMYqp7YH3gdlLZ5mm8H632xKlbaYhE2eScRG6qE.qeczvIT0QDjAXtsN53fce-jXbDF111HprYeJLzV5PTc&dib_tag=se&keywords=guanti+moto+alpinestars&qid=1791559190&sprefix=guanti+moto+alpinestars%2Caps%2C172&sr=8-6
+amazon.it/Dainese-Metrax-Gloves-Tessuto-Calzata/dp/B0GJ542W4N/ref=sr_1_6?crid=3A3KLIHWQR3RX&dib=eyJ2IjoiMSJ9.whv_PfT95zDUhCoxk7Z_18953mmolXASTLvPJCbLQ8A6hpzqscWZseBsGcwh9dFOE-r9moOe_swunLJPZPTrqrcBdPFkGmNT1e8xZOEg6n4M9O8-1tGkZyKH8FjLTmgNHE1_KMjVXyEjqqJ-uHLJt9_nWIJneCpzl5HDvPYlCXVVmUBH4s6dMTErh8xyx3OVrUQ4XGmqc6GKYRKYsLm28lbGjph-169hHmWNKPPdDKg8eP1lN1ZbH74aoLtBj12VIviufI0efosjDsocFteuG7aRrueGrPfeao9VMrBp66Q.ALaLG3fgURudT4AvJLAqgcSSfsMxu9dP9NPOUOuHLPM&dib_tag=se&keywords=guanti+moto+dainese&qid=1791559239&sprefix=guanti+moto+dainese%2Caps%2C147&sr=8-6

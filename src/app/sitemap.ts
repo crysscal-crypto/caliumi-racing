@@ -26,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     pagina("/motogp", 0.9, "daily"),
     pagina("/motogp/orari", 0.8, "daily"),
     pagina("/motogp/statistiche", 0.8, "weekly"),
+    pagina("/privacy", 0.2, "yearly"),
   ];
 
   let dinamiche: MetadataRoute.Sitemap = [];

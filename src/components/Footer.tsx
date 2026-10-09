@@ -76,6 +76,8 @@ export default function Footer() {
 
         <p className="mt-8 text-center text-xs text-white/50">
           © {new Date().getFullYear()} Caliumi Racing — Cristian Caliumi. Tutti i diritti riservati.
+          {" · "}
+          <Link href="/privacy" className="underline hover:text-racing-yellow">Privacy e Cookie</Link>
         </p>
       </div>
     </footer>
