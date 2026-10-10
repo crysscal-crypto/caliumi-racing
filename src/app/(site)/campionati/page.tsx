@@ -4,6 +4,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import { racingFont } from "@/sanity/lib/fonts";
 import { getCampionati } from "@/sanity/lib/campionati";
+import Pubblicita from "@/components/Pubblicita";
 
 export const revalidate = 60;
 
@@ -60,6 +61,7 @@ export default async function CampionatiPage() {
             ))}
           </div>
         )}
+        <Pubblicita posizione="articolo-fondo" className="mt-12" />
       </div>
     </section>
   );

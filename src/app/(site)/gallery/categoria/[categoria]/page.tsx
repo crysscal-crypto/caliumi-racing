@@ -10,6 +10,7 @@ import {
   categorieGallery,
   inFotoGallery,
 } from "@/sanity/lib/gallery";
+import Pubblicita from "@/components/Pubblicita";
 
 export const revalidate = 60;
 
@@ -53,6 +54,7 @@ export default async function GalleryCategoriaPage({ params }: Params) {
         />
 
         <GalleryGrid foto={inFotoGallery(foto)} />
+        <Pubblicita posizione="articolo-fondo" className="mt-12" />
       </div>
     </section>
   );

@@ -9,6 +9,7 @@ import {
   categorieGallery,
   anteprima,
 } from "@/sanity/lib/gallery";
+import Pubblicita from "@/components/Pubblicita";
 
 export const revalidate = 60;
 
@@ -85,6 +86,7 @@ export default async function GalleryPage() {
             </div>
           </>
         )}
+        <Pubblicita posizione="articolo-fondo" className="mt-12" />
       </div>
     </section>
   );

@@ -3,6 +3,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import { racingFont, newsHeadlineFont, newsBodyFont } from "@/sanity/lib/fonts";
 import { categoryLabels, type ArticoloLista } from "@/sanity/lib/articoli";
+import Pubblicita from "@/components/Pubblicita";
 
 const builder = imageUrlBuilder(client);
 
@@ -198,6 +199,7 @@ export default function ElencoArticoli({
             ))}
           </div>
         )}
+        <Pubblicita posizione="articolo-fondo" className="mt-12" />
       </div>
     </section>
   );

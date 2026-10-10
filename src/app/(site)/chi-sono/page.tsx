@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import Link from "next/link";
 import { racingFont } from "@/sanity/lib/fonts";
+import Pubblicita from "@/components/Pubblicita";
 
 // ===== FOTO A LATO =====
 // Metti la foto in: public/chi-sono.jpg (verticale, circa 900x1200 pixel)
@@ -123,6 +124,7 @@ export default function ChiSonoPage() {
                 Trofeo Gilera, Sport Production, GP e Superbike: com&apos;erano e chi li ha vinti
               </span>
             </Link>
+            <Pubblicita posizione="articolo-fondo" className="mt-4" />
           </div>
 
           {foto && (

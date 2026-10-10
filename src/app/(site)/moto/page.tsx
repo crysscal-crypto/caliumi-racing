@@ -4,6 +4,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import { client } from "@/sanity/lib/client";
 import { racingFont } from "@/sanity/lib/fonts";
 import { getMoto, periodoMoto } from "@/sanity/lib/moto";
+import Pubblicita from "@/components/Pubblicita";
 
 export const revalidate = 60;
 
@@ -69,6 +70,7 @@ export default async function MotoPage() {
             ))}
           </ol>
         )}
+        <Pubblicita posizione="articolo-fondo" className="mt-12" />
       </div>
     </section>
   );
