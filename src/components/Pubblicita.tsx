@@ -8,13 +8,13 @@ import { useEffect } from "react";
 export const ADSENSE_CLIENT = "ca-pub-8453289586204430";
 
 const SLOT: Record<Posizione, string> = {
-  "home-notizie": "",
-  "notizie-elenco": "",
-  "notizia-sotto-testo": "",
-  "notizia-fondo": "",
-  "articolo-fondo": "",
-  "motogp-classifica": "",
-  "motogp-gp": "",
+  "home-notizie": "4070460060",
+  "notizie-elenco": "4070460060",
+  "notizia-sotto-testo": "4070460060",
+  "notizia-fondo": "4070460060",
+  "articolo-fondo": "4070460060",
+  "motogp-classifica": "4070460060",
+  "motogp-gp": "4070460060",
 };
 // ===================================
 
