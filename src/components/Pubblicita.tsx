@@ -5,7 +5,7 @@ import { useEffect } from "react";
 // ===== CONFIGURAZIONE ADSENSE =====
 // Si compila quando AdSense approva il sito (dominio caliumiracing.com collegato).
 // Finché ADSENSE_CLIENT è vuoto: in locale vedi un riquadro tratteggiato, online non compare nulla.
-export const ADSENSE_CLIENT = ""; // esempio: "ca-pub-1234567890123456"
+export const ADSENSE_CLIENT = "ca-pub-8453289586204430";
 
 const SLOT: Record<Posizione, string> = {
   "home-notizie": "",
