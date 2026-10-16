@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/gallery", label: "Gallery" },
   { href: "/articoli", label: "Articoli" },
   { href: "/motogp", label: "MotoGP" },
+  { href: "/superbike", label: "Superbike" },
   { href: "/notizie", label: "Notizie" },
 ];
 

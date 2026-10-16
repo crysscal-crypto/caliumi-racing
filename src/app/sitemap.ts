@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
 import { getStagioni } from "@/sanity/lib/motogp";
+import { getStagioniSBK } from "@/sanity/lib/sbk";
 
 export const revalidate = 3600;
 
@@ -26,6 +27,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     pagina("/motogp", 0.9, "daily"),
     pagina("/motogp/orari", 0.8, "daily"),
     pagina("/motogp/statistiche", 0.8, "weekly"),
+    pagina("/superbike", 0.9, "daily"),
+    pagina("/superbike/orari", 0.8, "daily"),
+    pagina("/superbike/statistiche", 0.8, "weekly"),
     pagina("/privacy", 0.2, "yearly"),
   ];
 
@@ -67,5 +71,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // ignora
   }
 
-  return [...fisse, ...dinamiche, ...stagioni];
+  let stagioniSBK: MetadataRoute.Sitemap = [];
+  try {
+    stagioniSBK = (await getStagioniSBK())
+      .filter((s) => !s.current)
+      .map((s) => pagina(`/superbike/${s.anno}`, 0.5, "yearly"));
+  } catch {
+    // ignora
+  }
+
+  return [...fisse, ...dinamiche, ...stagioni, ...stagioniSBK];
 }

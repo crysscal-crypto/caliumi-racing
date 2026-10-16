@@ -3,6 +3,7 @@ import { racingFont } from "@/sanity/lib/fonts";
 import { Fragment } from "react";
 import CardNotizia from "@/components/CardNotizia";
 import Pubblicita from "@/components/Pubblicita";
+import InstallaApp from "@/components/InstallaApp";
 import {
   getNotizie,
   getCommenti,
@@ -123,6 +124,8 @@ export default async function NotiziePage() {
           editori. Aggiornamento automatico ogni 30 minuti.
         </p>
       </div>
+
+      <InstallaApp />
     </section>
   );
 }

@@ -1,13 +1,23 @@
 {
-  "name": "Caliumi Racing",
+  "id": "/",
+  "name": "Caliumi Racing – Notizie MotoGP e Superbike",
   "short_name": "Caliumi Racing",
-  "description": "MotoGP, Superbike e storia delle corse in moto",
-  "start_url": "/",
+  "description": "Le ultime notizie di MotoGP e Superbike, orari, risultati e la storia delle corse in moto",
+  "lang": "it",
+  "start_url": "/notizie?utm_source=app",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#000000",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0a",
   "theme_color": "#000000",
+  "categories": ["sports", "news"],
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Notizie", "url": "/notizie?utm_source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "MotoGP", "url": "/motogp?utm_source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Superbike", "url": "/superbike?utm_source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ]
 }
