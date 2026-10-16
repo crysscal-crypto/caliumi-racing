@@ -76,6 +76,7 @@ async function api(percorso: string, cache: number): Promise<Risposta | null> {
         Accept: "application/json",
         "User-Agent": "Mozilla/5.0 (compatible; CaliumiRacing/1.0; +https://caliumiracing.com)",
       },
+      signal: AbortSignal.timeout(10000), // mai bloccare la pagina se la fonte non risponde
     });
     if (!res.ok) return null;
     return (await res.json()) as Risposta;

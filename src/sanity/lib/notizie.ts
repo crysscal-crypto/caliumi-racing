@@ -39,8 +39,9 @@ export const FEEDS: Feed[] = [
 
 const AGGIORNA_OGNI = 1800; // secondi (30 minuti)
 const CACHE_IMMAGINI = 86400; // secondi (24 ore) — l'immagine di un articolo non cambia
-const TIMEOUT_IMMAGINE = 8000; // millisecondi
-const RICHIESTE_INSIEME = 3; // pagine articolo scaricate in parallelo
+const TIMEOUT_IMMAGINE = 5000; // millisecondi, per singola pagina
+const TEMPO_MAX_IMMAGINI = 15000; // millisecondi, tempo massimo totale per cercare le foto
+const RICHIESTE_INSIEME = 6; // pagine articolo scaricate in parallelo
 const MAX_NOTIZIE = 60;
 const MAX_ESTRATTO = 180;
 const USER_AGENT = "Mozilla/5.0 (compatible; CaliumiRacingBot/1.0; +https://caliumiracing.com)";
@@ -157,10 +158,19 @@ async function inParallelo<T, R>(lista: T[], max: number, fn: (x: T) => Promise<
   return risultati;
 }
 
+// Cerca le foto mancanti ma senza mai bloccare la pagina: dopo TEMPO_MAX_IMMAGINI
+// mostra le notizie comunque (le foto non ancora trovate arriveranno al prossimo aggiornamento)
 async function completaImmagini(notizie: Notizia[]): Promise<Notizia[]> {
-  return inParallelo(notizie, RICHIESTE_INSIEME, async (n) =>
-    n.immagine || !feedLeggePagina(n.fonte) ? n : { ...n, immagine: await immagineDaPagina(n.link) }
-  );
+  const trovate = new Map<string, string | null>();
+  const lavoro = inParallelo(notizie, RICHIESTE_INSIEME, async (n) => {
+    if (n.immagine || !feedLeggePagina(n.fonte)) return;
+    trovate.set(n.id, await immagineDaPagina(n.link));
+  });
+  await Promise.race([lavoro, new Promise((fine) => setTimeout(fine, TEMPO_MAX_IMMAGINI))]);
+  return notizie.map((n) => {
+    const foto = trovate.get(n.id);
+    return n.immagine || !foto ? n : { ...n, immagine: foto };
+  });
 }
 
 function taglia(testo: string): string {
