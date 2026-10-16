@@ -153,8 +153,7 @@ export function TabellaSessione({ righe, gara }: { righe: RigaSessione[]; gara: 
 export function FonteDati() {
   return (
     <p className="mt-10 text-center text-xs text-white/40">
-      Dati: MotoGP™ / Dorna Sports, aggiornati automaticamente. Caliumi Racing non è
-      affiliato a Dorna o MotoGP™.
+      Dati: MotoGP™ / Dorna Sports, aggiornati automaticamente. Caliumi Racing non è affiliato a Dorna o MotoGP™.
     </p>
   );
 }
