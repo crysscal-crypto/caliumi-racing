@@ -39,6 +39,7 @@ export const FEEDS: Feed[] = [
 
 const AGGIORNA_OGNI = 1800; // secondi (30 minuti)
 const CACHE_IMMAGINI = 86400; // secondi (24 ore) — l'immagine di un articolo non cambia
+const TIMEOUT_FEED = 8000; // millisecondi, per singolo feed RSS
 const TIMEOUT_IMMAGINE = 5000; // millisecondi, per singola pagina
 const TEMPO_MAX_IMMAGINI = 15000; // millisecondi, tempo massimo totale per cercare le foto
 const RICHIESTE_INSIEME = 6; // pagine articolo scaricate in parallelo
@@ -161,6 +162,9 @@ async function inParallelo<T, R>(lista: T[], max: number, fn: (x: T) => Promise<
 // Cerca le foto mancanti ma senza mai bloccare la pagina: dopo TEMPO_MAX_IMMAGINI
 // mostra le notizie comunque (le foto non ancora trovate arriveranno al prossimo aggiornamento)
 async function completaImmagini(notizie: Notizia[]): Promise<Notizia[]> {
+  // Durante la pubblicazione su Vercel non cerca le foto (rallenterebbe la build):
+  // le aggiunge al primo aggiornamento della pagina, pochi minuti dopo.
+  if (process.env.NEXT_PHASE === "phase-production-build") return notizie;
   const trovate = new Map<string, string | null>();
   const lavoro = inParallelo(notizie, RICHIESTE_INSIEME, async (n) => {
     if (n.immagine || !feedLeggePagina(n.fonte)) return;
@@ -236,6 +240,7 @@ async function scaricaFeed(feed: Feed): Promise<Notizia[]> {
     const res = await fetch(feed.url, {
       next: { revalidate: AGGIORNA_OGNI },
       headers: { "User-Agent": USER_AGENT },
+      signal: AbortSignal.timeout(TIMEOUT_FEED),
     });
     if (!res.ok) {
       if (SVILUPPO) console.warn(`[notizie] feed risponde ${res.status} → ${feed.url}`);
