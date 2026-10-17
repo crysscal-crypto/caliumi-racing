@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "Chi Sono – Cristian Caliumi | Carriera motociclistica",
   description:
     "La storia sportiva di Cristian Caliumi, pilota di Carpi: dagli esordi nel 1989 al Trofeo Gilera, dal Motomondiale 125 al Campionato Mondiale Superbike.",
+  alternates: { canonical: "/chi-sono" },
 };
 
 const sections = [

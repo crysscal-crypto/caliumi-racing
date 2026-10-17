@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/articoli", label: "Articoli" },
   { href: "/motogp", label: "MotoGP" },
   { href: "/superbike", label: "Superbike" },
+  { href: "/civ", label: "CIV" },
   { href: "/notizie", label: "Notizie" },
 ];
 

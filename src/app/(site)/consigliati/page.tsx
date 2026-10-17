@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Attrezzatura moto consigliata | Cristian Caliumi",
   description:
     "Caschi, guanti, tute, stivali e accessori per andare in moto: una selezione di prodotti consigliati da Cristian Caliumi.",
+  alternates: { canonical: "/consigliati" },
 };
 
 export default async function ConsigliatiPage() {

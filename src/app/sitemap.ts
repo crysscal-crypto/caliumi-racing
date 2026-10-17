@@ -2,10 +2,11 @@ import type { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
 import { getStagioni } from "@/sanity/lib/motogp";
 import { getStagioniSBK } from "@/sanity/lib/sbk";
+import { stagioniCIV } from "@/sanity/lib/civ";
 
 export const revalidate = 3600;
 
-const SITO = process.env.NEXT_PUBLIC_SITE_URL || "https://caliumiracing.com";
+const SITO = "https://www.caliumiracing.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const ora = new Date();
@@ -30,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     pagina("/superbike", 0.9, "daily"),
     pagina("/superbike/orari", 0.8, "daily"),
     pagina("/superbike/statistiche", 0.8, "weekly"),
+    pagina("/civ", 0.8, "weekly"),
     pagina("/privacy", 0.2, "yearly"),
   ];
 
@@ -80,5 +82,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // ignora
   }
 
-  return [...fisse, ...dinamiche, ...stagioni, ...stagioniSBK];
+  const stagioniCiv: MetadataRoute.Sitemap = stagioniCIV()
+    .slice(1)
+    .map((s) => pagina(`/civ/${s.anno}`, 0.5, "yearly"));
+
+  return [...fisse, ...dinamiche, ...stagioni, ...stagioniSBK, ...stagioniCiv];
 }

@@ -16,6 +16,7 @@ export async function generateMetadata({
   return {
     title: `Articoli e classifiche ${anno} | Cristian Caliumi`,
     description: `Articoli di giornale, cronache e classifiche della stagione ${anno} nella carriera di Cristian Caliumi.`,
+    alternates: { canonical: `/articoli/anno/${anno}` },
   };
 }
 

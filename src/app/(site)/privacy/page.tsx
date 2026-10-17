@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Privacy e Cookie Policy | Caliumi Racing",
   description: "Informativa sul trattamento dei dati personali e sull'uso dei cookie del sito caliumiracing.com.",
   alternates: { canonical: "/privacy" },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: true },
 };
 
 function Sezione({ titolo, children }: { titolo: string; children: React.ReactNode }) {

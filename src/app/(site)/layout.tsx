@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ADSENSE_CLIENT } from "@/components/adsense";
 
-const SITO = process.env.NEXT_PUBLIC_SITE_URL || "https://caliumiracing.com";
+const SITO = "https://www.caliumiracing.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITO),

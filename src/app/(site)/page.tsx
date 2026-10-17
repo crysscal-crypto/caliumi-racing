@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { racingFont } from "@/sanity/lib/fonts";
@@ -11,6 +12,10 @@ import {
 } from "@/sanity/lib/notizie";
 
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
   const [notizie, commenti] = await Promise.all([getNotizie(9), getCommenti()]);

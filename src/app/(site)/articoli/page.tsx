@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Articoli e classifiche storiche | Cristian Caliumi",
   description:
     "Articoli di giornale e classifiche storiche di Trofeo Gilera, Sport Production, Campionato Italiano ed Europeo GP, Motomondiale e Superbike: le stagioni di Cristian Caliumi.",
+  alternates: { canonical: "/articoli" },
 };
 
 export default async function ArticoliPage() {
