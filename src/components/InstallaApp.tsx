@@ -1,131 +1,141 @@
-import type { Metadata } from "next";
-import { racingFont } from "@/sanity/lib/fonts";
-import { Fragment } from "react";
-import CardNotizia from "@/components/CardNotizia";
-import Pubblicita from "@/components/Pubblicita";
-import InstallaApp from "@/components/InstallaApp";
-import {
-  getNotizie,
-  getCommenti,
-  mappaCommenti,
-  formattaData,
-  pulisciLink,
-  FEEDS,
-} from "@/sanity/lib/notizie";
+"use client";
 
-export const revalidate = 300;
+import { useEffect, useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Notizie MotoGP e Superbike di oggi | Caliumi Racing",
-  description:
-    "Le ultime notizie di MotoGP e Superbike raccolte dalle principali testate italiane del motociclismo, aggiornate ogni 30 minuti, con il commento di Cristian Caliumi.",
-  alternates: { canonical: "/notizie" },
+type EventoInstallazione = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
-export default async function NotiziePage() {
-  const [notizie, commenti] = await Promise.all([getNotizie(), getCommenti()]);
-  const fonti = Array.from(new Set(FEEDS.map((f) => f.fonte)));
-  const commentiPerLink = mappaCommenti(commenti);
-  const inEvidenza = commenti.slice(0, 5);
+const CHIAVE = "caliumi-installa-chiuso";
+const GIORNI_PAUSA = 30;
+const RITARDO_MS = 4000;
 
-  const slugPerLink = new Map<string, string>();
-  notizie.forEach((n) => slugPerLink.set(pulisciLink(n.link), n.slug));
+function chiusoDiRecente(): boolean {
+  try {
+    const v = localStorage.getItem(CHIAVE);
+    return !!v && Date.now() - Number(v) < GIORNI_PAUSA * 86400000;
+  } catch {
+    return false;
+  }
+}
+
+function segnaChiuso() {
+  try {
+    localStorage.setItem(CHIAVE, String(Date.now()));
+  } catch {}
+}
+
+function giaInstallata(): boolean {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true
+  );
+}
+
+function eIOS(): boolean {
+  const ua = navigator.userAgent;
+  return /iphone|ipad|ipod/i.test(ua) || (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+}
+
+export default function InstallaApp() {
+  const [evento, setEvento] = useState<EventoInstallazione | null>(null);
+  const [ios, setIos] = useState(false);
+  const [visibile, setVisibile] = useState(false);
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+
+    if (giaInstallata() || chiusoDiRecente()) return;
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const suPrompt = (e: Event) => {
+      e.preventDefault();
+      setEvento(e as EventoInstallazione);
+      timer = setTimeout(() => setVisibile(true), RITARDO_MS);
+    };
+    const suInstallata = () => {
+      setVisibile(false);
+      segnaChiuso();
+    };
+
+    window.addEventListener("beforeinstallprompt", suPrompt);
+    window.addEventListener("appinstalled", suInstallata);
+
+    if (eIOS()) {
+      setIos(true);
+      timer = setTimeout(() => setVisibile(true), RITARDO_MS);
+    }
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", suPrompt);
+      window.removeEventListener("appinstalled", suInstallata);
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
+
+  const chiudi = () => {
+    setVisibile(false);
+    segnaChiuso();
+  };
+
+  const installa = async () => {
+    if (!evento) return;
+    await evento.prompt();
+    await evento.userChoice;
+    setEvento(null);
+    chiudi();
+  };
+
+  if (!visibile || (!evento && !ios)) return null;
 
   return (
-    <section className="carbon-bg">
-      <div className="content-panel mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <h1
-          className={`${racingFont.className} mb-3 text-center text-3xl text-racing-yellow sm:text-4xl`}
+    <div
+      role="dialog"
+      aria-label="Installa Caliumi Racing"
+      className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md rounded-xl border border-racing-yellow/40 bg-carbon-900/95 p-4 shadow-2xl backdrop-blur sm:bottom-6"
+    >
+      <div className="flex items-start gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icon-192.png" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-lg" />
+        <div className="min-w-0 flex-1">
+          <p className="font-bold text-white">Le notizie sempre a portata di mano</p>
+          {ios ? (
+            <p className="mt-1 text-sm text-white/75">
+              Tocca <span className="font-semibold text-racing-yellow">Condividi</span>{" "}
+              <span aria-hidden>⎋</span> in basso e poi{" "}
+              <span className="font-semibold text-racing-yellow">Aggiungi alla schermata Home</span>.
+            </p>
+          ) : (
+            <p className="mt-1 text-sm text-white/75">
+              Aggiungi Caliumi Racing al telefono o al computer: MotoGP e Superbike con un tocco.
+            </p>
+          )}
+        </div>
+        <button
+          onClick={chiudi}
+          aria-label="Chiudi"
+          className="-mr-1 -mt-1 rounded p-1 text-xl leading-none text-white/50 hover:text-white"
         >
-          Notizie
-        </h1>
-        <p className="mx-auto mb-10 max-w-2xl text-center text-white/70">
-          Le ultime dal mondo delle corse in moto, MotoGP e Superbike, raccolte
-          dalle testate di settore e aggiornate ogni 30 minuti.
-        </p>
-
-        {inEvidenza.length > 0 && (
-          <div className="mb-12">
-            <h2
-              className={`${racingFont.className} mb-4 text-2xl text-racing-yellow`}
-            >
-              Il commento di Cristian
-            </h2>
-            <ul className="space-y-4">
-              {inEvidenza.map((c) => {
-                const slug = slugPerLink.get(pulisciLink(c.link));
-                return (
-                  <li key={c._id}>
-                    <article className="rounded-lg border border-racing-yellow/40 bg-carbon-900 p-5">
-                      <p className="mb-1 text-xs uppercase tracking-wide text-white/50">
-                        {c.fonte ? `${c.fonte} · ` : ""}
-                        {formattaData(c.data, false)}
-                      </p>
-                      <h3 className="text-lg font-semibold leading-snug text-white">
-                        {c.titolo}
-                      </h3>
-                      <p className="mt-3 whitespace-pre-line border-l-2 border-racing-yellow pl-4 italic text-white/85">
-                        {c.commento}
-                      </p>
-                      {slug ? (
-                        <a
-                          href={`/notizie/${slug}`}
-                          className="mt-3 inline-block text-sm font-semibold text-racing-yellow hover:underline"
-                        >
-                          Leggi la notizia →
-                        </a>
-                      ) : (
-                        <a
-                          href={c.link}
-                          target="_blank"
-                          rel="nofollow noopener noreferrer"
-                          className="mt-3 inline-block text-sm font-semibold text-racing-yellow hover:underline"
-                        >
-                          Leggi la notizia{c.fonte ? ` su ${c.fonte}` : ""} ↗
-                        </a>
-                      )}
-                    </article>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-
-        <h2 className={`${racingFont.className} mb-4 text-2xl text-racing-yellow`}>
-          Ultime notizie
-        </h2>
-
-        {notizie.length === 0 ? (
-          <p className="text-center text-white/60">
-            Le notizie non sono disponibili in questo momento. Riprova tra poco.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {notizie.map((n, i) => (
-              <Fragment key={n.id}>
-                <CardNotizia
-                  notizia={n}
-                  commento={commentiPerLink.get(pulisciLink(n.link))?.commento}
-                />
-                {(i + 1) % 9 === 0 && i + 1 < notizie.length && (
-                  <Pubblicita
-                    posizione="notizie-elenco"
-                    className="md:col-span-2 lg:col-span-3"
-                  />
-                )}
-              </Fragment>
-            ))}
-          </div>
-        )}
-
-        <p className="mt-10 text-center text-xs text-white/40">
-          Fonti: {fonti.join(", ")}. Titoli e marchi appartengono ai rispettivi
-          editori. Aggiornamento automatico ogni 30 minuti.
-        </p>
+          ×
+        </button>
       </div>
-
-      <InstallaApp />
-    </section>
+      {!ios && (
+        <div className="mt-3 flex justify-end gap-2">
+          <button onClick={chiudi} className="rounded-lg px-4 py-2 text-sm text-white/70 hover:text-white">
+            Non ora
+          </button>
+          <button
+            onClick={installa}
+            className="rounded-lg bg-racing-yellow px-4 py-2 text-sm font-bold text-black hover:brightness-110"
+          >
+            Installa
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
