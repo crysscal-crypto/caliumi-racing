@@ -6,6 +6,7 @@ import { ADSENSE_CLIENT } from "@/components/adsense";
 
 // ===== CONFIGURAZIONE ANNUNCI =====
 // Il codice editore AdSense è in src/components/adsense.ts
+// Tutti gli annunci sono "sottili": altezza fissa 90px su computer e 60px su telefono.
 
 const SLOT: Record<Posizione, string> = {
   "home-notizie": "4070460060",
@@ -15,17 +16,21 @@ const SLOT: Record<Posizione, string> = {
   "articolo-fondo": "4070460060",
   "motogp-classifica": "4070460060",
   "motogp-gp": "4070460060",
+  testata: "4070460060",
+  "barra-basso": "4070460060",
 };
 // ===================================
 
-type Posizione =
+export type Posizione =
   | "home-notizie"
   | "notizie-elenco"
   | "notizia-sotto-testo"
   | "notizia-fondo"
   | "articolo-fondo"
   | "motogp-classifica"
-  | "motogp-gp";
+  | "motogp-gp"
+  | "testata"
+  | "barra-basso";
 
 declare global {
   interface Window {
@@ -56,7 +61,7 @@ export default function Pubblicita({
     if (process.env.NODE_ENV !== "development") return null;
     return (
       <div
-        className={`flex min-h-[120px] items-center justify-center rounded-lg border-2 border-dashed border-white/20 text-xs uppercase tracking-widest text-white/40 ${className}`}
+        className={`annuncio-sottile flex items-center justify-center rounded-md border border-dashed border-white/20 text-xs uppercase tracking-widest text-white/40 ${className}`}
       >
         Spazio pubblicità · {posizione}
       </div>
@@ -65,16 +70,12 @@ export default function Pubblicita({
 
   return (
     <aside className={`overflow-hidden ${className}`} aria-label="Pubblicità">
-      <p className="mb-1 text-center text-[10px] uppercase tracking-widest text-white/30">
-        Pubblicità
-      </p>
+      <p className="mb-0.5 text-center text-[9px] uppercase tracking-widest text-white/25">Pubblicità</p>
       <ins
-        className="adsbygoogle block min-h-[100px]"
-        style={{ display: "block" }}
+        className="adsbygoogle annuncio-sottile"
+        style={{ display: "block", width: "100%" }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={slot}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
       />
     </aside>
   );

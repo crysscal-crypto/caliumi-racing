@@ -60,3 +60,27 @@ body {
 .nav-link:hover::after {
   width: 100%;
 }
+
+/* Annunci: se Google non ha un annuncio da mostrare, il riquadro sparisce invece di restare vuoto */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}
+aside:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none !important;
+}
+
+/* Annunci sottili ed eleganti: 90px su computer, 60px su telefono */
+.annuncio-sottile {
+  height: 90px;
+  max-height: 90px;
+}
+@media (max-width: 640px) {
+  .annuncio-sottile {
+    height: 60px;
+    max-height: 60px;
+  }
+}
+/* La barra in basso sparisce se Google non ha un annuncio da mostrare */
+.barra-pubblicita:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none !important;
+}
