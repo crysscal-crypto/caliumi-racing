@@ -49,7 +49,9 @@ export function TabellaGaraCIV({ righe }: { righe: RigaGaraCIV[] }) {
                 <td className={td}>
                   <span className="font-semibold">{r.pilota}</span>
                   {r.num ? <span className="ml-1 text-white/40">#{r.num}</span> : null}
-                  {r.team ? <span className="block text-xs text-white/50">{r.team}</span> : null}
+                  {r.team || r.moto ? (
+                    <span className="block text-xs text-white/50">{[r.team, r.moto].filter(Boolean).join(" · ")}</span>
+                  ) : null}
                 </td>
                 <td className={`${td} text-center`}>{r.giri}</td>
                 <td className={`${td} text-right font-mono`}>{r.tempo || (fuori ? "" : "-")}</td>

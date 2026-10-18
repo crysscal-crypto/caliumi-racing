@@ -137,10 +137,24 @@ async function leggiRisultati() {
   return page.evaluate(() => {
     const tab = [...document.querySelectorAll("table")].find((t) => /POS/.test(t.querySelector("tr")?.innerText ?? ""));
     if (!tab) return [];
+    // colonne lette dall'intestazione (l'ordine cambia a seconda della larghezza della pagina)
+    const intest = [...tab.querySelectorAll("tr")[0].querySelectorAll("th,td")].map((c) => c.innerText.trim().toUpperCase());
+    const col = (re) => intest.findIndex((t) => re.test(t));
+    const iPos = col(/^POS/), iNum = col(/^#$|^NUM|^N\.?$/), iPil = col(/RIDER|PILOTA|DRIVER/), iTeam = col(/TEAM/);
+    const iMoto = col(/MOTO|BIKE|MAKE|MARCA/), iGiri = col(/LAP|GIRI/), iTempo = col(/TIME|TEMPO|GAP/);
+    const val = (c, i) => (i >= 0 ? c[i] ?? "" : "");
     return [...tab.querySelectorAll("tbody tr")]
       .map((t) => [...t.querySelectorAll("td")].map((td) => td.innerText.trim()))
-      .filter((c) => c.length >= 7 && c[1])
-      .map((c) => ({ pos: c[1], num: c[2], pilota: c[3], team: c[4], giri: c[5], tempo: c[6] }));
+      .filter((c) => c.length >= 5 && val(c, iPos))
+      .map((c) => ({
+        pos: val(c, iPos),
+        num: val(c, iNum),
+        pilota: val(c, iPil),
+        team: val(c, iTeam),
+        moto: val(c, iMoto),
+        giri: val(c, iGiri),
+        tempo: val(c, iTempo),
+      }));
   });
 }
 

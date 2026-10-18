@@ -3,7 +3,7 @@
 import dati from "@/data/civ.json";
 import { iso2 } from "@/sanity/lib/sbk";
 
-export type RigaGaraCIV = { pos: string; num: string; pilota: string; team: string; giri: string; tempo: string };
+export type RigaGaraCIV = { pos: string; num: string; pilota: string; team: string; moto?: string; giri: string; tempo: string };
 export type GaraCIV = { evento: string; sessione: string; codice: string; righe: RigaGaraCIV[] };
 export type RigaClassificaCIV = { pos: number; cognome: string; nome: string; naz: string; punti: number };
 export type ClasseCIV = { slug: string; nome: string; classifica: RigaClassificaCIV[]; dopo?: string; gare: GaraCIV[] };
