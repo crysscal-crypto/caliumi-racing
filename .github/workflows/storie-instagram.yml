@@ -10,10 +10,10 @@ on:
 jobs:
   pubblica:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 6
     steps:
       - name: Pubblica storie
         run: |
-          curl -sS --max-time 90 --fail-with-body \
+          curl -sS --max-time 290 --fail-with-body \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             https://www.caliumiracing.com/api/instagram/storie

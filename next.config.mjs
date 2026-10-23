@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Font e logo usati per generare le storie Instagram
+  // Font, logo, musica e ffmpeg usati per generare le storie Instagram
+  serverExternalPackages: ["ffmpeg-static"],
   outputFileTracingIncludes: {
     "/storie/immagine": ["./assets/**/*"],
+    "/api/instagram/storie": ["./assets/musica/**/*", "./node_modules/ffmpeg-static/ffmpeg"],
   },
 
   images: {

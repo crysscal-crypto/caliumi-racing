@@ -70,19 +70,33 @@ async function chiama(percorso: string, token: string, corpo?: Record<string, st
   return j;
 }
 
-export async function pubblicaStoria(urlImmagine: string, token: string): Promise<string> {
+export async function pubblicaStoria(media: { immagine?: string; video?: string }, token: string): Promise<string> {
   const utente = process.env.INSTAGRAM_USER_ID;
   if (!utente) throw new Error("Manca la variabile INSTAGRAM_USER_ID");
 
-  const contenitore = await chiama(`/${utente}/media`, token, { image_url: urlImmagine, media_type: "STORIES" });
+  const contenitore = await chiama(
+    `/${utente}/media`,
+    token,
+    media.video
+      ? { video_url: media.video, media_type: "STORIES" }
+      : { image_url: media.immagine ?? "", media_type: "STORIES" }
+  );
   const id = String(contenitore.id);
 
-  for (let i = 0; i < 12; i++) {
-    await pausa(2500);
+  // i video richiedono più tempo di elaborazione
+  const tentativi = media.video ? 40 : 12;
+  let pronto = false;
+  for (let i = 0; i < tentativi; i++) {
+    await pausa(media.video ? 3000 : 2500);
     const s = await chiama(`/${id}?fields=status_code`, token);
-    if (s.status_code === "FINISHED") break;
+    if (s.status_code === "FINISHED") {
+      pronto = true;
+      break;
+    }
     if (s.status_code === "ERROR" || s.status_code === "EXPIRED") throw new Error(`Contenitore ${s.status_code}`);
   }
+
+  if (!pronto) throw new Error("Instagram non ha finito di elaborare il contenuto");
 
   const pubblicata = await chiama(`/${utente}/media_publish`, token, { creation_id: id });
   return String(pubblicata.id);
