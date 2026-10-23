@@ -6,13 +6,13 @@ import Link from "next/link";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/chi-sono", label: "Chi Sono" },
+  { href: "/notizie", label: "Notizie" },
+  { href: "/motogp", label: "MotoGP" },
+  { href: "/superbike", label: "WorldSBK" },
+  { href: "/civ", label: "CIV" },
   { href: "/gallery", label: "Gallery" },
   { href: "/articoli", label: "Articoli" },
-  { href: "/motogp", label: "MotoGP" },
-  { href: "/superbike", label: "Superbike" },
-  { href: "/civ", label: "CIV" },
-  { href: "/notizie", label: "Notizie" },
+  { href: "/chi-sono", label: "Chi Sono" },
 ];
 
 export default function Header() {

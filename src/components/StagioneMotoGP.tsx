@@ -96,12 +96,22 @@ export default async function StagioneMotoGP({
                 : `Mancano ${giorniA(prossimo.date_start)} giorni`}
             </p>
           )}
-          <Link
-            href="/motogp/orari"
-            className="mt-3 inline-block rounded-md bg-racing-yellow px-5 py-2 text-sm font-semibold text-carbon-950 transition hover:scale-105"
-          >
-            Orari e dove vederlo in TV →
-          </Link>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {giorniA(prossimo.date_start) <= 0 && (
+              <Link
+                href={`${base}/${slugEvento(prossimo)}${qClasse}`}
+                className="inline-block rounded-md bg-racing-red px-5 py-2 text-sm font-semibold text-white transition hover:scale-105"
+              >
+                Risultati prove e qualifiche →
+              </Link>
+            )}
+            <Link
+              href="/motogp/orari"
+              className="inline-block rounded-md bg-racing-yellow px-5 py-2 text-sm font-semibold text-carbon-950 transition hover:scale-105"
+            >
+              Orari e dove vederlo in TV →
+            </Link>
+          </div>
         </div>
       )}
 
@@ -143,6 +153,7 @@ export default async function StagioneMotoGP({
           <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {eventi.map((e, i) => {
               const finito = e.status === "FINISHED";
+              const inCorso = e === prossimo && giorniA(e.date_start) <= 0;
               const contenuto = (
                 <>
                   <p className="text-xs uppercase tracking-wide text-white/50">
@@ -152,14 +163,14 @@ export default async function StagioneMotoGP({
                     {bandiera(e.country?.iso)} {nomeGP(e)}
                   </p>
                   <p className="text-sm text-white/60">{e.circuit?.name}</p>
-                  <p className={`mt-1 text-xs font-semibold ${finito ? "text-racing-yellow" : "text-white/40"}`}>
-                    {finito ? "Risultati →" : e === prossimo ? "Prossima gara" : "In programma"}
+                  <p className={`mt-1 text-xs font-semibold ${finito || inCorso ? "text-racing-yellow" : "text-white/40"}`}>
+                    {finito ? "Risultati →" : inCorso ? "Weekend in corso: risultati prove →" : e === prossimo ? "Prossima gara" : "In programma"}
                   </p>
                 </>
               );
               return (
                 <li key={e.id}>
-                  {finito ? (
+                  {finito || inCorso ? (
                     <Link
                       href={`${base}/${slugEvento(e)}${qClasse}`}
                       className="block h-full rounded-lg bg-carbon-800 p-4 transition hover:bg-carbon-700"

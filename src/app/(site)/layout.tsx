@@ -4,7 +4,6 @@ import "../globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ADSENSE_CLIENT } from "@/components/adsense";
-import Pubblicita from "@/components/Pubblicita";
 import BarraPubblicita from "@/components/BarraPubblicita";
 
 const SITO = "https://www.caliumiracing.com";
@@ -83,7 +82,6 @@ export default function SiteLayout({
           }}
         />
         <Header />
-        <Pubblicita posizione="testata" className="mx-auto w-full max-w-5xl px-3 pt-2" />
         <main className="flex-1">{children}</main>
         <Footer />
         {/* spazio per non coprire il fondo pagina con la barra pubblicitaria */}
