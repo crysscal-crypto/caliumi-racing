@@ -1,10 +1,11 @@
-# Ogni 15 minuti (venerdì, sabato e domenica) pubblica su Instagram le storie
+# Ogni 15 minuti (da venerdì a domenica, più lunedì mattina) pubblica su Instagram le storie
 # con i risultati delle sessioni MotoGP e WorldSBK appena concluse.
 name: Storie Instagram
 
 on:
   schedule:
     - cron: "*/15 * * * 5,6,0"
+    - cron: "*/15 0-10 * * 1"
   workflow_dispatch:
 
 jobs:
