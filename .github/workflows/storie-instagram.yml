@@ -1,0 +1,19 @@
+# Ogni 15 minuti (venerdì, sabato e domenica) pubblica su Instagram le storie
+# con i risultati delle sessioni MotoGP e WorldSBK appena concluse.
+name: Storie Instagram
+
+on:
+  schedule:
+    - cron: "*/15 * * * 5,6,0"
+  workflow_dispatch:
+
+jobs:
+  pubblica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Pubblica storie
+        run: |
+          curl -sS --max-time 90 --fail-with-body \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://www.caliumiracing.com/api/instagram/storie

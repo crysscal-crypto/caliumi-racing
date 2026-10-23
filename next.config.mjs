@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Font e logo usati per generare le storie Instagram
+  outputFileTracingIncludes: {
+    "/storie/immagine": ["./assets/**/*"],
+  },
+
   images: {
     remotePatterns: [
       {
