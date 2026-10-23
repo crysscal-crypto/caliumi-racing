@@ -93,12 +93,22 @@ export default async function StagioneSBK({
               {giorniA(prossimo.inizio) === 1 ? "Si parte domani" : `Mancano ${giorniA(prossimo.inizio)} giorni`}
             </p>
           )}
-          <Link
-            href="/superbike/orari"
-            className="mt-3 inline-block rounded-md bg-racing-yellow px-5 py-2 text-sm font-semibold text-carbon-950 transition hover:scale-105"
-          >
-            Orari del weekend →
-          </Link>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {giorniA(prossimo.inizio) <= 0 && (
+              <Link
+                href={`${base}/${prossimo.slug}${qClasse}`}
+                className="inline-block rounded-md bg-racing-red px-5 py-2 text-sm font-semibold text-white transition hover:scale-105"
+              >
+                Risultati prove e Superpole →
+              </Link>
+            )}
+            <Link
+              href="/superbike/orari"
+              className="inline-block rounded-md bg-racing-yellow px-5 py-2 text-sm font-semibold text-carbon-950 transition hover:scale-105"
+            >
+              Orari del weekend →
+            </Link>
+          </div>
         </div>
       )}
 
@@ -149,6 +159,7 @@ export default async function StagioneSBK({
           <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {rounds.map((r, i) => {
               const fatto = finito(r);
+              const inCorso = r === prossimo && giorniA(r.inizio) <= 0;
               const contenuto = (
                 <>
                   <p className="text-xs uppercase tracking-wide text-white/50">
@@ -158,22 +169,26 @@ export default async function StagioneSBK({
                     {bandiera(r.iso)} {r.nome}
                   </p>
                   <p className="text-sm text-white/60">{r.circuito}</p>
-                  <p className={`mt-1 text-xs font-semibold ${fatto ? "text-racing-yellow" : "text-white/40"}`}>
-                    {fatto ? "Risultati →" : r === prossimo ? "Prossimo round" : "In programma"}
+                  <p className={`mt-1 text-xs font-semibold ${fatto || inCorso ? "text-racing-yellow" : "text-white/40"}`}>
+                    {fatto ? "Risultati →" : inCorso ? "Weekend in corso: risultati prove →" : r === prossimo ? "Prossimo round" : "In programma"}
                   </p>
                 </>
               );
               return (
                 <li key={r.id}>
-                  {fatto || r === prossimo ? (
+                  {fatto || inCorso ? (
                     <Link
                       href={`${base}/${r.slug}${qClasse}`}
-                      className={`block h-full rounded-lg p-4 transition hover:bg-carbon-700 ${r === prossimo ? "border border-racing-yellow/50 bg-carbon-800" : "bg-carbon-800"}`}
+                      className={`block h-full rounded-lg p-4 transition hover:bg-carbon-700 ${inCorso ? "border border-racing-yellow/50 bg-carbon-800" : "bg-carbon-800"}`}
                     >
                       {contenuto}
                     </Link>
                   ) : (
-                    <div className="h-full rounded-lg bg-carbon-800/60 p-4">{contenuto}</div>
+                    <div
+                      className={`h-full rounded-lg p-4 ${r === prossimo ? "border border-racing-yellow/50 bg-carbon-800" : "bg-carbon-800/60"}`}
+                    >
+                      {contenuto}
+                    </div>
                   )}
                 </li>
               );
