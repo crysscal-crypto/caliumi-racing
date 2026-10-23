@@ -145,7 +145,7 @@ function Grafica({ s, logo, bandiere }: { s: Storia; logo: string; bandiere: boo
         {/* Richiamo al sito */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 20 }}>
           <div style={{ display: "flex", fontSize: 30, color: "rgba(255,255,255,0.75)" }}>
-            Classifica completa, tempi e statistiche su
+            Full results, lap times &amp; stats on
           </div>
           <div
             style={{

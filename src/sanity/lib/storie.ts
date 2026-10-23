@@ -6,8 +6,6 @@ import {
   getCategorie,
   getSessioni,
   getRisultatiSessione,
-  nomeGP,
-  nomeSessione,
   slugEvento,
   codiceSessione,
 } from "./motogp";
@@ -18,12 +16,14 @@ import {
   getSessioniRound,
   sessioniCategoria,
   getRisultatiSBK,
-  nomeSessioneSBK,
+  type SessioneSBK,
   codiceSessioneSBK,
   eGara,
   tempoGara,
   distacco,
 } from "./sbk";
+import { istanteReale } from "./orari";
+import type { Evento, Sessione } from "./motogp";
 
 export type Serie = "motogp" | "sbk";
 
@@ -63,11 +63,55 @@ export function urlImmagine(c: Candidata): string {
 const oggi = () => new Date().toISOString().slice(0, 10);
 const giorno = (d: string, delta: number) => new Date(Date.parse(`${d}T12:00:00Z`) + delta * 86400000).toISOString().slice(0, 10);
 
-function recente(quando: string | null | undefined, ore: number): boolean {
+function recente(quando: string | Date | null | undefined, ore: number): boolean {
   if (!quando) return false;
-  const t = Date.parse(quando);
-  return !Number.isNaN(t) && t <= Date.now() && Date.now() - t <= ore * 3600000;
+  const t = typeof quando === "string" ? Date.parse(quando) : quando.getTime();
+  return !Number.isNaN(t) && Date.now() - t <= ore * 3600000;
 }
+
+// ---------- Testi in inglese (le storie le vede un pubblico internazionale) ----------
+const PICCOLE = new Set(["of", "the", "de", "and"]);
+function titolo(t: string): string {
+  return t
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((w, i) => (i > 0 && PICCOLE.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
+}
+
+function nomeEventoEN(e: Evento): string {
+  return titolo(e.name || e.short_name);
+}
+
+const SESSIONI_MOTOGP: Record<string, string> = {
+  FP: "Free Practice",
+  PR: "Practice",
+  Q: "Qualifying",
+  SPR: "Sprint",
+  WUP: "Warm Up",
+  RAC: "Race",
+};
+
+function sessioneMotoGPEN(s: Sessione): string {
+  const base = SESSIONI_MOTOGP[s.type] ?? s.type;
+  return s.number ? `${base} ${s.number}` : base;
+}
+
+function sessioneSBKEN(s: SessioneSBK): string {
+  const m = s.sigla.match(/^([A-Z]+?)(\d*)$/);
+  const [, base, n] = m ?? [null, s.sigla, ""];
+  const num = n ? ` ${Number(n)}` : "";
+  if (s.sigla === "SPRC") return "Superpole Race";
+  if (base === "RC") return `Race${num}`;
+  if (base === "FP") return `Free Practice${num}`;
+  if (base === "SP") return `Superpole${num}`;
+  if (base === "QP") return `Qualifying${num}`;
+  if (base === "WUP") return `Warm Up${num}`;
+  return s.descrizione || s.sigla;
+}
+
+const giri = (n: string | number) => `+${n} ${String(n) === "1" ? "lap" : "laps"}`;
 
 // "Francesco Bagnaia" -> "F. BAGNAIA"
 function nomeBreve(nome: string): string {
@@ -77,7 +121,7 @@ function nomeBreve(nome: string): string {
 }
 
 // ---------- Sessioni concluse di recente ----------
-export async function sessioniRecenti(ore = 12): Promise<Candidata[]> {
+export async function sessioniRecenti(ore = 36): Promise<Candidata[]> {
   const [motogp, sbk] = await Promise.all([recentiMotoGP(ore), recentiSBK(ore)]);
   return [...motogp, ...sbk].sort((a, b) => a.quando.localeCompare(b.quando));
 }
@@ -94,14 +138,14 @@ async function recentiMotoGP(ore: number): Promise<Candidata[]> {
     const tutte = await Promise.all(
       inCorso.map(async (e) =>
         (await getSessioni(stagione, e, motogp))
-          .filter((s) => s.status === "FINISHED" && recente(s.date, ore))
+          .filter((s) => s.status === "FINISHED" && recente(istanteReale(s.date, e.country?.iso), ore))
           .map((s) => ({
             chiave: `motogp:${s.id}`,
             serie: "motogp" as const,
             anno: stagione.year,
             evento: slugEvento(e),
             sessione: s.id,
-            quando: s.date,
+            quando: istanteReale(s.date, e.country?.iso).toISOString(),
           }))
       )
     );
@@ -170,7 +214,7 @@ async function storiaMotoGP(anno: number, slug: string, id: string): Promise<Sto
           i === 0
             ? r.time ?? ""
             : r.gap?.lap && r.gap.lap !== "0"
-              ? `+${r.gap.lap} ${r.gap.lap === "1" ? "giro" : "giri"}`
+              ? giri(r.gap.lap)
               : r.gap?.first
                 ? `+${r.gap.first}`
                 : "";
@@ -188,10 +232,10 @@ async function storiaMotoGP(anno: number, slug: string, id: string): Promise<Sto
   return {
     serie: "motogp",
     campionato: "MotoGP",
-    evento: nomeGP(evento),
+    evento: nomeEventoEN(evento),
     circuito: evento.circuit?.name ?? "",
     iso: evento.country?.iso ?? "",
-    sessione: nomeSessione(sessione),
+    sessione: sessioneMotoGPEN(sessione),
     gara,
     righe,
     percorso: `/motogp/${anno}/${slug}?sessione=${codiceSessione(sessione)}`,
@@ -221,7 +265,7 @@ async function storiaSBK(anno: number, slug: string, codice: string): Promise<St
         i === 0
           ? tempoGara(r.tempo)
           : giriInMeno > 0
-            ? `+${giriInMeno} ${giriInMeno === 1 ? "giro" : "giri"}`
+            ? giri(giriInMeno)
             : distacco(r.tempo - primo.tempo);
     } else {
       valore = i === 0 ? tempoGara(r.giroVeloce) : distacco(r.giroVeloce - primo.giroVeloce);
@@ -234,7 +278,7 @@ async function storiaSBK(anno: number, slug: string, codice: string): Promise<St
     evento: round.nome,
     circuito: round.circuito,
     iso: round.iso,
-    sessione: nomeSessioneSBK(sessione),
+    sessione: sessioneSBKEN(sessione),
     gara,
     righe,
     percorso: `/superbike/${anno}/${slug}?sessione=${codiceSessioneSBK(sessione)}`,
