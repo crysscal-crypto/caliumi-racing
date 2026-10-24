@@ -1,0 +1,2980 @@
+{
+ "aggiornato": "2026-10-24T14:27:03.193Z",
+ "totGare": 3596,
+ "mancanti": [
+  {
+   "anno": 1949,
+   "gp": "TT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1949 Isle of Man TT"
+  },
+  {
+   "anno": 1949,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1949 Dutch TT"
+  },
+  {
+   "anno": 1949,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1949 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1949,
+   "gp": "ULST",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1949 Ulster Grand Prix"
+  },
+  {
+   "anno": 1950,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1950 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1950,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1950 Dutch TT"
+  },
+  {
+   "anno": 1950,
+   "gp": "SWI",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1950 Swiss motorcycle Grand Prix"
+  },
+  {
+   "anno": 1950,
+   "gp": "ULST",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1950 Ulster Grand Prix"
+  },
+  {
+   "anno": 1950,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1950 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1951,
+   "gp": "SPA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1951,
+   "gp": "SWI",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Swiss motorcycle Grand Prix"
+  },
+  {
+   "anno": 1951,
+   "gp": "TT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Isle of Man TT"
+  },
+  {
+   "anno": 1951,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1951,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Dutch TT"
+  },
+  {
+   "anno": 1951,
+   "gp": "FRA",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1951 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1951,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1951,
+   "gp": "NAT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1951 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1952,
+   "gp": "SWI",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1952 Swiss motorcycle Grand Prix"
+  },
+  {
+   "anno": 1952,
+   "gp": "TT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1952 Isle of Man TT"
+  },
+  {
+   "anno": 1952,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1952 Dutch TT"
+  },
+  {
+   "anno": 1952,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1952 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1952,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1952 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1952,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1952 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1952,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1952 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "TT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Isle of Man TT"
+  },
+  {
+   "anno": 1953,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Dutch TT"
+  },
+  {
+   "anno": 1953,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1953 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "FRA",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1953 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "ULST",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Ulster Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "SWI",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Swiss motorcycle Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1953,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1953 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1954,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1954 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1954,
+   "gp": "ULST",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1954 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1954,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1954 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1954,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1954 Dutch TT"
+  },
+  {
+   "anno": 1954,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1954 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1954,
+   "gp": "SWI",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": null
+  },
+  {
+   "anno": 1954,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1954 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1954,
+   "gp": "SPA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1954 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1955,
+   "gp": "FRA",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1955 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1955,
+   "gp": "TT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1955 Isle of Man TT"
+  },
+  {
+   "anno": 1955,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1955 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1955,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1955 Dutch TT"
+  },
+  {
+   "anno": 1955,
+   "gp": "ULST",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1955 Ulster Grand Prix"
+  },
+  {
+   "anno": 1955,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1955 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1956,
+   "gp": "TT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1956 Isle of Man TT"
+  },
+  {
+   "anno": 1956,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1956 Dutch TT"
+  },
+  {
+   "anno": 1956,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1956 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1956,
+   "gp": "WGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1956 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1956,
+   "gp": "ULST",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1956 Ulster Grand Prix"
+  },
+  {
+   "anno": 1956,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1956 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1957,
+   "gp": "WGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1957 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1957,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1957 Dutch TT"
+  },
+  {
+   "anno": 1957,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1957 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1957,
+   "gp": "ULST",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1957 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1957,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1957 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1958,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1958 Dutch TT"
+  },
+  {
+   "anno": 1958,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1958 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1958,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1958 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1958,
+   "gp": "SWE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1958 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1958,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1958 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1958,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1958 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1959,
+   "gp": "FRA",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1959 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1959,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1959 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1959,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1959 Dutch TT"
+  },
+  {
+   "anno": 1959,
+   "gp": "BEL",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1959 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1959,
+   "gp": "SWE",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1959 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1959,
+   "gp": "ULST",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1959 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1959,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1959 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1960,
+   "gp": "FRA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1960 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1960,
+   "gp": "TT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1960 Isle of Man TT"
+  },
+  {
+   "anno": 1960,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1960 Dutch TT"
+  },
+  {
+   "anno": 1960,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1960 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1960,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1960 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1960,
+   "gp": "ULST",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1960 Ulster Grand Prix"
+  },
+  {
+   "anno": 1960,
+   "gp": "NAT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1960 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1961 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "FRA",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1961 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Dutch TT"
+  },
+  {
+   "anno": 1961,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "EGER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1961 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "SWE",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1961,
+   "gp": "ARG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1961 Argentine motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1962 Dutch TT"
+  },
+  {
+   "anno": 1962,
+   "gp": "BEL",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1962 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "WGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1962 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "ULST",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1962 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "EGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1962 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1962 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "FIN",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1962 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1962,
+   "gp": "ARG",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1962 Argentine motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "WGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1963 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1963 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Dutch TT"
+  },
+  {
+   "anno": 1963,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "ULST",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "EGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1963 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "FIN",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "ARG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Argentine motorcycle Grand Prix"
+  },
+  {
+   "anno": 1963,
+   "gp": "JPN",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1963 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "USA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1964 United States motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1964 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "NED",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Dutch TT"
+  },
+  {
+   "anno": 1964,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "WGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1964 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "EGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1964 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "ULST",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "FIN",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "NAT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1964,
+   "gp": "JPN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1964 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "USA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1965 United States motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1965 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "SPA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "FRA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1965 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "NED",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Dutch TT"
+  },
+  {
+   "anno": 1965,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "EGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1965 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "TCH",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "ULST",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "FIN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "NAT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1965,
+   "gp": "JPN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1965 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1966 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "FRA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1966 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Dutch TT"
+  },
+  {
+   "anno": 1966,
+   "gp": "BEL",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "EGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1966 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "TCH",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "FIN",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1966,
+   "gp": "JPN",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1966 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "SPA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1967 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "FRA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1967 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "NED",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Dutch TT"
+  },
+  {
+   "anno": 1967,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "EGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1967 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "TCH",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "FIN",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1967,
+   "gp": "JPN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1967 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "WGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1968 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "NED",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Dutch TT"
+  },
+  {
+   "anno": 1968,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "EGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1968 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "TCH",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "FIN",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "ULST",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1968,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1968 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "SPA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "WGER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1969 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1969 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Dutch TT"
+  },
+  {
+   "anno": 1969,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "EGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1969 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "TCH",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "FIN",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1969,
+   "gp": "JUG",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1969 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1970 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "FRA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1970 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "JUG",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Dutch TT"
+  },
+  {
+   "anno": 1970,
+   "gp": "BEL",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "EGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1970 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "FIN",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "ULST",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Ulster Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1970,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1970 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "AUT",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1971 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Dutch TT"
+  },
+  {
+   "anno": 1971,
+   "gp": "BEL",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "EGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1971 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "TCH",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "SWE",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "FIN",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "ULST",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Ulster motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1971,
+   "gp": "SPA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1971 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1972 West German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1972 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "AUT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "JUG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Dutch TT"
+  },
+  {
+   "anno": 1972,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "EGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1972 East German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "TCH",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "SWE",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "FIN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1972,
+   "gp": "SPA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1972 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1973 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "AUT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1973 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "JUG",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Dutch TT"
+  },
+  {
+   "anno": 1973,
+   "gp": "BEL",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "SWE",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "FIN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1973,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1973 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "FRA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1974 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "WGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1974 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "AUT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Dutch TT"
+  },
+  {
+   "anno": 1974,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "SWE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "FIN",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "JUG",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1974,
+   "gp": "SPA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1974 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1975 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1975 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "WGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1975 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1975 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "NED",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1975 Dutch TT"
+  },
+  {
+   "anno": 1975,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1975 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "SWE",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1975 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1975,
+   "gp": "JUG",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1975 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "JUG",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1976 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "TT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Isle of Man TT"
+  },
+  {
+   "anno": 1976,
+   "gp": "NED",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Dutch TT"
+  },
+  {
+   "anno": 1976,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "SWE",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "WGER",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1976 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1976,
+   "gp": "SPA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1976 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "VEN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Venezuelan motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "AUT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "JUG",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Dutch TT"
+  },
+  {
+   "anno": 1977,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1977,
+   "gp": "FIN",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1977 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1978,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1978 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1978,
+   "gp": "SWE",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1978 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1978,
+   "gp": "FIN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1978 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1978,
+   "gp": "WGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1978 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1978,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1978 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1978,
+   "gp": "JUG",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1978 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "VEN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Venezuelan motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "AUT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "WGER",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1979 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "NAT",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Italian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "SPA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "JUG",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Dutch TT"
+  },
+  {
+   "anno": 1979,
+   "gp": "SWE",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "FIN",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1979 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1979,
+   "gp": "FRA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1979 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "NAT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1980 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1980 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "FRA",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1980 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "JUG",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1980 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "NED",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1980 Dutch TT"
+  },
+  {
+   "anno": 1980,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1980 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "GBR",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1980 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1980,
+   "gp": "WGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1980 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "ARG",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1981 Argentine motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "WGER",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1981 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1981 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1981 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "JUG",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1981 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1981 Dutch TT"
+  },
+  {
+   "anno": 1981,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1981 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1981,
+   "gp": "GBR",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1981 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "ARG",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Argentine motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "AUT",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1982 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "SPA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "NAT",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "NED",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Dutch TT"
+  },
+  {
+   "anno": 1982,
+   "gp": "BEL",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "JUG",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "GBR",
+   "classe": "350cc",
+   "gara": "Gara",
+   "wikipedia": "1982 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "FIN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1982 Finnish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1982,
+   "gp": "RSM",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1982 San Marino motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "FRA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1983 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "NAT",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1983 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "SPA",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "AUT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "JUG",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "NED",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Dutch TT"
+  },
+  {
+   "anno": 1983,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1983 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "GBR",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1983 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1983,
+   "gp": "RSM",
+   "classe": "50cc",
+   "gara": "Gara",
+   "wikipedia": "1983 San Marino motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "RSA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1984 South African motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "NAT",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1984 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1984 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "AUT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1984 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "WGER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1984 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1984 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "JUG",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1984 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "NED",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1984 Dutch TT"
+  },
+  {
+   "anno": 1984,
+   "gp": "GBR",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1984 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "SWE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1984 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1984,
+   "gp": "RSM",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1984 San Marino motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "RSA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1985 South African motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1985 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "NAT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "AUT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "JUG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "NED",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Dutch TT"
+  },
+  {
+   "anno": 1985,
+   "gp": "BEL",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1985 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "SWE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1985 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1985,
+   "gp": "RSM",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1985 San Marino motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "AUT",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "JUG",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1986 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Dutch TT"
+  },
+  {
+   "anno": 1986,
+   "gp": "BEL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "GBR",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1986 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "SWE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1986 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1986,
+   "gp": "RSM",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1986 San Marino motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "JPN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "SPA",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "WGER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1987 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "AUT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "JUG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "NED",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Dutch TT"
+  },
+  {
+   "anno": 1987,
+   "gp": "FRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1987 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "GBR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1987 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "SWE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "RSM",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1987 San Marino motorcycle Grand Prix"
+  },
+  {
+   "anno": 1987,
+   "gp": "BRA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1987 Brazilian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "POR",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": null
+  },
+  {
+   "anno": 1988,
+   "gp": "NAT",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "WGER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1988 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Dutch TT"
+  },
+  {
+   "anno": 1988,
+   "gp": "BEL",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "JUG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1988 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "GBR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1988 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "SWE",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1988,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1988 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "JPN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1989 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "AUS",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1989 Australian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "USA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1989 United States motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "SPA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1989 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "WGER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1989 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "JUG",
+   "classe": "80cc",
+   "gara": "Gara",
+   "wikipedia": "1989 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1989 Dutch TT"
+  },
+  {
+   "anno": 1989,
+   "gp": "GBR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1989 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1989,
+   "gp": "TCH",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1989 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "JPN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "USA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1990 United States motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "NAT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Nations motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "WGER",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1990 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "JUG",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "JUG",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Yugoslavian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Dutch TT"
+  },
+  {
+   "anno": 1990,
+   "gp": "BEL",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Belgian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "SWE",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Swedish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "TCH",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Czechoslovak motorcycle Grand Prix"
+  },
+  {
+   "anno": 1990,
+   "gp": "HUN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1990 Hungarian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "JPN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "AUS",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Australian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "USA",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1991 United States motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "ITA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Italian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "AUT",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "EUR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1991 European motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "NED",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Dutch TT"
+  },
+  {
+   "anno": 1991,
+   "gp": "FRA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1991 French motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "VDU",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Vitesse du Mans motorcycle Grand Prix"
+  },
+  {
+   "anno": 1991,
+   "gp": "MAL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1991 Malaysian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "JPN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1992 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "AUS",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1992 Australian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "MAL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1992 Malaysian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1992 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "EUR",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1992 European motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "GER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1992 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "HUN",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "1992 Hungarian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1992,
+   "gp": "GBR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1992 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 1993,
+   "gp": "SPA",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1993 Spanish motorcycle Grand Prix"
+  },
+  {
+   "anno": 1993,
+   "gp": "AUT",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1993 Austrian motorcycle Grand Prix"
+  },
+  {
+   "anno": 1993,
+   "gp": "GER",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1993 German motorcycle Grand Prix"
+  },
+  {
+   "anno": 1993,
+   "gp": "EUR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1993 European motorcycle Grand Prix"
+  },
+  {
+   "anno": 1993,
+   "gp": "FIM",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": null
+  },
+  {
+   "anno": 1995,
+   "gp": "CAT",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": null
+  },
+  {
+   "anno": 1996,
+   "gp": "CZE",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "1996 Czech Republic motorcycle Grand Prix"
+  },
+  {
+   "anno": 2001,
+   "gp": "ITA",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "2001 Italian motorcycle Grand Prix"
+  },
+  {
+   "anno": 2001,
+   "gp": "VAL",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "2001 Valencian Community motorcycle Grand Prix"
+  },
+  {
+   "anno": 2001,
+   "gp": "RIO",
+   "classe": "500cc",
+   "gara": "Gara",
+   "wikipedia": "2001 Rio de Janeiro motorcycle Grand Prix"
+  },
+  {
+   "anno": 2004,
+   "gp": "ITA",
+   "classe": "MotoGP™",
+   "gara": "Gara",
+   "wikipedia": "2004 Italian motorcycle Grand Prix"
+  },
+  {
+   "anno": 2004,
+   "gp": "JPN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "2004 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 2004,
+   "gp": "JPN",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "2004 Japanese motorcycle Grand Prix"
+  },
+  {
+   "anno": 2008,
+   "gp": "INP",
+   "classe": "250cc",
+   "gara": "Gara",
+   "wikipedia": "2008 Indianapolis motorcycle Grand Prix"
+  },
+  {
+   "anno": 2010,
+   "gp": "POR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "2010 Portuguese motorcycle Grand Prix"
+  },
+  {
+   "anno": 2010,
+   "gp": "POR",
+   "classe": "125cc",
+   "gara": "Gara",
+   "wikipedia": "2010 Portuguese motorcycle Grand Prix"
+  },
+  {
+   "anno": 2011,
+   "gp": "MAL",
+   "classe": "MotoGP™",
+   "gara": "Gara",
+   "wikipedia": "2011 Malaysian motorcycle Grand Prix"
+  },
+  {
+   "anno": 2018,
+   "gp": "GBR",
+   "classe": "MotoGP™",
+   "gara": "Gara",
+   "wikipedia": "2018 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 2018,
+   "gp": "GBR",
+   "classe": "Moto2™",
+   "gara": "Gara",
+   "wikipedia": "2018 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 2018,
+   "gp": "GBR",
+   "classe": "Moto3™",
+   "gara": "Gara",
+   "wikipedia": "2018 British motorcycle Grand Prix"
+  },
+  {
+   "anno": 2023,
+   "gp": "AUS",
+   "classe": "MotoGP™",
+   "gara": "Sprint"
+  }
+ ]
+}
