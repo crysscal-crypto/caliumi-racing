@@ -131,10 +131,21 @@ export default async function GPPage({ params, searchParams }: Props) {
               </p>
             )}
             <TabellaSessione righe={risultati} gara={gara} />
+            {risultati[0]?.fonte && (
+              <p className="mt-2 text-xs text-white/40">
+                Classifica non presente nell&apos;archivio ufficiale MotoGP: fonte{" "}
+                <a href={risultati[0].fonte} target="_blank" rel="noopener noreferrer" className="underline hover:text-racing-yellow">
+                  Wikipedia
+                </a>{" "}
+                (CC BY-SA).
+              </p>
+            )}
           </>
         ) : (
           <p className="text-center text-white/60">
-            Risultati non ancora disponibili per questo Gran Premio.
+            {stagione.current
+              ? "Risultati non ancora disponibili per questo Gran Premio."
+              : "Classifica di questa gara non disponibile nell'archivio ufficiale MotoGP."}
           </p>
         )}
 

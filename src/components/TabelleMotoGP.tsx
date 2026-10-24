@@ -110,7 +110,9 @@ export function TabellaSessione({ righe, gara }: { righe: RigaSessione[]; gara: 
                 ? r.time
                 : r.gap?.lap && r.gap.lap !== "0"
                   ? `+${r.gap.lap} ${r.gap.lap === "1" ? "giro" : "giri"}`
-                  : `+${r.gap?.first}`;
+                  : r.gap?.first
+                    ? `+${r.gap.first}`
+                    : r.time ?? "";
             return (
               <tr key={r.id} className={`border-b border-white/5 ${ritirato ? "text-white/40" : ""}`}>
                 <td className={`${td} font-bold ${r.position === 1 ? "text-racing-yellow" : ""}`}>
@@ -126,7 +128,7 @@ export function TabellaSessione({ righe, gara }: { righe: RigaSessione[]; gara: 
                 {gara ? (
                   <>
                     <td className={`${td} text-right font-mono`}>
-                      {ritirato ? `${r.total_laps ?? 0} giri` : distacco}
+                      {ritirato ? (r.total_laps != null ? `${r.total_laps} giri` : r.status ?? "") : distacco}
                     </td>
                     <td className={`${td} text-right font-bold text-racing-yellow`}>{r.points || ""}</td>
                   </>

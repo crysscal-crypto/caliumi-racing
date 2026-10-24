@@ -47,6 +47,7 @@ export type RigaSessione = {
   best_lap?: { number?: number; time?: string };
   gap?: { first?: string; prev?: string; lap?: string };
   status?: string;
+  fonte?: string; // presente solo se la classifica arriva da Wikipedia
 };
 export type RigaClassifica = {
   id: string;
@@ -179,7 +180,11 @@ export async function getRisultatiSessione(stagione: Stagione, sessione: Session
     `/session/${sessione.id}/classification?test=false`,
     sessione.status === "FINISHED" && !stagione.current ? SETTIMANA : ORA
   );
-  return dati?.classification ?? [];
+  const righe = dati?.classification ?? [];
+  if (righe.length > 0 || sessione.status !== "FINISHED") return righe;
+  // Archivio ufficiale senza classifica (succede per alcune gare storiche): uso quella recuperata da Wikipedia
+  const { righeIntegrate } = await import("./motogp-integrazioni");
+  return righeIntegrate(sessione.id);
 }
 
 const NOMI_SESSIONI: Record<string, string> = {

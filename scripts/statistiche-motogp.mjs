@@ -3,7 +3,7 @@
 // Uso (dalla cartella del progetto):  node scripts/statistiche-motogp.mjs
 // Durata: circa 10-20 minuti. Non tocca Sanity.
 
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
 
 const BASE = "https://api.motogp.pulselive.com/motogp/v1/results";
 const PARALLELE = 6;
@@ -35,7 +35,27 @@ async function inParallelo(elementi, fn) {
   return risultati;
 }
 
-const chiavePilota = (r) => r.riders_api_uuid || r.riders_id || r.full_name;
+// Classifiche mancanti nell'archivio ufficiale, recuperate da Wikipedia (scripts/integra-motogp.mjs)
+const INTEGRAZIONI = existsSync("src/data/motogp-integrazioni.json")
+  ? JSON.parse(readFileSync("src/data/motogp-integrazioni.json", "utf8"))
+  : {};
+const normNome = (n) => n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+const perNome = {}; // nome pilota → chiave ufficiale (per non dividere lo stesso pilota in due)
+
+function chiavePilota(r) {
+  if (r.wiki) return perNome[normNome(r.full_name)] ?? `nome:${normNome(r.full_name)}`;
+  const k = r.riders_api_uuid || r.riders_id || r.full_name;
+  perNome[normNome(r.full_name)] ??= k;
+  return k;
+}
+
+const daWikipedia = (righe) =>
+  righe.map((r) => ({
+    rider: { full_name: r.r, wiki: true, country: r.c ? { iso: r.c } : undefined },
+    position: r.p,
+    points: r.pt ?? 0,
+    constructor: r.m ? { name: r.m } : undefined,
+  }));
 
 const stagioni = (await api("/seasons")) ?? [];
 const concluse = stagioni.filter((s) => !s.current).sort((a, b) => a.year - b.year);
@@ -88,7 +108,9 @@ for (const stagione of concluse) {
       const gara = sessioni.filter((s) => s.type === "RAC").pop();
       if (!gara) return null;
       const cl = await api(`/session/${gara.id}/classification?test=false`);
-      return { ev, righe: cl?.classification ?? [] };
+      const ufficiale = cl?.classification ?? [];
+      const righe = ufficiale.length ? ufficiale : daWikipedia(INTEGRAZIONI[gara.id]?.righe ?? []);
+      return { ev, righe };
     });
 
     for (const r of risultati) {

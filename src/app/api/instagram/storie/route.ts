@@ -12,7 +12,6 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 const MAX_PER_GIRO = 3;
-const ORA_INIZIO = 7; // prima di quest'ora (italiana) le storie aspettano
 const TEMPO_MAX = 200_000; // oltre questo tempo non inizio altre storie: riprendo al giro dopo
 
 export async function GET(req: Request) {
@@ -36,14 +35,6 @@ export async function GET(req: Request) {
     }
 
     if (nuove.length === 0) return NextResponse.json({ pubblicate: [] });
-
-    // Di notte (00:00-07:00 ora italiana) non pubblico: le sessioni notturne escono tutte alle 7 del mattino
-    const oraItalia = Number(
-      new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Europe/Rome" }).format(new Date())
-    );
-    if (oraItalia < ORA_INIZIO) {
-      return NextResponse.json({ inAttesa: nuove.map((c) => c.chiave), pubblicazioneAlle: `${ORA_INIZIO}:00` });
-    }
 
     const token = await tokenValido(stato);
     const pubblicate: string[] = [];
