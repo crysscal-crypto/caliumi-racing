@@ -56,10 +56,17 @@ export default async function StagioneMotoGP({
   const ultimo = finiti[finiti.length - 1];
 
   let risultatiUltimo: Awaited<ReturnType<typeof getRisultatiSessione>> = [];
+  let sprintUltimo = false;
   if (ultimo && stagione.current) {
     const sessioni = await getSessioni(stagione, ultimo, categoria);
-    const gara = [...sessioni].reverse().find((s) => s.type === "RAC" && s.status === "FINISHED");
-    if (gara) risultatiUltimo = await getRisultatiSessione(stagione, gara);
+    // Se la gara è stata annullata (es. pioggia) mostro la Sprint
+    const gara =
+      [...sessioni].reverse().find((s) => s.type === "RAC" && s.status === "FINISHED") ??
+      [...sessioni].reverse().find((s) => s.type === "SPR" && s.status === "FINISHED");
+    if (gara) {
+      risultatiUltimo = await getRisultatiSessione(stagione, gara);
+      sprintUltimo = gara.type === "SPR";
+    }
   }
 
   const qClasse = categoria.id === categorie[0]?.id ? "" : `?classe=${categoria.slug}`;
@@ -121,6 +128,7 @@ export default async function StagioneMotoGP({
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
             <h2 className={`${racingFont.className} text-2xl text-racing-yellow`}>
               Ultima gara: {nomeGP(ultimo)}
+              {sprintUltimo ? " (Sprint, gara annullata)" : ""}
             </h2>
             <Link
               href={`${base}/${slugEvento(ultimo)}${qClasse}`}
