@@ -38,7 +38,7 @@ export type Candidata = {
   tipo: string; // tipo di sessione: MotoGP "FP1", "Q2", "SPR", "RAC" · SBK "SP", "RC1", "SPRC", "RC2"
 };
 
-export type RigaStoria = { pos: number; nome: string; iso: string; team: string; valore: string };
+export type RigaStoria = { pos: number; nome: string; nomeCompleto: string; iso: string; team: string; valore: string };
 
 export type Storia = {
   serie: Serie;
@@ -231,6 +231,7 @@ async function storiaMotoGP(anno: number, slug: string, id: string): Promise<Sto
       return {
         pos: r.position as number,
         nome: nomeBreve(r.rider.full_name),
+        nomeCompleto: r.rider.full_name,
         iso: r.rider.country?.iso ?? "",
         team: r.team?.name ?? "",
         valore,
@@ -278,7 +279,7 @@ async function storiaSBK(anno: number, slug: string, codice: string): Promise<St
     } else {
       valore = i === 0 ? tempoGara(r.giroVeloce) : distacco(r.giroVeloce - primo.giroVeloce);
     }
-    return { pos: r.pos as number, nome: nomeBreve(r.pilota.nome), iso: r.pilota.iso, team: r.team, valore };
+    return { pos: r.pos as number, nome: nomeBreve(r.pilota.nome), nomeCompleto: r.pilota.nome, iso: r.pilota.iso, team: r.team, valore };
   });
   return {
     serie: "sbk",

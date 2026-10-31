@@ -1,6 +1,7 @@
 // "Giornalista automatico": dopo Q2, Sprint e Gara della MotoGP e dopo Superpole e gare della Superbike
-// scrive con Claude un articolo originale (risultati ufficiali + notizie delle testate),
-// lo salva come BOZZA in Sanity con la copertina dei risultati e avvisa Cristian sul telefono (ntfy).
+// scrive con l'IA (Google Gemini gratuito, oppure Claude) un articolo originale (risultati ufficiali + notizie delle testate),
+// lo salva come BOZZA in Sanity con una foto vera a licenza libera (Wikimedia Commons, autore citato)
+// o, se non c'è, la grafica del podio, e avvisa Cristian sul telefono (ntfy, gratuito).
 
 import { createClient } from "next-sanity";
 import { apiVersion, dataset, projectId } from "../env";
@@ -71,11 +72,8 @@ async function notizieCollegate(s: Storia, dopo: string): Promise<string[]> {
 
 type Articolo = { titolo: string; sommario: string; testo: string };
 
-async function scriviConClaude(s: Storia, classifica: string[], notizie: string[]): Promise<Articolo> {
-  const chiaveApi = process.env.ANTHROPIC_API_KEY;
-  if (!chiaveApi) throw new Error("Manca ANTHROPIC_API_KEY");
-
-  const risultati = s.righe.map((r) => `${r.pos}. ${r.nome} (${r.team}) ${r.valore}`).join("\n");
+async function scriviArticolo(s: Storia, classifica: string[], notizie: string[]): Promise<Articolo> {
+  const risultati = s.righe.map((r) => `${r.pos}. ${r.nomeCompleto} (${r.team}) ${r.valore}`).join("\n");
   const prompt = `Sei il giornalista di Caliumi Racing, sito di motociclismo di Cristian Caliumi (ex pilota e direttore sportivo).
 Scrivi in italiano un articolo ORIGINALE sulla sessione qui sotto.
 
@@ -99,10 +97,40 @@ REGOLE:
 Rispondi SOLO con un JSON valido, senza altro testo:
 {"titolo": "...", "sommario": "...", "testo": "...markdown..."}`;
 
+  const testo = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
+  const json = testo.slice(testo.indexOf("{"), testo.lastIndexOf("}") + 1);
+  const a = JSON.parse(json) as Articolo;
+  if (!a.titolo || !a.sommario || !a.testo) throw new Error("Risposta dell'IA incompleta");
+  return a;
+}
+
+// Google Gemini: piano GRATUITO (chiave da aistudio.google.com, senza carta)
+async function gemini(prompt: string): Promise<string> {
+  const modello = process.env.GEMINI_MODEL || "gemini-flash-latest";
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modello}:generateContent`, {
+    method: "POST",
+    headers: { "x-goog-api-key": process.env.GEMINI_API_KEY ?? "", "content-type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: { responseMimeType: "application/json", temperature: 0.7 },
+    }),
+    signal: AbortSignal.timeout(120000),
+    cache: "no-store",
+  });
+  const j = (await res.json()) as {
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
+    error?: { message?: string };
+  };
+  if (!res.ok) throw new Error(`Gemini: ${j.error?.message ?? res.status}`);
+  return (j.candidates?.[0]?.content?.parts ?? []).map((p) => p.text ?? "").join("");
+}
+
+// Claude: a pagamento, usato solo se c'è ANTHROPIC_API_KEY e non c'è GEMINI_API_KEY
+async function claude(prompt: string): Promise<string> {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
-      "x-api-key": chiaveApi,
+      "x-api-key": process.env.ANTHROPIC_API_KEY ?? "",
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
@@ -112,11 +140,69 @@ Rispondi SOLO con un JSON valido, senza altro testo:
   });
   const j = (await res.json()) as { content?: { type: string; text?: string }[]; error?: { message?: string } };
   if (!res.ok) throw new Error(`Claude: ${j.error?.message ?? res.status}`);
-  const testo = (j.content ?? []).map((c) => c.text ?? "").join("");
-  const json = testo.slice(testo.indexOf("{"), testo.lastIndexOf("}") + 1);
-  const a = JSON.parse(json) as Articolo;
-  if (!a.titolo || !a.sommario || !a.testo) throw new Error("Risposta di Claude incompleta");
-  return a;
+  return (j.content ?? []).map((c) => c.text ?? "").join("");
+}
+
+// ---------- Foto vera da Wikimedia Commons (licenze libere, con autore e licenza citati) ----------
+type Foto = { url: string; credito: string; pagina: string };
+const LICENZE_OK = /^(cc[ -]by|cc[ -]by-sa|cc0|public domain|pd)/i;
+const pulisciHtml = (t: string) => t.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+
+async function fotoCommons(nome: string, campionato: string): Promise<Foto | null> {
+  for (const ricerca of [`"${nome}" ${campionato}`, `"${nome}"`]) {
+    try {
+      const q = new URLSearchParams({
+        action: "query",
+        format: "json",
+        generator: "search",
+        gsrsearch: `filetype:bitmap ${ricerca}`,
+        gsrnamespace: "6",
+        gsrlimit: "10",
+        prop: "imageinfo",
+        iiprop: "url|extmetadata|size",
+        iiurlwidth: "1600",
+      });
+      const res = await fetch(`https://commons.wikimedia.org/w/api.php?${q}`, {
+        headers: { "User-Agent": "CaliumiRacingBot/1.0 (https://www.caliumiracing.com)" },
+        signal: AbortSignal.timeout(15000),
+        cache: "no-store",
+      });
+      const j = (await res.json()) as {
+        query?: {
+          pages?: Record<
+            string,
+            {
+              index?: number;
+              imageinfo?: {
+                thumburl?: string;
+                descriptionurl?: string;
+                width?: number;
+                height?: number;
+                extmetadata?: Record<string, { value?: string }>;
+              }[];
+            }
+          >;
+        };
+      };
+      const pagine = Object.values(j.query?.pages ?? {}).sort((a, b) => (a.index ?? 99) - (b.index ?? 99));
+      for (const p of pagine) {
+        const info = p.imageinfo?.[0];
+        const meta = info?.extmetadata ?? {};
+        const licenza = pulisciHtml(meta.LicenseShortName?.value ?? "");
+        if (!info?.thumburl || (info.width ?? 0) < 800 || (info.width ?? 0) < (info.height ?? 0)) continue;
+        if (!LICENZE_OK.test(licenza)) continue;
+        const autore = pulisciHtml(meta.Artist?.value ?? "") || "Autore sconosciuto";
+        return {
+          url: info.thumburl,
+          credito: `Foto: ${autore.slice(0, 80)} / Wikimedia Commons, ${licenza}`,
+          pagina: info.descriptionurl ?? "",
+        };
+      }
+    } catch {
+      // provo la ricerca successiva
+    }
+  }
+  return null;
 }
 
 async function avvisa(titolo: string, link: string): Promise<void> {
@@ -137,7 +223,7 @@ async function avvisa(titolo: string, link: string): Promise<void> {
 export async function giroArticoli(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
   const scritti: string[] = [];
   const errori: string[] = [];
-  if (!process.env.ANTHROPIC_API_KEY) return { scritti, errori };
+  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
 
   const c = sanity();
   const doc = await c.getDocument<{ articoli?: string[] }>(DOC);
@@ -160,20 +246,38 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
         /RAC|SPR|RC|SPRC/.test(x.tipo) ? classificaMondiale(s, x.anno) : Promise.resolve([]),
         notizieCollegate(s, x.quando),
       ]);
-      const a = await scriviConClaude(s, classifica, notizie);
+      const a = await scriviArticolo(s, classifica, notizie);
 
       let copertina: Record<string, unknown> | undefined;
       try {
-        const q = new URLSearchParams({ serie: x.serie, anno: String(x.anno), evento: x.evento, sessione: x.sessione });
-        const img = await fetch(`${SITO}/storie/copertina?${q}`, { cache: "no-store", signal: AbortSignal.timeout(30000) });
-        if (img.ok) {
-          const asset = await c.assets.upload("image", Buffer.from(await img.arrayBuffer()), {
-            filename: `${slugDa(a.titolo)}.jpg`,
+        const vincitore = s.righe[0];
+        const foto = await fotoCommons(vincitore.nomeCompleto, s.campionato);
+        let immagine: Buffer | null = null;
+        let credito: string | undefined;
+        if (foto) {
+          const r = await fetch(foto.url, {
+            headers: { "User-Agent": "CaliumiRacingBot/1.0 (https://www.caliumiracing.com)" },
+            signal: AbortSignal.timeout(30000),
+            cache: "no-store",
           });
+          if (r.ok) {
+            immagine = Buffer.from(await r.arrayBuffer());
+            credito = foto.credito;
+          }
+        }
+        if (!immagine) {
+          // nessuna foto libera trovata: uso la grafica con il podio
+          const q = new URLSearchParams({ serie: x.serie, anno: String(x.anno), evento: x.evento, sessione: x.sessione });
+          const r = await fetch(`${SITO}/storie/copertina?${q}`, { cache: "no-store", signal: AbortSignal.timeout(30000) });
+          if (r.ok) immagine = Buffer.from(await r.arrayBuffer());
+        }
+        if (immagine) {
+          const asset = await c.assets.upload("image", immagine, { filename: `${slugDa(a.titolo)}.jpg` });
           copertina = {
             _type: "image",
             asset: { _type: "reference", _ref: asset._id },
-            alt: `${s.campionato} ${s.evento}: risultati ${s.sessione}`,
+            alt: credito ? `${vincitore.nomeCompleto}, ${s.campionato}` : `${s.campionato} ${s.evento}: risultati ${s.sessione}`,
+            ...(credito ? { credito } : {}),
           };
         }
       } catch {
