@@ -226,12 +226,14 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
   if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
 
   const c = sanity();
-  const doc = await c.getDocument<{ articoli?: string[] }>(DOC);
+  const doc = await c.getDocument<{ articoli?: string[]; articoliFalliti?: string[] }>(DOC);
   const fatti = doc?.articoli ?? [];
+  const falliti = doc?.articoliFalliti ?? [];
+  const tentativi = (k: string) => falliti.filter((f) => f === k).length;
 
   const candidate = (await sessioniRecenti()).filter((x) => {
     const tipo = tipoArticolo(x);
-    if (!tipo || fatti.includes(x.chiave)) return false;
+    if (!tipo || fatti.includes(x.chiave) || tentativi(x.chiave) >= 3) return false;
     return Date.now() - Date.parse(x.quando) >= ATTESA[tipo] * 60000;
   });
 
@@ -304,6 +306,15 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
       scritti.push(`${x.chiave}: ${a.titolo}`);
     } catch (e) {
       errori.push(`${x.chiave}: ${(e as Error).message}`);
+      // riprovo ai controlli successivi (massimo 3 tentativi)
+      await c
+        .patch(DOC)
+        .unset([`articoli[@ == "${x.chiave}"]`])
+        .setIfMissing({ articoliFalliti: [] })
+        .append("articoliFalliti", [x.chiave])
+        .set({ ultimoErroreArticolo: `${new Date().toISOString()} ${x.chiave}: ${(e as Error).message}` })
+        .commit()
+        .catch(() => {});
     }
   }
   return { scritti, errori };
