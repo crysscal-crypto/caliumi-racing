@@ -4,6 +4,7 @@ const nextConfig = {
   serverExternalPackages: ["ffmpeg-static"],
   outputFileTracingIncludes: {
     "/storie/immagine": ["./assets/**/*"],
+    "/storie/copertina": ["./assets/**/*"],
     "/api/instagram/storie": ["./assets/musica/**/*", "./node_modules/ffmpeg-static/ffmpeg"],
   },
 

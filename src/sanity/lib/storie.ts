@@ -35,6 +35,7 @@ export type Candidata = {
   sessione: string; // MotoGP: id sessione · SBK: codice sessione
   quando: string; // inizio sessione (ISO)
   iso: string; // paese del circuito
+  tipo: string; // tipo di sessione: MotoGP "FP1", "Q2", "SPR", "RAC" · SBK "SP", "RC1", "SPRC", "RC2"
 };
 
 export type RigaStoria = { pos: number; nome: string; iso: string; team: string; valore: string };
@@ -149,6 +150,7 @@ async function recentiMotoGP(ore: number): Promise<Candidata[]> {
             sessione: s.id,
             quando: istanteReale(s.date, e.country?.iso).toISOString(),
             iso: e.country?.iso ?? "",
+            tipo: `${s.type}${s.number ?? ""}`,
           }))
       )
     );
@@ -179,6 +181,7 @@ async function recentiSBK(ore: number): Promise<Candidata[]> {
             sessione: s.codice,
             quando: s.inizio as string,
             iso: r.iso,
+            tipo: s.sigla,
           }))
       )
     );

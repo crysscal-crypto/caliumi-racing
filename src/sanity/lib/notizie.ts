@@ -253,7 +253,7 @@ async function scaricaFeed(feed: Feed): Promise<Notizia[]> {
   }
 }
 
-async function getTutteLeNotizie(): Promise<Notizia[]> {
+export async function getTutteLeNotizie(): Promise<Notizia[]> {
   const risultati = await Promise.all(FEEDS.map(scaricaFeed));
   const visti = new Set<string>();
 

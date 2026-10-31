@@ -15,6 +15,7 @@ import {
   lasciaBlocco,
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
+import { giroArticoli } from "@/sanity/lib/giornalista";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,7 +60,7 @@ export async function GET(req: Request) {
   }
 }
 
-type Esito = { pubblicate?: string[]; errori?: string[]; occupato?: boolean };
+type Esito = { pubblicate?: string[]; errori?: string[]; occupato?: boolean; articoli?: string[] };
 
 async function giro(): Promise<Esito> {
   const inizio = Date.now();
@@ -67,7 +68,7 @@ async function giro(): Promise<Esito> {
   try {
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
-    if (nuove.length === 0) return { pubblicate: [] };
+    if (nuove.length === 0) return { pubblicate: [], ...(await articoli(inizio)) };
 
     const token = await tokenValido(stato);
     const pubblicate: string[] = [];
@@ -103,8 +104,20 @@ async function giro(): Promise<Esito> {
       }
     }
 
-    return { pubblicate, errori };
+    const art = await articoli(inizio);
+    return { pubblicate, errori: [...errori, ...(art.errori ?? [])], articoli: art.articoli };
   } finally {
     await lasciaBlocco();
+  }
+}
+
+// Dopo le storie, se c'è tempo, l'articolo automatico (bozza) delle sessioni importanti
+async function articoli(inizio: number): Promise<{ articoli?: string[]; errori?: string[] }> {
+  if (Date.now() - inizio > 90_000) return {};
+  try {
+    const r = await giroArticoli(inizio + 150_000);
+    return { articoli: r.scritti, errori: r.errori };
+  } catch (e) {
+    return { errori: [`articoli: ${(e as Error).message}`] };
   }
 }
