@@ -23,6 +23,35 @@ export async function leggiStato(): Promise<Stato> {
   return { pubblicate: doc?.pubblicate ?? [], token: doc?.token, tokenData: doc?.tokenData };
 }
 
+// Un solo giro di pubblicazione alla volta (i controlli ravvicinati non devono pubblicare due volte la stessa storia)
+const DURATA_BLOCCO = 290_000;
+
+export async function prendiBlocco(): Promise<boolean> {
+  const c = sanity();
+  await c.createIfNotExists({ _id: DOC, _type: "statoInstagram", pubblicate: [] });
+  const doc = await c.getDocument<{ _rev: string; bloccoFino?: string }>(DOC);
+  if (!doc) return false;
+  if (doc.bloccoFino && Date.parse(doc.bloccoFino) > Date.now()) return false;
+  try {
+    await c
+      .patch(DOC)
+      .ifRevisionId(doc._rev)
+      .set({ bloccoFino: new Date(Date.now() + DURATA_BLOCCO).toISOString() })
+      .commit();
+    return true;
+  } catch {
+    return false; // un altro giro l'ha preso un attimo prima
+  }
+}
+
+export async function lasciaBlocco(): Promise<void> {
+  try {
+    await sanity().patch(DOC).unset(["bloccoFino"]).commit();
+  } catch {
+    // scade comunque da solo
+  }
+}
+
 export async function segnaPubblicata(chiave: string, stato: Stato): Promise<void> {
   const elenco = [...stato.pubblicate, chiave].slice(-400);
   stato.pubblicate = elenco;

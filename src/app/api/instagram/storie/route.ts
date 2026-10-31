@@ -1,10 +1,19 @@
-// Chiamato ogni 15 minuti da GitHub Actions: pubblica come storia Instagram (video con musica)
-// i risultati delle sessioni MotoGP e WorldSBK appena concluse.
+// Pubblica come storia Instagram (video con musica) i risultati delle sessioni MotoGP e WorldSBK appena concluse.
+// Chiamato ogni 5 minuti da cron-job.org con ?sfondo=1 (risponde subito e lavora in sottofondo)
+// e, come riserva, da GitHub Actions (aspetta la fine e mostra il risultato).
 // ?anteprima=1 mostra cosa verrebbe pubblicato senza pubblicare nulla.
 
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { sessioniRecenti, datiStoria, urlImmagine } from "@/sanity/lib/storie";
-import { leggiStato, segnaPubblicata, togliPubblicata, tokenValido, pubblicaStoria } from "@/sanity/lib/instagram";
+import {
+  leggiStato,
+  segnaPubblicata,
+  togliPubblicata,
+  tokenValido,
+  pubblicaStoria,
+  prendiBlocco,
+  lasciaBlocco,
+} from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
 
 export const runtime = "nodejs";
@@ -22,21 +31,43 @@ export async function GET(req: Request) {
     return NextResponse.json({ errore: "Non autorizzato" }, { status: 401 });
   }
 
-  const inizio = Date.now();
-  const anteprima = new URL(req.url).searchParams.has("anteprima");
+  const parametri = new URL(req.url).searchParams;
 
-  try {
-    const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
-    const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
-
-    if (anteprima) {
+  if (parametri.has("anteprima")) {
+    try {
+      const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
+      const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
       return NextResponse.json({
         sessioniRecenti: candidate.length,
         daPubblicare: nuove.map((c) => ({ chiave: c.chiave, immagine: urlImmagine(c) })),
       });
+    } catch (e) {
+      return NextResponse.json({ errore: (e as Error).message }, { status: 500 });
     }
+  }
 
-    if (nuove.length === 0) return NextResponse.json({ pubblicate: [] });
+  if (parametri.has("sfondo")) {
+    after(() => giro().catch(() => {}));
+    return NextResponse.json({ avviato: true });
+  }
+
+  try {
+    const esito = await giro();
+    return NextResponse.json(esito, { status: esito.errori?.length && !esito.pubblicate?.length ? 500 : 200 });
+  } catch (e) {
+    return NextResponse.json({ errore: (e as Error).message }, { status: 500 });
+  }
+}
+
+type Esito = { pubblicate?: string[]; errori?: string[]; occupato?: boolean };
+
+async function giro(): Promise<Esito> {
+  const inizio = Date.now();
+  if (!(await prendiBlocco())) return { occupato: true };
+  try {
+    const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
+    const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
+    if (nuove.length === 0) return { pubblicate: [] };
 
     const token = await tokenValido(stato);
     const pubblicate: string[] = [];
@@ -72,8 +103,8 @@ export async function GET(req: Request) {
       }
     }
 
-    return NextResponse.json({ pubblicate, errori }, { status: errori.length && !pubblicate.length ? 500 : 200 });
-  } catch (e) {
-    return NextResponse.json({ errore: (e as Error).message }, { status: 500 });
+    return { pubblicate, errori };
+  } finally {
+    await lasciaBlocco();
   }
 }
