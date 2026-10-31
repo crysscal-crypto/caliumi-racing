@@ -8,6 +8,7 @@ import {
   getSessioni,
   getRisultatiSessione,
   getClassifica,
+  eventoFinito,
 } from "@/sanity/lib/motogp";
 
 export type PilotaStat = {
@@ -58,7 +59,7 @@ export async function getStatistiche(): Promise<{ classi: ClasseStat[]; aggiorna
 
   if (stagione && dati.ultimaStagione !== null && stagione.year > dati.ultimaStagione) {
     const [categorie, eventi] = await Promise.all([getCategorie(stagione), getEventi(stagione)]);
-    const finiti = eventi.filter((e) => e.status === "FINISHED");
+    const finiti = eventi.filter((e) => eventoFinito(e));
 
     for (const cat of categorie) {
       let c = dati.classi.find((x) => x.id === cat.id);

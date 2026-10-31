@@ -23,6 +23,7 @@ import {
   slugEvento,
   bandiera,
   formattaPeriodo,
+  eventoFinito,
 } from "@/sanity/lib/motogp";
 
 export const revalidate = 600;
@@ -79,7 +80,7 @@ export default async function GPPage({ params, searchParams }: Props) {
 
   const pos = eventi.findIndex((e) => e.id === evento.id);
   const prec = pos > 0 ? eventi[pos - 1] : undefined;
-  const succ = pos >= 0 && pos < eventi.length - 1 && eventi[pos + 1].status === "FINISHED" ? eventi[pos + 1] : undefined;
+  const succ = pos >= 0 && pos < eventi.length - 1 && eventoFinito(eventi[pos + 1]) ? eventi[pos + 1] : undefined;
 
   return (
     <section className="carbon-bg">

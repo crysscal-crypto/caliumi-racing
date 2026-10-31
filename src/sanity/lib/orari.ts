@@ -7,6 +7,7 @@ import {
   nomeSessione,
   type Evento,
   type Sessione,
+  eventoFinito,
 } from "@/sanity/lib/motogp";
 
 // La fonte MotoGP dà l'orario LOCALE del circuito: serve il fuso del paese
@@ -69,7 +70,7 @@ export async function getOrariGP(): Promise<{ evento: Evento; voci: VoceOrario[]
   if (!stagione) return null;
   const eventi = await getEventi(stagione);
   const evento =
-    eventi.find((e) => e.status !== "FINISHED") ?? eventi[eventi.length - 1];
+    eventi.find((e) => !eventoFinito(e)) ?? eventi[eventi.length - 1];
   if (!evento) return null;
 
   const categorie = await getCategorie(stagione);

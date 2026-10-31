@@ -22,6 +22,7 @@ import {
   formattaPeriodo,
   giorniA,
   type Stagione,
+  eventoFinito,
 } from "@/sanity/lib/motogp";
 
 export default async function StagioneMotoGP({
@@ -50,8 +51,8 @@ export default async function StagioneMotoGP({
     getStagioni(),
   ]);
 
-  const finiti = eventi.filter((e) => e.status === "FINISHED");
-  const prossimo = eventi.find((e) => e.status !== "FINISHED");
+  const finiti = eventi.filter((e) => eventoFinito(e));
+  const prossimo = eventi.find((e) => !eventoFinito(e));
   const ultimo = finiti[finiti.length - 1];
 
   let risultatiUltimo: Awaited<ReturnType<typeof getRisultatiSessione>> = [];
@@ -152,7 +153,7 @@ export default async function StagioneMotoGP({
           </h2>
           <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {eventi.map((e, i) => {
-              const finito = e.status === "FINISHED";
+              const finito = eventoFinito(e);
               const inCorso = e === prossimo && giorniA(e.date_start) <= 0;
               const contenuto = (
                 <>

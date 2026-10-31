@@ -119,6 +119,11 @@ export async function getEventi(stagione: Stagione): Promise<Evento[]> {
     .sort((a, b) => a.date_start.localeCompare(b.date_start));
 }
 
+// La fonte a volte lascia un GP "CURRENT" anche giorni dopo la fine: lo considero finito anche dalla data
+export function eventoFinito(e: Evento): boolean {
+  return e.status === "FINISHED" || e.date_end < new Date().toISOString().slice(0, 10);
+}
+
 export function slugEvento(e: Evento): string {
   return e.short_name.toLowerCase();
 }
