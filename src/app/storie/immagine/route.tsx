@@ -8,7 +8,9 @@ import { join } from "node:path";
 import { datiStoria, type Storia } from "@/sanity/lib/storie";
 
 export const runtime = "nodejs";
-export const revalidate = 600;
+// Dati sempre freschi: senza questo le sessioni appena finite potevano risultare "non iniziate"
+export const fetchCache = "force-no-store";
+export const dynamic = "force-dynamic";
 
 const GIALLO = "#F5D300";
 const ROSSO = "#E10600";
@@ -44,6 +46,27 @@ function bandiera(iso?: string): string {
   return String.fromCodePoint(...iso.toUpperCase().split("").map((c) => 127397 + c.charCodeAt(0)));
 }
 
+// "Sat 24 Oct 2026 · 05:00 CEST" (ora italiana)
+function dataOra(iso: string): string {
+  const d = new Date(iso);
+  if (!iso || Number.isNaN(d.getTime())) return "";
+  const giorno = new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/Rome",
+  }).format(d);
+  const ora = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Europe/Rome",
+    timeZoneName: "short",
+  }).format(d);
+  return `${giorno.replace(/,/g, "")} · ${ora.replace("GMT+2", "CEST").replace("GMT+1", "CET")}`;
+}
+
 function Grafica({ s, logo, bandiere }: { s: Storia; logo: string; bandiere: boolean }) {
   const flag = (iso?: string) => (bandiere ? bandiera(iso) : "");
   const colorePos = (p: number) => (p === 1 ? GIALLO : p <= 3 ? "#FFFFFF" : "rgba(255,255,255,0.75)");
@@ -66,12 +89,11 @@ function Grafica({ s, logo, bandiere }: { s: Storia; logo: string; bandiere: boo
       <div style={{ position: "absolute", top: 18, left: 0, width: 1080, height: 8, background: GIALLO, display: "flex" }} />
 
       <div style={{ display: "flex", flexDirection: "column", padding: "210px 64px 0 64px", flex: 1 }}>
-        {/* Testata */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img src={logo} width={90} height={90} style={{ borderRadius: 20 }} />
-          <div style={{ display: "flex", flexDirection: "column", marginLeft: 28 }}>
-            <div style={{ fontFamily: "Racing", fontSize: 48, color: GIALLO, lineHeight: 1 }}>CALIUMI RACING</div>
-            <div style={{ fontSize: 28, color: "rgba(255,255,255,0.6)", marginTop: 4 }}>{SITO_TESTO}</div>
+        {/* Testata: logo e indirizzo del sito */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          <img src={logo} width={110} height={110} style={{ borderRadius: 24 }} />
+          <div style={{ display: "flex", fontSize: 32, fontWeight: 800, color: GIALLO, marginTop: 10, letterSpacing: 1 }}>
+            {SITO_TESTO}
           </div>
         </div>
 
@@ -98,9 +120,9 @@ function Grafica({ s, logo, bandiere }: { s: Storia; logo: string; bandiere: boo
         <div style={{ display: "flex", fontFamily: "Racing", fontSize: 80, color: GIALLO, lineHeight: 1.05, marginTop: 4 }}>
           {s.sessione.toUpperCase()}
         </div>
-        {s.circuito ? (
-          <div style={{ display: "flex", fontSize: 30, color: "rgba(255,255,255,0.55)", marginTop: 6 }}>{s.circuito}</div>
-        ) : null}
+        <div style={{ display: "flex", fontSize: 28, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>
+          {[s.circuito, dataOra(s.quando)].filter(Boolean).join("  ·  ")}
+        </div>
 
         {/* Classifica */}
         <div style={{ display: "flex", flexDirection: "column", marginTop: 28 }}>
@@ -142,26 +164,6 @@ function Grafica({ s, logo, bandiere }: { s: Storia; logo: string; bandiere: boo
           ))}
         </div>
 
-        {/* Richiamo al sito */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 20 }}>
-          <div style={{ display: "flex", fontSize: 30, color: "rgba(255,255,255,0.75)" }}>
-            Full results, lap times &amp; stats on
-          </div>
-          <div
-            style={{
-              display: "flex",
-              marginTop: 10,
-              background: GIALLO,
-              color: "#0a0a0a",
-              fontSize: 42,
-              fontWeight: 800,
-              padding: "8px 34px",
-              borderRadius: 999,
-            }}
-          >
-            {`${bandiere ? "👉 " : ""}${SITO_TESTO.toUpperCase()}`}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -198,6 +200,6 @@ export async function GET(req: Request) {
   // Instagram vuole JPEG
   const jpg = await sharp(Buffer.from(png)).jpeg({ quality: 90 }).toBuffer();
   return new Response(new Uint8Array(jpg), {
-    headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=600" },
+    headers: { "Content-Type": "image/jpeg", "Cache-Control": "no-store" },
   });
 }
