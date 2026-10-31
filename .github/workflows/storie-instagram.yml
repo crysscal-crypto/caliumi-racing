@@ -1,5 +1,6 @@
-# Ogni 15 minuti (da venerdì a domenica, più lunedì mattina) pubblica su Instagram le storie
-# con i risultati delle sessioni MotoGP e WorldSBK appena concluse.
+# Pubblica su Instagram le storie con i risultati delle sessioni MotoGP e WorldSBK appena concluse.
+# Il controllo principale arriva ogni 5 minuti da cron-job.org; questo è solo un controllo di riserva
+# (GitHub lo fa partire quando può) e si può lanciare a mano con "Run workflow".
 name: Storie Instagram
 
 on:
@@ -15,6 +16,8 @@ jobs:
     steps:
       - name: Pubblica storie
         run: |
-          curl -sS --max-time 290 --fail-with-body \
+          RISPOSTA=$(curl -sS --max-time 290 --fail-with-body \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            https://www.caliumiracing.com/api/instagram/storie
+            https://www.caliumiracing.com/api/instagram/storie)
+          echo "$RISPOSTA"
+          echo "::notice title=Risposta del sito::$RISPOSTA"
