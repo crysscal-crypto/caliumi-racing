@@ -16,6 +16,7 @@ import {
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
 import { giroArticoli, giroAttualita } from "@/sanity/lib/giornalista";
+import { client } from "@/sanity/lib/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -74,11 +75,24 @@ async function giro(): Promise<Esito> {
   try {
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
-    if (nuove.length === 0) return { pubblicate: [], ...(await articoli(inizio)) };
+    const nuoviArticoli = await articoliDaAnnunciare(stato.pubblicate);
+    if (nuove.length === 0 && nuoviArticoli.length === 0) return { pubblicate: [], ...(await articoli(inizio)) };
 
     const token = await tokenValido(stato);
     const pubblicate: string[] = [];
     const errori: string[] = [];
+
+    // Storia "Nuovo articolo" per le notizie appena pubblicate da Cristian
+    for (const a of nuoviArticoli.slice(0, 1)) {
+      const chiave = `articolo:${a._id}`;
+      await segnaPubblicata(chiave, stato);
+      try {
+        await pubblicaConMusica(`${SITO}/storie/articolo?slug=${encodeURIComponent(a.slug)}&v=${Date.now()}`, chiave, token, pubblicate, errori);
+      } catch (e) {
+        await togliPubblicata(chiave, stato);
+        errori.push(`${chiave}: ${(e as Error).message}`);
+      }
+    }
 
     for (const c of nuove.slice(0, MAX_PER_GIRO)) {
       if (Date.now() - inizio > TEMPO_MAX) break;
@@ -89,21 +103,7 @@ async function giro(): Promise<Esito> {
       const immagine = `${urlImmagine(c)}&v=${Date.now()}`;
       await segnaPubblicata(c.chiave, stato);
       try {
-        // Prima provo il video con la musica; se qualcosa va storto pubblico l'immagine
-        let video: Awaited<ReturnType<typeof creaVideoStoria>> | null = null;
-        try {
-          const res = await fetch(immagine, { cache: "no-store", signal: AbortSignal.timeout(30000) });
-          if (!res.ok) throw new Error(`Immagine ${res.status}`);
-          video = await creaVideoStoria(Buffer.from(await res.arrayBuffer()), c.chiave);
-          await pubblicaStoria({ video: video.url }, token);
-          pubblicate.push(`${c.chiave} (video)`);
-        } catch (e) {
-          errori.push(`${c.chiave} video: ${(e as Error).message}`);
-          await pubblicaStoria({ immagine }, token);
-          pubblicate.push(`${c.chiave} (immagine)`);
-        } finally {
-          if (video) await eliminaVideo(video.assetId);
-        }
+        await pubblicaConMusica(immagine, c.chiave, token, pubblicate, errori);
       } catch (e) {
         await togliPubblicata(c.chiave, stato);
         errori.push(`${c.chiave}: ${(e as Error).message}`);
@@ -127,5 +127,45 @@ async function articoli(inizio: number): Promise<{ articoli?: string[]; erroriAr
     return { articoli: [...r.scritti, ...att.scritti], erroriArticoli: [...r.errori, ...att.errori] };
   } catch (e) {
     return { erroriArticoli: [(e as Error).message] };
+  }
+}
+
+const SITO = "https://www.caliumiracing.com";
+
+// Notizie scritte da Cristian pubblicate nelle ultime 48 ore e non ancora annunciate su Instagram
+async function articoliDaAnnunciare(fatte: string[]): Promise<{ _id: string; slug: string }[]> {
+  try {
+    const elenco = await client.fetch<{ _id: string; slug: string }[]>(
+      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione > $da && dataPubblicazione <= now()] | order(dataPubblicazione asc){ _id, "slug": slug.current }`,
+      { da: new Date(Date.now() - 48 * 3600000).toISOString() },
+      { cache: "no-store" }
+    );
+    return elenco.filter((a) => !a._id.startsWith("drafts.") && !fatte.includes(`articolo:${a._id}`));
+  } catch {
+    return [];
+  }
+}
+
+// Prima provo il video con la musica; se qualcosa va storto pubblico l'immagine
+async function pubblicaConMusica(
+  immagine: string,
+  chiave: string,
+  token: string,
+  pubblicate: string[],
+  errori: string[]
+): Promise<void> {
+  let video: Awaited<ReturnType<typeof creaVideoStoria>> | null = null;
+  try {
+    const res = await fetch(immagine, { cache: "no-store", signal: AbortSignal.timeout(30000) });
+    if (!res.ok) throw new Error(`Immagine ${res.status}`);
+    video = await creaVideoStoria(Buffer.from(await res.arrayBuffer()), chiave);
+    await pubblicaStoria({ video: video.url }, token);
+    pubblicate.push(`${chiave} (video)`);
+  } catch (e) {
+    errori.push(`${chiave} video: ${(e as Error).message}`);
+    await pubblicaStoria({ immagine }, token);
+    pubblicate.push(`${chiave} (immagine)`);
+  } finally {
+    if (video) await eliminaVideo(video.assetId);
   }
 }

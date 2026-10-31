@@ -5,6 +5,7 @@ const nextConfig = {
   outputFileTracingIncludes: {
     "/storie/immagine": ["./assets/**/*"],
     "/storie/copertina": ["./assets/**/*"],
+    "/storie/articolo": ["./assets/**/*"],
     "/api/instagram/storie": ["./assets/musica/**/*", "./node_modules/ffmpeg-static/ffmpeg"],
   },
 
