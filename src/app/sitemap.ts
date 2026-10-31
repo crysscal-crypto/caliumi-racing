@@ -3,6 +3,7 @@ import { client } from "@/sanity/lib/client";
 import { getStagioni } from "@/sanity/lib/motogp";
 import { getStagioniSBK } from "@/sanity/lib/sbk";
 import { stagioniCIV } from "@/sanity/lib/civ";
+import { getSlugRedazione } from "@/sanity/lib/redazione";
 
 export const revalidate = 3600;
 
@@ -86,5 +87,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .slice(1)
     .map((s) => pagina(`/civ/${s.anno}`, 0.5, "yearly"));
 
-  return [...fisse, ...dinamiche, ...stagioni, ...stagioniSBK, ...stagioniCiv];
+  // Notizie scritte da Cristian
+  const nostre: MetadataRoute.Sitemap = (await getSlugRedazione()).map((n) =>
+    pagina(`/notizie/${n.slug}`, 0.8, "weekly", n.aggiornato)
+  );
+
+  return [...fisse, ...nostre, ...dinamiche, ...stagioni, ...stagioniSBK, ...stagioniCiv];
 }

@@ -4,6 +4,8 @@ import { Fragment } from "react";
 import CardNotizia from "@/components/CardNotizia";
 import Pubblicita from "@/components/Pubblicita";
 import InstallaApp from "@/components/InstallaApp";
+import CardRedazione from "@/components/CardRedazione";
+import { getUltimeRedazione } from "@/sanity/lib/redazione";
 import {
   getNotizie,
   getCommenti,
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export default async function NotiziePage() {
-  const [notizie, commenti] = await Promise.all([getNotizie(), getCommenti()]);
+  const [notizie, commenti, nostre] = await Promise.all([getNotizie(), getCommenti(), getUltimeRedazione(7)]);
   const fonti = Array.from(new Set(FEEDS.map((f) => f.fonte)));
   const commentiPerLink = mappaCommenti(commenti);
   const inEvidenza = commenti.slice(0, 5);
@@ -43,6 +45,22 @@ export default async function NotiziePage() {
           Le ultime dal mondo delle corse in moto, MotoGP e Superbike, raccolte
           dalle testate di settore e aggiornate ogni 30 minuti.
         </p>
+
+        {nostre.length > 0 && (
+          <div className="mb-12">
+            <h2 className={`${racingFont.className} mb-4 text-2xl text-racing-yellow`}>
+              Le notizie di Caliumi Racing
+            </h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="md:col-span-2 lg:col-span-3">
+                <CardRedazione notizia={nostre[0]} grande />
+              </div>
+              {nostre.slice(1).map((n) => (
+                <CardRedazione key={n._id} notizia={n} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {inEvidenza.length > 0 && (
           <div className="mb-12">

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { racingFont } from "@/sanity/lib/fonts";
 import CardNotizia from "@/components/CardNotizia";
 import Pubblicita from "@/components/Pubblicita";
+import ArticoloRedazione from "@/components/ArticoloRedazione";
+import { getRedazioneDaSlug, urlCopertina } from "@/sanity/lib/redazione";
 import {
   getNotizie,
   getNotiziaDaSlug,
@@ -19,6 +21,28 @@ type Params = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
+
+  // Notizia scritta da Cristian
+  const nostra = await getRedazioneDaSlug(slug);
+  if (nostra) {
+    const img = urlCopertina(nostra.copertina, 1200, 630);
+    return {
+      title: `${nostra.titolo} | ${nostra.campionato}`,
+      description: nostra.sommario.slice(0, 160),
+      alternates: { canonical: `/notizie/${slug}` },
+      openGraph: {
+        type: "article",
+        title: nostra.titolo,
+        description: nostra.sommario,
+        publishedTime: nostra.data,
+        modifiedTime: nostra.aggiornato,
+        authors: ["Cristian Caliumi"],
+        images: img ? [{ url: img, width: 1200, height: 630, alt: nostra.copertina?.alt || nostra.titolo }] : undefined,
+      },
+      twitter: { card: "summary_large_image", title: nostra.titolo, description: nostra.sommario, images: img ? [img] : undefined },
+    };
+  }
+
   const notizia = await getNotiziaDaSlug(slug);
   if (!notizia) return { title: "Notizia non disponibile", robots: { index: false } };
 
@@ -35,6 +59,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function NotiziaPage({ params }: Params) {
   const { slug } = await params;
+
+  const nostra = await getRedazioneDaSlug(slug);
+  if (nostra) return <ArticoloRedazione notizia={nostra} />;
   const [notizia, commenti, tutte] = await Promise.all([
     getNotiziaDaSlug(slug),
     getCommenti(),
