@@ -34,7 +34,7 @@ function sanity() {
   return createClient({ projectId, dataset, apiVersion, token, useCdn: false, perspective: "raw" });
 }
 
-function tipoArticolo(c: Candidata): string | null {
+export function tipoArticolo(c: Candidata): string | null {
   const t = c.tipo.toUpperCase();
   const k = `${c.serie}:${c.serie === "sbk" && /^SP\d*$/.test(t) && t !== "SPRC" ? "SP" : t}`;
   return ATTESA[k] !== undefined ? k : null;

@@ -17,6 +17,7 @@ import {
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
 import { giroArticoli, giroAttualita } from "@/sanity/lib/giornalista";
 import { client } from "@/sanity/lib/client";
+import { facebookAttivo, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -76,7 +77,11 @@ async function giro(): Promise<Esito> {
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
     const nuoviArticoli = await articoliDaAnnunciare(stato.pubblicate);
-    if (nuove.length === 0 && nuoviArticoli.length === 0) return { pubblicate: [], ...(await articoli(inizio)) };
+    const perFacebook = await sessioniPerFacebook(stato.pubblicate);
+    const articoliFacebook = facebookAttivo() ? await articoliDaAnnunciare(stato.pubblicate, "fb:articolo:") : [];
+    if (nuove.length === 0 && nuoviArticoli.length === 0 && perFacebook.length === 0 && articoliFacebook.length === 0) {
+      return { pubblicate: [], ...(await articoli(inizio)) };
+    }
 
     const token = await tokenValido(stato);
     const pubblicate: string[] = [];
@@ -110,6 +115,31 @@ async function giro(): Promise<Esito> {
       }
     }
 
+    // Facebook: risultati delle sessioni importanti e nuovi articoli (con link cliccabile)
+    for (const c of perFacebook.slice(0, 2)) {
+      if (Date.now() - inizio > TEMPO_MAX) break;
+      const chiave = `fb:${c.chiave}`;
+      await segnaPubblicata(chiave, stato);
+      try {
+        if (await pubblicaRisultatiFacebook(c)) pubblicate.push(chiave);
+        else await togliPubblicata(chiave, stato);
+      } catch (e) {
+        await togliPubblicata(chiave, stato);
+        errori.push(`${chiave}: ${(e as Error).message}`);
+      }
+    }
+    for (const a of articoliFacebook.slice(0, 1)) {
+      const chiave = `fb:articolo:${a._id}`;
+      await segnaPubblicata(chiave, stato);
+      try {
+        await pubblicaArticoloFacebook(a);
+        pubblicate.push(chiave);
+      } catch (e) {
+        await togliPubblicata(chiave, stato);
+        errori.push(`${chiave}: ${(e as Error).message}`);
+      }
+    }
+
     const art = await articoli(inizio);
     return { pubblicate, errori, ...art };
   } finally {
@@ -133,14 +163,16 @@ async function articoli(inizio: number): Promise<{ articoli?: string[]; erroriAr
 const SITO = "https://www.caliumiracing.com";
 
 // Notizie scritte da Cristian pubblicate nelle ultime 48 ore e non ancora annunciate su Instagram
-async function articoliDaAnnunciare(fatte: string[]): Promise<{ _id: string; slug: string }[]> {
+type ArticoloDaAnnunciare = { _id: string; slug: string; titolo: string; sommario: string; campionato: string };
+
+async function articoliDaAnnunciare(fatte: string[], prefisso = "articolo:"): Promise<ArticoloDaAnnunciare[]> {
   try {
-    const elenco = await client.fetch<{ _id: string; slug: string }[]>(
-      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione > $da && dataPubblicazione <= now()] | order(dataPubblicazione asc){ _id, "slug": slug.current }`,
+    const elenco = await client.fetch<ArticoloDaAnnunciare[]>(
+      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione > $da && dataPubblicazione <= now()] | order(dataPubblicazione asc){ _id, "slug": slug.current, titolo, sommario, campionato }`,
       { da: new Date(Date.now() - 48 * 3600000).toISOString() },
       { cache: "no-store" }
     );
-    return elenco.filter((a) => !a._id.startsWith("drafts.") && !fatte.includes(`articolo:${a._id}`));
+    return elenco.filter((a) => !a._id.startsWith("drafts.") && !fatte.includes(`${prefisso}${a._id}`));
   } catch {
     return [];
   }
