@@ -5,6 +5,7 @@ import { formattaData } from "@/sanity/lib/notizie";
 import { getUltimeRedazione, urlCopertina, type NotiziaRedazione } from "@/sanity/lib/redazione";
 import Pubblicita from "@/components/Pubblicita";
 import CardRedazione from "@/components/CardRedazione";
+import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 
 const SITO = "https://www.caliumiracing.com";
 
@@ -131,6 +132,7 @@ export default async function ArticoloRedazione({ notizia: n }: { notizia: Notiz
               X
             </a>
           </div>
+          <FontePreferitaGoogle className="mt-6" />
         </article>
 
         <Pubblicita posizione="notizia-sotto-testo" className="mt-10" />

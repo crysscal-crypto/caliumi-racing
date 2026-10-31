@@ -5,6 +5,7 @@ import CardNotizia from "@/components/CardNotizia";
 import Pubblicita from "@/components/Pubblicita";
 import InstallaApp from "@/components/InstallaApp";
 import CardRedazione from "@/components/CardRedazione";
+import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 import { getUltimeRedazione } from "@/sanity/lib/redazione";
 import {
   getNotizie,
@@ -41,10 +42,12 @@ export default async function NotiziePage() {
         >
           Notizie
         </h1>
-        <p className="mx-auto mb-10 max-w-2xl text-center text-white/70">
+        <p className="mx-auto mb-6 max-w-2xl text-center text-white/70">
           Le ultime dal mondo delle corse in moto, MotoGP e Superbike, raccolte
           dalle testate di settore e aggiornate ogni 30 minuti.
         </p>
+
+        <FontePreferitaGoogle className="mx-auto mb-10 max-w-2xl" />
 
         {nostre.length > 0 && (
           <div className="mb-12">

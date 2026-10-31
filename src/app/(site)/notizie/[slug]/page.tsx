@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { racingFont } from "@/sanity/lib/fonts";
 import CardNotizia from "@/components/CardNotizia";
 import Pubblicita from "@/components/Pubblicita";
+import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 import ArticoloRedazione from "@/components/ArticoloRedazione";
 import { getRedazioneDaSlug, urlCopertina } from "@/sanity/lib/redazione";
 import {
@@ -126,6 +127,7 @@ export default async function NotiziaPage({ params }: Params) {
           <p className="mt-2 text-xs text-white/40">
             Si apre in una nuova scheda: Caliumi Racing resta aperto.
           </p>
+          <FontePreferitaGoogle className="mt-8" />
         </article>
 
         <Pubblicita posizione="notizia-sotto-testo" className="mt-10" />
