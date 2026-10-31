@@ -106,23 +106,31 @@ Rispondi SOLO con un JSON valido, senza altro testo:
 
 // Google Gemini: piano GRATUITO (chiave da aistudio.google.com, senza carta)
 async function gemini(prompt: string): Promise<string> {
-  const modello = process.env.GEMINI_MODEL || "gemini-flash-latest";
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modello}:generateContent`, {
-    method: "POST",
-    headers: { "x-goog-api-key": process.env.GEMINI_API_KEY ?? "", "content-type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: "application/json", temperature: 0.7 },
-    }),
-    signal: AbortSignal.timeout(120000),
-    cache: "no-store",
-  });
-  const j = (await res.json()) as {
-    candidates?: { content?: { parts?: { text?: string }[] } }[];
-    error?: { message?: string };
-  };
-  if (!res.ok) throw new Error(`Gemini: ${j.error?.message ?? res.status}`);
-  return (j.candidates?.[0]?.content?.parts ?? []).map((p) => p.text ?? "").join("");
+  // Se un modello è sovraccarico provo i successivi (tutti gratuiti)
+  const modelli = [process.env.GEMINI_MODEL, "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest"].filter(
+    (m, i, a): m is string => !!m && a.indexOf(m) === i
+  );
+  let ultimo = "";
+  for (const modello of modelli) {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modello}:generateContent`, {
+      method: "POST",
+      headers: { "x-goog-api-key": process.env.GEMINI_API_KEY ?? "", "content-type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json", temperature: 0.7 },
+      }),
+      signal: AbortSignal.timeout(90000),
+      cache: "no-store",
+    });
+    const j = (await res.json().catch(() => ({}))) as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+      error?: { message?: string };
+    };
+    const testo = (j.candidates?.[0]?.content?.parts ?? []).map((p) => p.text ?? "").join("");
+    if (res.ok && testo) return testo;
+    ultimo = `${modello}: ${j.error?.message ?? res.status}`;
+  }
+  throw new Error(`Gemini: ${ultimo}`);
 }
 
 // Claude: a pagamento, usato solo se c'è ANTHROPIC_API_KEY e non c'è GEMINI_API_KEY
