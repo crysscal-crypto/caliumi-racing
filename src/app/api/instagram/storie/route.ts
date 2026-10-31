@@ -15,7 +15,7 @@ import {
   lasciaBlocco,
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
-import { giroArticoli } from "@/sanity/lib/giornalista";
+import { giroArticoli, giroAttualita } from "@/sanity/lib/giornalista";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -122,7 +122,9 @@ async function articoli(inizio: number): Promise<{ articoli?: string[]; erroriAr
   if (Date.now() - inizio > 90_000) return {};
   try {
     const r = await giroArticoli(inizio + 150_000);
-    return { articoli: r.scritti, erroriArticoli: r.errori };
+    // se non c'erano gare da raccontare, ogni tanto un articolo di attualità o una curiosità
+    const att = r.scritti.length ? { scritti: [], errori: [] } : await giroAttualita(inizio + 150_000);
+    return { articoli: [...r.scritti, ...att.scritti], erroriArticoli: [...r.errori, ...att.errori] };
   } catch (e) {
     return { erroriArticoli: [(e as Error).message] };
   }

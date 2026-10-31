@@ -333,3 +333,121 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
   }
   return { scritti, errori };
 }
+
+// ---------- Ogni 2 giorni: un articolo di attualità o una curiosità, scelto dall'IA tra le notizie del momento ----------
+const OGNI_ORE_ATTUALITA = 48;
+
+type ArticoloAttualita = Articolo & { campionato?: string; protagonista?: string };
+
+export async function giroAttualita(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
+  const scritti: string[] = [];
+  const errori: string[] = [];
+  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
+
+  // solo di giorno, ora italiana
+  const ora = Number(
+    new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Europe/Rome" }).format(new Date())
+  );
+  if (ora < 9 || ora >= 21 || Date.now() > scadenza) return { scritti, errori };
+
+  const c = sanity();
+  const doc = await c.getDocument<{ ultimaAttualita?: string }>(DOC);
+  if (doc?.ultimaAttualita && Date.now() - Date.parse(doc.ultimaAttualita) < OGNI_ORE_ATTUALITA * 3600000) {
+    return { scritti, errori };
+  }
+  // segno subito: se qualcosa va storto riprovo tra 48 ore, senza insistere
+  await c.patch(DOC).set({ ultimaAttualita: new Date().toISOString() }).commit();
+
+  try {
+    const da = Date.now() - 30 * 3600000;
+    const notizie = (await getTutteLeNotizie())
+      .filter((n) => n.data && Date.parse(n.data) >= da)
+      .slice(0, 40)
+      .map((n) => `- [${n.campionato} · ${n.fonte}] ${n.titolo}${n.estratto ? ` — ${n.estratto}` : ""}`);
+    if (notizie.length < 5) throw new Error("Poche notizie nelle ultime 30 ore");
+
+    const giaScritti = await c.fetch<string[]>(
+      `*[_type == "notiziaRedazione"] | order(_createdAt desc)[0...15].titolo`
+    );
+
+    const prompt = `Sei il giornalista di Caliumi Racing, sito di motociclismo di Cristian Caliumi (ex pilota e direttore sportivo).
+Qui sotto ci sono i titoli e i sommari delle notizie di moto delle ultime 30 ore, da varie testate.
+
+${notizie.join("\n")}
+
+ARTICOLI GIÀ SCRITTI DA NOI (non ripetere lo stesso argomento):
+${giaScritti.map((t) => `- ${t}`).join("\n") || "- nessuno"}
+
+COMPITO:
+1. Scegli UN argomento: la notizia più interessante e attuale (meglio se ne parlano più testate) oppure una curiosità che emerge da queste notizie.
+2. Scrivi in italiano un articolo ORIGINALE su quell'argomento.
+
+REGOLE:
+- Usa solo i fatti presenti nei titoli e nei sommari. Non inventare dichiarazioni, numeri, date o dettagli.
+- Se un fatto è riportato da una sola testata, scrivi "secondo [testata]".
+- Nessuna frase copiata: rielabora con parole tue, tono appassionato ma serio.
+- 300-450 parole. Un paragrafo d'apertura forte, poi 2 sezioni con titoletti Markdown "## ".
+- Titolo SEO max 90 caratteri. Sommario max 200 caratteri.
+- "campionato": uno tra "MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Moto".
+- "protagonista": nome e cognome completi del pilota principale dell'articolo, oppure "" se non c'è.
+
+Rispondi SOLO con un JSON valido, senza altro testo:
+{"titolo": "...", "sommario": "...", "testo": "...markdown...", "campionato": "...", "protagonista": "..."}`;
+
+    const testo = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
+    const a = JSON.parse(testo.slice(testo.indexOf("{"), testo.lastIndexOf("}") + 1)) as ArticoloAttualita;
+    if (!a.titolo || !a.sommario || !a.testo) throw new Error("Risposta dell'IA incompleta");
+    const campionati = ["MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Moto"];
+    const campionato = campionati.includes(a.campionato ?? "") ? (a.campionato as string) : "Moto";
+
+    // foto vera (licenza libera) del protagonista, se c'è
+    let copertina: Record<string, unknown> | undefined;
+    if (a.protagonista) {
+      try {
+        const foto = await fotoCommons(a.protagonista, campionato === "Moto" ? "" : campionato);
+        if (foto) {
+          const r = await fetch(foto.url, {
+            headers: { "User-Agent": "CaliumiRacingBot/1.0 (https://www.caliumiracing.com)" },
+            signal: AbortSignal.timeout(30000),
+            cache: "no-store",
+          });
+          if (r.ok) {
+            const asset = await c.assets.upload("image", Buffer.from(await r.arrayBuffer()), {
+              filename: `${slugDa(a.titolo)}.jpg`,
+            });
+            copertina = {
+              _type: "image",
+              asset: { _type: "reference", _ref: asset._id },
+              alt: a.protagonista,
+              credito: foto.credito,
+            };
+          }
+        }
+      } catch {
+        // senza foto: Cristian la aggiunge dallo Studio prima di pubblicare
+      }
+    }
+
+    const id = `notizia-${chiave()}${chiave()}`;
+    let slug = slugDa(a.titolo) || id;
+    if ((await c.fetch<number>(`count(*[_type == "notiziaRedazione" && slug.current == $s])`, { s: slug })) > 0) {
+      slug = `${slug}-${Date.now().toString(36)}`;
+    }
+    await c.create({
+      _id: `drafts.${id}`,
+      _type: "notiziaRedazione",
+      titolo: a.titolo.slice(0, 110),
+      slug: { _type: "slug", current: slug },
+      campionato,
+      dataPubblicazione: new Date().toISOString(),
+      sommario: a.sommario.slice(0, 220),
+      testo: daMarkdown(a.testo),
+      ...(copertina ? { copertina } : {}),
+    });
+    await avvisa(`${a.titolo}${copertina ? "" : " (manca la foto)"}`, `${SITO}/studio/structure/notiziaRedazione;${id}`);
+    scritti.push(`attualità: ${a.titolo}`);
+  } catch (e) {
+    errori.push(`attualità: ${(e as Error).message}`);
+  }
+  return { scritti, errori };
+}
