@@ -60,7 +60,13 @@ export async function GET(req: Request) {
   }
 }
 
-type Esito = { pubblicate?: string[]; errori?: string[]; occupato?: boolean; articoli?: string[] };
+type Esito = {
+  pubblicate?: string[];
+  errori?: string[];
+  occupato?: boolean;
+  articoli?: string[];
+  erroriArticoli?: string[];
+};
 
 async function giro(): Promise<Esito> {
   const inizio = Date.now();
@@ -105,19 +111,19 @@ async function giro(): Promise<Esito> {
     }
 
     const art = await articoli(inizio);
-    return { pubblicate, errori: [...errori, ...(art.errori ?? [])], articoli: art.articoli };
+    return { pubblicate, errori, ...art };
   } finally {
     await lasciaBlocco();
   }
 }
 
 // Dopo le storie, se c'è tempo, l'articolo automatico (bozza) delle sessioni importanti
-async function articoli(inizio: number): Promise<{ articoli?: string[]; errori?: string[] }> {
+async function articoli(inizio: number): Promise<{ articoli?: string[]; erroriArticoli?: string[] }> {
   if (Date.now() - inizio > 90_000) return {};
   try {
     const r = await giroArticoli(inizio + 150_000);
-    return { articoli: r.scritti, errori: r.errori };
+    return { articoli: r.scritti, erroriArticoli: r.errori };
   } catch (e) {
-    return { errori: [`articoli: ${(e as Error).message}`] };
+    return { erroriArticoli: [(e as Error).message] };
   }
 }

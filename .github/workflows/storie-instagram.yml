@@ -16,8 +16,9 @@ jobs:
     steps:
       - name: Pubblica storie
         run: |
-          RISPOSTA=$(curl -sS --max-time 290 --fail-with-body \
+          RISPOSTA=$(curl -sS --max-time 290 -w ' [HTTP %{http_code}]' \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            https://www.caliumiracing.com/api/instagram/storie)
+            https://www.caliumiracing.com/api/instagram/storie || true)
           echo "$RISPOSTA"
           echo "::notice title=Risposta del sito::$RISPOSTA"
+          case "$RISPOSTA" in *"[HTTP 200]") ;; *) exit 1 ;; esac
