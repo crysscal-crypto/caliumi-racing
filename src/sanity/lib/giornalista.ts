@@ -226,7 +226,12 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
   if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
 
   const c = sanity();
-  const doc = await c.getDocument<{ articoli?: string[]; articoliFalliti?: string[] }>(DOC);
+  let doc = await c.getDocument<{ articoli?: string[]; articoliFalliti?: string[]; versioneArticoli?: number }>(DOC);
+  // Azzeramento una tantum: i primi tentativi erano stati segnati come fatti anche se non riusciti
+  if ((doc?.versioneArticoli ?? 0) < 2) {
+    await c.patch(DOC).set({ articoli: [], articoliFalliti: [], versioneArticoli: 2 }).commit();
+    doc = { articoli: [], articoliFalliti: [], versioneArticoli: 2 };
+  }
   const fatti = doc?.articoli ?? [];
   const falliti = doc?.articoliFalliti ?? [];
   const tentativi = (k: string) => falliti.filter((f) => f === k).length;
