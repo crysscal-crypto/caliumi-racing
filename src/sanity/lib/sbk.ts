@@ -71,7 +71,8 @@ export type GaraSBK = { round: RoundSBK; sessione: SessioneSBK; righe: RigaRisul
 async function api(percorso: string, cache: number): Promise<Risposta | null> {
   try {
     const res = await fetch(`${BASE}${percorso}`, {
-      next: { revalidate: cache },
+      // Stagione in corso: sempre dati freschi (la cache restava ferma per giorni). Stagioni passate: cache lunga.
+      ...(cache <= ORA ? { cache: "no-store" as const } : { next: { revalidate: cache } }),
       headers: {
         Accept: "application/json",
         "User-Agent": "Mozilla/5.0 (compatible; CaliumiRacing/1.0; +https://caliumiracing.com)",
