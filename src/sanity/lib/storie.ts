@@ -34,6 +34,7 @@ export type Candidata = {
   evento: string; // slug GP / round
   sessione: string; // MotoGP: id sessione · SBK: codice sessione
   quando: string; // inizio sessione (ISO)
+  iso: string; // paese del circuito
 };
 
 export type RigaStoria = { pos: number; nome: string; iso: string; team: string; valore: string };
@@ -48,6 +49,7 @@ export type Storia = {
   gara: boolean;
   righe: RigaStoria[];
   percorso: string; // pagina dei risultati sul sito
+  quando: string; // inizio della sessione (ISO, istante reale)
 };
 
 const SITO = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.caliumiracing.com").replace(
@@ -146,6 +148,7 @@ async function recentiMotoGP(ore: number): Promise<Candidata[]> {
             evento: slugEvento(e),
             sessione: s.id,
             quando: istanteReale(s.date, e.country?.iso).toISOString(),
+            iso: e.country?.iso ?? "",
           }))
       )
     );
@@ -175,6 +178,7 @@ async function recentiSBK(ore: number): Promise<Candidata[]> {
             evento: r.slug,
             sessione: s.codice,
             quando: s.inizio as string,
+            iso: r.iso,
           }))
       )
     );
@@ -239,6 +243,7 @@ async function storiaMotoGP(anno: number, slug: string, id: string): Promise<Sto
     gara,
     righe,
     percorso: `/motogp/${anno}/${slug}?sessione=${codiceSessione(sessione)}`,
+    quando: istanteReale(sessione.date, evento.country?.iso).toISOString(),
   };
 }
 
@@ -282,5 +287,6 @@ async function storiaSBK(anno: number, slug: string, codice: string): Promise<St
     gara,
     righe,
     percorso: `/superbike/${anno}/${slug}?sessione=${codiceSessioneSBK(sessione)}`,
+    quando: sessione.inizio ?? "",
   };
 }

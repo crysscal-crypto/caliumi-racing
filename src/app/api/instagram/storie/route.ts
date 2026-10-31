@@ -12,6 +12,8 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 const MAX_PER_GIRO = 3;
+const ORA_INIZIO = 7; // prima di quest'ora (italiana) le storie aspettano
+const AMERICHE = new Set(["US", "BR", "AR", "CA", "MX", "UY", "CL", "CO", "PE"]);
 const TEMPO_MAX = 200_000; // oltre questo tempo non inizio altre storie: riprendo al giro dopo
 
 export async function GET(req: Request) {
@@ -36,11 +38,22 @@ export async function GET(req: Request) {
 
     if (nuove.length === 0) return NextResponse.json({ pubblicate: [] });
 
+    // Di notte (00:00-07:00 ora italiana) le sessioni di Asia e Oceania aspettano le 7 del mattino;
+    // quelle delle Americhe escono subito (lì e in Europa la gente è ancora sveglia)
+    const oraItalia = Number(
+      new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Europe/Rome" }).format(new Date())
+    );
+    const notte = oraItalia < ORA_INIZIO;
+    const pronte = nuove.filter((c) => !notte || AMERICHE.has(c.iso.toUpperCase()));
+    if (pronte.length === 0) {
+      return NextResponse.json({ inAttesa: nuove.map((c) => c.chiave), pubblicazioneAlle: `${ORA_INIZIO}:00` });
+    }
+
     const token = await tokenValido(stato);
     const pubblicate: string[] = [];
     const errori: string[] = [];
 
-    for (const c of nuove.slice(0, MAX_PER_GIRO)) {
+    for (const c of pronte.slice(0, MAX_PER_GIRO)) {
       if (Date.now() - inizio > TEMPO_MAX) break;
 
       const dati = await datiStoria(c.serie, c.anno, c.evento, c.sessione);
