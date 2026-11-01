@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ADSENSE_CLIENT } from "@/components/adsense";
 import BarraPubblicita from "@/components/BarraPubblicita";
+import PubblicitaLaterale from "@/components/PubblicitaLaterale";
 
 const SITO = "https://www.caliumiracing.com";
 
@@ -86,6 +87,7 @@ export default function SiteLayout({
         <Footer />
         {/* spazio per non coprire il fondo pagina con la barra pubblicitaria */}
         <div className="h-20 sm:h-28" aria-hidden />
+        <PubblicitaLaterale />
         <BarraPubblicita />
         {ADSENSE_CLIENT && (
           <Script
