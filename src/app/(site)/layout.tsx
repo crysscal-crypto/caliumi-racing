@@ -7,6 +7,8 @@ import { ADSENSE_CLIENT } from "@/components/adsense";
 import BarraPubblicita from "@/components/BarraPubblicita";
 import PubblicitaLaterale from "@/components/PubblicitaLaterale";
 
+const GA_ID = "G-HPCQRZ54D4";
+
 const SITO = "https://www.caliumiracing.com";
 
 export const metadata: Metadata = {
@@ -89,6 +91,14 @@ export default function SiteLayout({
         <div className="h-20 sm:h-28" aria-hidden />
         <PubblicitaLaterale />
         <BarraPubblicita />
+        {/* Google Analytics 4 (proprietà "Caliumi Racing") */}
+        <Script id="ga4-lib" strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <Script id="ga4" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`}
+        </Script>
         {ADSENSE_CLIENT && (
           <Script
             id="adsense"
