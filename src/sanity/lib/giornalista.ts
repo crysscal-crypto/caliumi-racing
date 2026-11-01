@@ -74,7 +74,7 @@ type Articolo = { titolo: string; sommario: string; testo: string };
 
 async function scriviArticolo(s: Storia, classifica: string[], notizie: string[]): Promise<Articolo> {
   const risultati = s.righe.map((r) => `${r.pos}. ${r.nomeCompleto} (${r.team}) ${r.valore}`).join("\n");
-  const prompt = `Sei il giornalista di Caliumi Racing, sito di motociclismo di Cristian Caliumi (ex pilota e direttore sportivo).
+  const prompt = `Sei un giornalista della redazione di Caliumi Racing, sito di notizie di motociclismo.
 Scrivi in italiano un articolo ORIGINALE sulla sessione qui sotto.
 
 CAMPIONATO: ${s.campionato}
@@ -87,6 +87,7 @@ ${risultati}
 ${classifica.length ? `CLASSIFICA MONDIALE PILOTI (top 10):\n${classifica.join("\n")}\n` : ""}
 ${notizie.length ? `TITOLI E SOMMARI DELLE TESTATE (solo come spunto: NON copiare frasi):\n${notizie.join("\n")}\n` : ""}
 REGOLE:
+- Non nominare la redazione né chi scrive: niente firme, niente "noi di Caliumi Racing".
 - Usa solo fatti presenti nei dati sopra. Non inventare dichiarazioni, cadute, penalità o dettagli che non ci sono.
 - Nessuna frase copiata dalle testate: rielabora con parole tue, tono appassionato ma serio.
 - 350-550 parole. Un paragrafo d'apertura forte, poi 2-3 sezioni con titoletti Markdown "## ".
@@ -370,7 +371,7 @@ export async function giroAttualita(scadenza: number): Promise<{ scritti: string
       `*[_type == "notiziaRedazione"] | order(_createdAt desc)[0...15].titolo`
     );
 
-    const prompt = `Sei il giornalista di Caliumi Racing, sito di motociclismo di Cristian Caliumi (ex pilota e direttore sportivo).
+    const prompt = `Sei un giornalista della redazione di Caliumi Racing, sito di notizie di motociclismo.
 Qui sotto ci sono i titoli e i sommari delle notizie di moto delle ultime 30 ore, da varie testate.
 
 ${notizie.join("\n")}
@@ -383,6 +384,7 @@ COMPITO:
 2. Scrivi in italiano un articolo ORIGINALE su quell'argomento.
 
 REGOLE:
+- Non nominare la redazione né chi scrive: niente firme, niente "noi di Caliumi Racing".
 - Usa solo i fatti presenti nei titoli e nei sommari. Non inventare dichiarazioni, numeri, date o dettagli.
 - Se un fatto è riportato da una sola testata, scrivi "secondo [testata]".
 - Nessuna frase copiata: rielabora con parole tue, tono appassionato ma serio.

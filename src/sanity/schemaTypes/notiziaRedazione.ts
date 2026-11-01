@@ -45,6 +45,11 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "autore",
+      title: "Autore (facoltativo: lascia vuoto e compare solo il logo)",
+      type: "string",
+    }),
+    defineField({
       name: "copertina",
       title: "Foto di copertina",
       type: "image",

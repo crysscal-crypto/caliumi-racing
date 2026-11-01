@@ -13,11 +13,12 @@ export type NotiziaRedazione = {
   data: string;
   aggiornato: string;
   sommario: string;
+  autore?: string;
   copertina?: ImmagineSanity;
   testo?: PortableTextBlock[];
 };
 
-const CAMPI = `_id, titolo, "slug": slug.current, campionato, "data": dataPubblicazione, "aggiornato": _updatedAt, sommario, copertina`;
+const CAMPI = `_id, titolo, "slug": slug.current, campionato, "data": dataPubblicazione, "aggiornato": _updatedAt, sommario, autore, copertina`;
 
 export async function getUltimeRedazione(quante = 6): Promise<NotiziaRedazione[]> {
   try {

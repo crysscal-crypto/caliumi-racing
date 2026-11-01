@@ -70,7 +70,9 @@ export default async function ArticoloRedazione({ notizia: n }: { notizia: Notiz
     image: copertina ? [urlCopertina(n.copertina, 1200, 675)] : undefined,
     datePublished: n.data,
     dateModified: n.aggiornato,
-    author: { "@type": "Person", name: "Cristian Caliumi", url: `${SITO}/chi-sono` },
+    author: n.autore
+      ? { "@type": "Person", name: n.autore }
+      : { "@type": "Organization", name: "Caliumi Racing", url: SITO },
     publisher: { "@type": "Organization", name: "Caliumi Racing", logo: { "@type": "ImageObject", url: `${SITO}/icon-512.png` } },
     mainEntityOfPage: url,
   };
@@ -111,13 +113,14 @@ export default async function ArticoloRedazione({ notizia: n }: { notizia: Notiz
             {n.testo && <PortableText value={n.testo} components={componenti} />}
           </div>
 
-          <div className="mt-10 flex items-center gap-4 rounded-lg bg-carbon-800 p-4">
+          <div className="mt-10 flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/icon-192.png" alt="Caliumi Racing" width={48} height={48} className="rounded-md" />
-            <p className="text-sm text-white/75">
-              Di <Link href="/chi-sono" className="font-semibold text-racing-yellow hover:underline">Cristian Caliumi</Link>, ex
-              pilota e direttore sportivo.
-            </p>
+            {n.autore && (
+              <p className="text-sm text-white/75">
+                Di <span className="font-semibold text-racing-yellow">{n.autore}</span>
+              </p>
+            )}
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
