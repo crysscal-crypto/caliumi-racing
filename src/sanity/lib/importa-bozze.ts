@@ -12,6 +12,7 @@ const SITO = "https://www.caliumiracing.com";
 type Bozza = {
   id: string;
   scadenza?: string;
+  sostituisce?: string; // id di una vecchia bozza da eliminare (solo se mai pubblicata)
   titolo: string;
   campionato: string;
   sommario: string;
@@ -30,6 +31,7 @@ export async function importaBozze(): Promise<string[]> {
   for (const b of bozze as Bozza[]) {
     if (b.scadenza && Date.now() > Date.parse(b.scadenza)) continue;
     const id = `notizia-${b.id}`;
+    if (b.sostituisce) await c.delete(`drafts.notizia-${b.sostituisce}`).catch(() => {});
     const esiste = await c.fetch<number>(`count(*[_id in [$a, $b]])`, { a: id, b: `drafts.${id}` });
     if (esiste > 0) continue;
 
