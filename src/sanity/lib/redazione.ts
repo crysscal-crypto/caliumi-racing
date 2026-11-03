@@ -35,7 +35,7 @@ export async function getUltimeRedazione(quante = 6): Promise<NotiziaRedazione[]
 export async function getRedazioneDaSlug(slug: string): Promise<NotiziaRedazione | null> {
   try {
     return await client.fetch(
-      `*[_type == "notiziaRedazione" && slug.current == $slug][0]{ ${CAMPI}, testo }`,
+      `*[_type == "notiziaRedazione" && slug.current == $slug && dataPubblicazione <= now()][0]{ ${CAMPI}, testo }`,
       { slug },
       { next: { revalidate: 120 } }
     );

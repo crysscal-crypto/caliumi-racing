@@ -40,6 +40,8 @@ export default defineType({
     defineField({
       name: "dataPubblicazione",
       title: "Data di pubblicazione",
+      description:
+        "Per programmare l'uscita metti una data/ora futura e clicca Publish: l'articolo resta nascosto fino a quell'ora, poi compare sul sito e partono da soli storia Instagram e post Facebook.",
       type: "datetime",
       initialValue: () => new Date().toISOString(),
       validation: (Rule) => Rule.required(),
