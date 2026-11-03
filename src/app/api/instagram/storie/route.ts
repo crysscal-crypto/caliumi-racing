@@ -16,6 +16,7 @@ import {
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
 import { giroArticoli, giroAttualita } from "@/sanity/lib/giornalista";
+import { importaBozze } from "@/sanity/lib/importa-bozze";
 import { client } from "@/sanity/lib/client";
 import { facebookAttivo, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
 
@@ -74,6 +75,10 @@ async function giro(): Promise<Esito> {
   const inizio = Date.now();
   if (!(await prendiBlocco())) return { occupato: true };
   try {
+    // bozze preparate a mano: vanno subito nello Studio
+    const importate = await importaBozze().catch((e) => [`bozze: ${(e as Error).message}`]);
+    if (importate.length) return { pubblicate: [], articoli: importate };
+
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
     const nuoviArticoli = await articoliDaAnnunciare(stato.pubblicate);
