@@ -1,0 +1,15 @@
+name: Prova feed RSS
+on: workflow_dispatch
+jobs:
+  prova:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          UA="Mozilla/5.0 (compatible; CaliumiRacingBot/1.0; +https://caliumiracing.com)"
+          for u in \
+            https://www.moto.it/rss/news-mercato.xml https://www.moto.it/rss/news-prove.xml https://www.moto.it/rss/prove.xml https://www.moto.it/rss/news-moto2.xml https://www.moto.it/rss/news-moto3.xml https://www.moto.it/rss/news-enduro.xml https://www.moto.it/rss/news-attualita.xml https://www.moto.it/rss/news-novita.xml https://www.moto.it/rss/news-eicma.xml \
+            https://it.motorsport.com/rss/f1/news/ https://it.motorsport.com/rss/all/news/ https://it.motorsport.com/rss/mxgp/news/ https://it.motorsport.com/rss/moto2/news/ https://it.motorsport.com/rss/moto3/news/ https://it.motorsport.com/rss/civ/news/ https://it.motorsport.com/rss/dakar/news/ https://it.motorsport.com/rss/wec/news/ \
+            https://www.corsedimoto.com/feed https://www.motociclismo.it/feed https://www.motociclismo.it/rss https://www.insella.it/rss https://www.insella.it/feed https://www.dueruote.it/rss https://www.dueruote.it/feed https://www.motoblog.it/feed https://www.omnimoto.it/feed https://www.motorbox.com/rss/moto https://www.motorbox.com/rss https://www.formulapassion.it/feed https://www.automoto.it/rss/news.xml https://www.gpone.com/it/rss.xml https://www.motoonline.it/feed https://www.motorionline.com/feed https://www.motori.it/feed https://www.insidemotori.it/feed ; do
+            r=$(curl -sL -m 15 -A "$UA" -w "\n%{http_code}" "$u"); code=$(echo "$r" | tail -1); n=$(echo "$r" | grep -o "<item\|<entry" | wc -l); t=$(echo "$r" | grep -o "<title>[^<]*" | sed -n 3p | cut -c8-80)
+            echo "FEED $code $n $u | $t"
+          done
