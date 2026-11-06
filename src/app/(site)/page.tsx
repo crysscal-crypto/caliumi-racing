@@ -3,10 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { racingFont } from "@/sanity/lib/fonts";
 import CardNotizia from "@/components/CardNotizia";
-import CardRedazione from "@/components/CardRedazione";
-import { getUltimeRedazione } from "@/sanity/lib/redazione";
+import { getUltimeRedazione, urlCopertina } from "@/sanity/lib/redazione";
 import Pubblicita from "@/components/Pubblicita";
 import {
+  type Notizia,
   getNotizie,
   getCommenti,
   mappaCommenti,
@@ -53,7 +53,23 @@ const DOMANDE: { d: string; r: string }[] = [
 ];
 
 export default async function HomePage() {
-  const [notizie, commenti, nostre] = await Promise.all([getNotizie(9), getCommenti(), getUltimeRedazione(4)]);
+  const [esterne, commenti, nostre] = await Promise.all([getNotizie(9), getCommenti(), getUltimeRedazione(3)]);
+
+  // Le ultime 3 notizie di Caliumi Racing insieme a quelle delle testate, stesso formato, in ordine di data
+  const mie: Notizia[] = nostre.map((n) => ({
+    id: n._id,
+    slug: n.slug,
+    titolo: n.titolo,
+    link: `https://www.caliumiracing.com/notizie/${n.slug}`,
+    estratto: n.sommario,
+    data: n.data,
+    fonte: "Caliumi Racing",
+    campionato: n.campionato,
+    immagine: urlCopertina(n.copertina, 400, 300),
+  }));
+  const notizie = [...mie, ...esterne.slice(0, 9 - mie.length)].sort(
+    (a, b) => Date.parse(b.data ?? "0") - Date.parse(a.data ?? "0")
+  );
   const commentiPerLink = mappaCommenti(commenti);
 
   return (
@@ -93,30 +109,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Le notizie scritte da Caliumi Racing */}
-      {nostre.length > 0 && (
-        <section className="carbon-bg">
-          <div className="content-panel mx-auto max-w-6xl px-4 py-12 sm:px-6">
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-              <h2 className={`${racingFont.className} text-2xl text-racing-yellow sm:text-3xl`}>
-                Le notizie di Caliumi Racing
-              </h2>
-              <Link href="/notizie" className="text-sm font-semibold text-racing-yellow hover:underline">
-                Tutte le notizie →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="md:col-span-3">
-                <CardRedazione notizia={nostre[0]} grande />
-              </div>
-              {nostre.slice(1).map((n) => (
-                <CardRedazione key={n._id} notizia={n} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Ultime notizie */}
       {notizie.length > 0 && (
