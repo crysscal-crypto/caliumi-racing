@@ -61,16 +61,17 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden gap-6 md:flex">
+        <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link, n) =>
             link.sotto ? (
-              <div key={link.href} className="group relative">
+              <div key={link.href} className="group relative flex items-center">
                 <Link
                   href={link.href}
-                  className="nav-link text-sm font-semibold uppercase tracking-wide text-white"
+                  className="nav-link inline-flex items-center gap-1 text-sm font-semibold uppercase leading-none tracking-wide text-white"
                   aria-haspopup="true"
                 >
-                  {link.label} <span className="text-[10px] text-racing-yellow">▾</span>
+                  {link.label}
+                  <span className="text-[10px] leading-none text-racing-yellow">▾</span>
                 </Link>
                 {/* menu a tendina: compare passando sopra o con la tastiera */}
                 <div className={`invisible absolute top-full z-50 pt-3 ${n === navLinks.length - 1 ? "right-0" : "left-1/2 -translate-x-1/2"} opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100`}>
@@ -92,7 +93,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="nav-link text-sm font-semibold uppercase tracking-wide text-white"
+                className="nav-link inline-flex items-center text-sm font-semibold uppercase leading-none tracking-wide text-white"
               >
                 {link.label}
               </Link>
