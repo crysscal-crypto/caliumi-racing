@@ -8,7 +8,8 @@ import campionato from './campionato'
 import prodotto from './prodotto'
 import notiziaRedazione from './notiziaRedazione'
 import commentoLettore from './commentoLettore'
+import richiestaArticolo from './richiestaArticolo'
 
 export const schema = {
-  types: [notiziaRedazione, commentoLettore, galleryItem, articolo, pagina, commentoNotizia, notaTv, moto, campionato, prodotto],
+  types: [notiziaRedazione, richiestaArticolo, commentoLettore, galleryItem, articolo, pagina, commentoNotizia, notaTv, moto, campionato, prodotto],
 }

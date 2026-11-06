@@ -15,7 +15,7 @@ import {
   lasciaBlocco,
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
-import { giroArticoli, giroAttualita, pubblicaBozzeScadute, riempiSommari } from "@/sanity/lib/giornalista";
+import { giroArticoli, giroAttualita, giroRichieste, pubblicaBozzeScadute, riempiSommari } from "@/sanity/lib/giornalista";
 import { importaBozze } from "@/sanity/lib/importa-bozze";
 import { client } from "@/sanity/lib/client";
 import { facebookAttivo, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
@@ -164,6 +164,9 @@ async function giro(): Promise<Esito> {
 async function articoli(inizio: number): Promise<{ articoli?: string[]; erroriArticoli?: string[] }> {
   if (Date.now() - inizio > 90_000) return {};
   try {
+    // prima le richieste fatte dallo Studio ("Chiedi un articolo all'IA")
+    const rq = await giroRichieste(inizio + 150_000);
+    if (rq.scritti.length || rq.errori.length) return { articoli: rq.scritti, erroriArticoli: rq.errori };
     const r = await giroArticoli(inizio + 150_000);
     // se non c'erano gare da raccontare, ogni tanto un articolo di attualità o una curiosità
     const att = r.scritti.length ? { scritti: [], errori: [] } : await giroAttualita(inizio + 150_000);

@@ -394,52 +394,93 @@ const OGNI_ORE_ATTUALITA = 48;
 
 type ArticoloAttualita = Articolo & { campionato?: string; protagonista?: string };
 
-export async function giroAttualita(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
+type Richiesta = { _id: string; argomento?: string; note?: string };
+
+// Articoli chiesti da Cristian dallo Studio ("Chiedi un articolo all'IA"): li scrive subito
+export async function giroRichieste(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
+  if (!process.env.SANITY_API_WRITE_TOKEN || (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY)) {
+    return { scritti: [], errori: [] };
+  }
+  const c = sanity();
+  const r = await c.fetch<Richiesta | null>(
+    `*[_type == "richiestaArticolo" && !(_id in path("drafts.**")) && !defined(esito)] | order(_createdAt asc)[0]{ _id, argomento, note }`
+  );
+  if (!r) return { scritti: [], errori: [] };
+  // segno subito come "in lavorazione" per non scriverlo due volte
+  await c.patch(r._id).set({ esito: "In lavorazione…" }).commit();
+  const esito = await giroAttualita(scadenza, r);
+  await c
+    .patch(r._id)
+    .set({
+      esito: esito.scritti.length
+        ? `✅ Scritto: ${esito.scritti[0].replace(/^attualità: /, "")} — trovi la bozza in "Notizia scritta da me"`
+        : `❌ Non riuscito: ${esito.errori[0] ?? "errore sconosciuto"}. Crea una nuova richiesta per riprovare.`,
+    })
+    .commit();
+  return esito;
+}
+
+export async function giroAttualita(
+  scadenza: number,
+  richiesta?: Richiesta
+): Promise<{ scritti: string[]; errori: string[] }> {
   const scritti: string[] = [];
   const errori: string[] = [];
   if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
-
-  // solo di giorno, ora italiana
-  const ora = Number(
-    new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Europe/Rome" }).format(new Date())
-  );
-  if (ora < 9 || ora >= 21 || Date.now() > scadenza) return { scritti, errori };
-
   const c = sanity();
-  const doc = await c.getDocument<{ ultimaAttualita?: string }>(DOC);
-  if (doc?.ultimaAttualita && Date.now() - Date.parse(doc.ultimaAttualita) < OGNI_ORE_ATTUALITA * 3600000) {
-    return { scritti, errori };
+
+  if (!richiesta) {
+    // solo di giorno, ora italiana
+    const ora = Number(
+      new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Europe/Rome" }).format(new Date())
+    );
+    if (ora < 9 || ora >= 21 || Date.now() > scadenza) return { scritti, errori };
+
+    const doc = await c.getDocument<{ ultimaAttualita?: string }>(DOC);
+    if (doc?.ultimaAttualita && Date.now() - Date.parse(doc.ultimaAttualita) < OGNI_ORE_ATTUALITA * 3600000) {
+      return { scritti, errori };
+    }
+    // segno subito: se qualcosa va storto riprovo tra 48 ore, senza insistere
+    await c.patch(DOC).set({ ultimaAttualita: new Date().toISOString() }).commit();
   }
-  // segno subito: se qualcosa va storto riprovo tra 48 ore, senza insistere
-  await c.patch(DOC).set({ ultimaAttualita: new Date().toISOString() }).commit();
 
   try {
-    const da = Date.now() - 30 * 3600000;
+    // per una richiesta su un argomento preciso guardo più indietro (3 giorni)
+    const da = Date.now() - (richiesta ? 72 : 30) * 3600000;
     const notizie = (await getTutteLeNotizie())
       .filter((n) => n.data && Date.parse(n.data) >= da)
-      .slice(0, 40)
+      .slice(0, richiesta ? 60 : 40)
       .map((n) => `- [${n.campionato} · ${n.fonte}] ${n.titolo}${n.estratto ? ` — ${n.estratto}` : ""}`);
-    if (notizie.length < 5) throw new Error("Poche notizie nelle ultime 30 ore");
+    if (notizie.length < 5 && !richiesta?.note) throw new Error("Poche notizie recenti");
+
+    const argomento = richiesta?.argomento?.trim();
+    const note = richiesta?.note?.trim();
+    const compito = argomento
+      ? `COMPITO:
+1. L'argomento è deciso dal direttore: "${argomento}". Scrivi su questo, usando le notizie qui sopra che lo riguardano${note ? " e le informazioni del direttore qui sotto" : ""}.
+2. Se nelle notizie e nelle informazioni non c'è abbastanza materiale, scrivi un articolo più corto (anche 200 parole) senza inventare nulla.
+3. Scrivi in italiano un articolo ORIGINALE.`
+      : `COMPITO:
+1. Scegli UN argomento: la notizia più interessante e attuale (meglio se ne parlano più testate) oppure una curiosità che emerge da queste notizie.
+2. Scrivi in italiano un articolo ORIGINALE su quell'argomento.`;
 
     const giaScritti = await c.fetch<string[]>(
       `*[_type == "notiziaRedazione"] | order(_createdAt desc)[0...15].titolo`
     );
 
     const prompt = `Sei un giornalista della redazione di Caliumi Racing, sito di notizie di motociclismo.
-Qui sotto ci sono i titoli e i sommari delle notizie di moto delle ultime 30 ore, da varie testate.
+Qui sotto ci sono i titoli e i sommari delle notizie di moto degli ultimi giorni, da varie testate.
 
 ${notizie.join("\n")}
 
-ARTICOLI GIÀ SCRITTI DA NOI (non ripetere lo stesso argomento):
+ARTICOLI GIÀ SCRITTI DA NOI (non ripetere lo stesso argomento${argomento ? ", salvo quello richiesto dal direttore" : ""}):
 ${giaScritti.map((t) => `- ${t}`).join("\n") || "- nessuno"}
-
-COMPITO:
-1. Scegli UN argomento: la notizia più interessante e attuale (meglio se ne parlano più testate) oppure una curiosità che emerge da queste notizie.
-2. Scrivi in italiano un articolo ORIGINALE su quell'argomento.
+${note ? `\nINFORMAZIONI DEL DIRETTORE (fatti verificati, puoi usarli):\n${note.slice(0, 4000)}\n` : ""}
+${compito}
 
 REGOLE:
 - Non nominare la redazione né chi scrive: niente firme, niente "noi di Caliumi Racing".
-- Usa solo i fatti presenti nei titoli e nei sommari. Non inventare dichiarazioni, numeri, date o dettagli.
+- Usa solo i fatti presenti nei titoli, nei sommari${note ? " e nelle informazioni del direttore" : ""}. Non inventare dichiarazioni, numeri, date o dettagli.
 - Se un fatto è riportato da una sola testata, scrivi "secondo [testata]".
 - Nessuna frase copiata: rielabora con parole tue, tono appassionato ma serio.
 - 300-450 parole. Un paragrafo d'apertura forte, poi 2 sezioni con titoletti Markdown "## ".
