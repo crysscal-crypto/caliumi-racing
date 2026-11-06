@@ -212,6 +212,8 @@ export default async function StatisticheSBKPage({ searchParams }: Props) {
           </ul>
         </div>
 
+        <Pubblicita posizione="motogp-classifica" className="mb-10" />
+
         <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Classifica
             titolo="Più titoli mondiali"

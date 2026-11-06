@@ -10,7 +10,7 @@ import { ADSENSE_CLIENT } from "@/components/adsense";
 // niente se non c'è spazio (così non coprono mai il contenuto, es. su telefono e tablet).
 // Cambiando pagina gli annunci si ricaricano.
 const SLOT = "4070460060";
-const MARGINE = 16;
+const MARGINE = 8;
 
 type Formato = { larghezza: number; altezza: number } | null;
 
@@ -45,7 +45,7 @@ function Colonna({ lato, formato }: { lato: "sinistra" | "destra"; formato: NonN
   return (
     <aside
       aria-label="Pubblicità"
-      className={`fixed top-28 z-10 ${lato === "sinistra" ? "left-4" : "right-4"}`}
+      className={`fixed top-28 z-10 ${lato === "sinistra" ? "left-2" : "right-2"}`}
       style={{ width: formato.larghezza }}
     >
       <p className="mb-0.5 text-center text-[9px] uppercase tracking-widest text-white/25">Pubblicità</p>

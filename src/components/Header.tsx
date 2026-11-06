@@ -4,11 +4,29 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const navLinks = [
+type Voce = { href: string; label: string; sotto?: { href: string; label: string }[] };
+
+const navLinks: Voce[] = [
   { href: "/", label: "Home" },
   { href: "/notizie", label: "Notizie" },
-  { href: "/motogp", label: "MotoGP" },
-  { href: "/superbike", label: "WorldSBK" },
+  {
+    href: "/motogp",
+    label: "MotoGP",
+    sotto: [
+      { href: "/motogp", label: "Risultati e classifiche" },
+      { href: "/motogp/orari", label: "Orari del weekend" },
+      { href: "/motogp/statistiche", label: "Statistiche" },
+    ],
+  },
+  {
+    href: "/superbike",
+    label: "WorldSBK",
+    sotto: [
+      { href: "/superbike", label: "Risultati e classifiche" },
+      { href: "/superbike/orari", label: "Orari del weekend" },
+      { href: "/superbike/statistiche", label: "Statistiche" },
+    ],
+  },
   { href: "/civ", label: "CIV" },
   { href: "/gallery", label: "Gallery" },
   { href: "/articoli", label: "Articoli" },
@@ -36,15 +54,42 @@ export default function Header() {
         </Link>
 
         <nav className="hidden gap-6 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="nav-link text-sm font-semibold uppercase tracking-wide text-white"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) =>
+            link.sotto ? (
+              <div key={link.href} className="group relative">
+                <Link
+                  href={link.href}
+                  className="nav-link text-sm font-semibold uppercase tracking-wide text-white"
+                  aria-haspopup="true"
+                >
+                  {link.label} <span className="text-[10px] text-racing-yellow">▾</span>
+                </Link>
+                {/* menu a tendina: compare passando sopra o con la tastiera */}
+                <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul className="min-w-[220px] overflow-hidden rounded-md border border-racing-yellow/30 bg-carbon-900 py-1 shadow-xl">
+                    {link.sotto.map((s) => (
+                      <li key={s.href}>
+                        <Link
+                          href={s.href}
+                          className="block px-4 py-2.5 text-sm font-semibold text-white hover:bg-carbon-800 hover:text-racing-yellow"
+                        >
+                          {s.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="nav-link text-sm font-semibold uppercase tracking-wide text-white"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         <button
@@ -69,6 +114,21 @@ export default function Header() {
                 >
                   {link.label}
                 </Link>
+                {link.sotto && (
+                  <ul className="border-b border-white/10 pb-2 pl-4">
+                    {link.sotto.slice(1).map((s) => (
+                      <li key={s.href}>
+                        <Link
+                          href={s.href}
+                          onClick={() => setOpen(false)}
+                          className="block py-2 text-sm text-white/75 hover:text-racing-yellow"
+                        >
+                          › {s.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
