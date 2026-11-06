@@ -14,22 +14,43 @@ import {
   formattaData,
   pulisciLink,
   FEEDS,
+  CATEGORIE,
 } from "@/sanity/lib/notizie";
+import Link from "next/link";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Notizie MotoGP e Superbike di oggi | Caliumi Racing",
-  description:
-    "Le ultime notizie di MotoGP e Superbike raccolte dalle principali testate italiane del motociclismo, aggiornate ogni 30 minuti, con il commento di Cristian Caliumi.",
-  alternates: { canonical: "/notizie" },
-};
+type Props = { searchParams: Promise<{ categoria?: string }> };
 
-export default async function NotiziePage() {
-  const [notizie, commenti, nostre] = await Promise.all([getNotizie(), getCommenti(), getUltimeRedazione(7)]);
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { categoria } = await searchParams;
+  const cat = CATEGORIE.find((c) => c.slug === categoria);
+  if (cat) {
+    return {
+      title: `Notizie ${cat.nome} di oggi | Caliumi Racing`,
+      description: `${cat.descrizione} Aggiornate ogni 30 minuti dalle principali testate italiane.`,
+      alternates: { canonical: `/notizie?categoria=${cat.slug}` },
+    };
+  }
+  return {
+    title: "Notizie MotoGP, Superbike e motori di oggi | Caliumi Racing",
+    description:
+      "Le ultime notizie di MotoGP, Superbike, Moto2, motocross, novità moto, Formula 1 e motori dalle principali testate italiane, aggiornate ogni 30 minuti.",
+    alternates: { canonical: "/notizie" },
+  };
+}
+
+export default async function NotiziePage({ searchParams }: Props) {
+  const { categoria } = await searchParams;
+  const cat = CATEGORIE.find((c) => c.slug === categoria);
+  const [notizie, commenti, nostre] = await Promise.all([
+    getNotizie(cat ? 45 : 60, cat?.nome),
+    getCommenti(),
+    cat ? Promise.resolve([]) : getUltimeRedazione(7),
+  ]);
   const fonti = Array.from(new Set(FEEDS.map((f) => f.fonte)));
   const commentiPerLink = mappaCommenti(commenti);
-  const inEvidenza = commenti.slice(0, 5);
+  const inEvidenza = cat ? [] : commenti.slice(0, 5);
 
   const slugPerLink = new Map<string, string>();
   notizie.forEach((n) => slugPerLink.set(pulisciLink(n.link), n.slug));
@@ -40,12 +61,33 @@ export default async function NotiziePage() {
         <h1
           className={`${racingFont.className} mb-3 text-center text-3xl text-racing-yellow sm:text-4xl`}
         >
-          Notizie
+          {cat ? `Notizie ${cat.nome}` : "Notizie"}
         </h1>
         <p className="mx-auto mb-6 max-w-2xl text-center text-white/70">
-          Le ultime dal mondo delle corse in moto, MotoGP e Superbike, raccolte
-          dalle testate di settore e aggiornate ogni 30 minuti.
+          {cat
+            ? `${cat.descrizione} Aggiornate ogni 30 minuti.`
+            : "Le ultime dal mondo delle corse e dei motori: MotoGP, Superbike, off-road, novità moto, Formula 1 e auto, raccolte dalle testate di settore e aggiornate ogni 30 minuti."}
         </p>
+
+        {/* categorie */}
+        <nav aria-label="Categorie notizie" className="mb-8 flex flex-wrap justify-center gap-2">
+          {[{ slug: "", nome: "Tutte" }, ...CATEGORIE].map((c) => {
+            const attiva = (cat?.slug ?? "") === c.slug;
+            return (
+              <Link
+                key={c.slug || "tutte"}
+                href={c.slug ? `/notizie?categoria=${c.slug}` : "/notizie"}
+                className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
+                  attiva
+                    ? "border-racing-yellow bg-racing-yellow text-carbon-950"
+                    : "border-white/20 text-white/80 hover:border-racing-yellow hover:text-racing-yellow"
+                }`}
+              >
+                {c.nome}
+              </Link>
+            );
+          })}
+        </nav>
 
         <FontePreferitaGoogle className="mx-auto mb-10 max-w-2xl" />
 
@@ -114,7 +156,7 @@ export default async function NotiziePage() {
         )}
 
         <h2 className={`${racingFont.className} mb-4 text-2xl text-racing-yellow`}>
-          Ultime notizie
+          {cat ? `Ultime notizie ${cat.nome}` : "Ultime notizie"}
         </h2>
 
         {notizie.length === 0 ? (

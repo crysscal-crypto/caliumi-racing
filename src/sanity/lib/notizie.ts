@@ -27,15 +27,43 @@ export type Commento = {
 type Feed = { fonte: string; campionato: string; url: string; leggiPagina?: boolean };
 
 export const FEEDS: Feed[] = [
+  // Moto
   { fonte: "GPOne", campionato: "MotoGP", url: "https://www.gpone.com/it/rss.xml", leggiPagina: false },
   { fonte: "Moto.it", campionato: "MotoGP", url: "https://www.moto.it/rss/news-motogp.xml", leggiPagina: true },
-  { fonte: "Moto.it", campionato: "Superbike", url: "https://www.moto.it/rss/news-superbike.xml", leggiPagina: true },
-  { fonte: "Moto.it", campionato: "Motorsport", url: "https://www.moto.it/rss/news-sport.xml", leggiPagina: true },
-  { fonte: "Moto.it", campionato: "Motocross", url: "https://www.moto.it/rss/news-motocross.xml", leggiPagina: true },
-  { fonte: "Moto.it", campionato: "Moto News", url: "https://www.moto.it/rss/news.xml", leggiPagina: true },
   { fonte: "Motorsport.com", campionato: "MotoGP", url: "https://it.motorsport.com/rss/motogp/news/", leggiPagina: true },
+  { fonte: "Motorsport.com", campionato: "Moto2 e Moto3", url: "https://it.motorsport.com/rss/moto3/news/", leggiPagina: true },
+  { fonte: "Moto.it", campionato: "Superbike", url: "https://www.moto.it/rss/news-superbike.xml", leggiPagina: true },
   { fonte: "Motorsport.com", campionato: "Superbike", url: "https://it.motorsport.com/rss/wsbk/news/", leggiPagina: true },
+  { fonte: "Moto.it", campionato: "Corse moto", url: "https://www.moto.it/rss/news-sport.xml", leggiPagina: true },
+  { fonte: "Moto.it", campionato: "Off-road", url: "https://www.moto.it/rss/news-motocross.xml", leggiPagina: true },
+  { fonte: "Motorsport.com", campionato: "Off-road", url: "https://it.motorsport.com/rss/dakar/news/", leggiPagina: true },
+  { fonte: "Moto.it", campionato: "Novità moto", url: "https://www.moto.it/rss/news.xml", leggiPagina: true },
+  { fonte: "InSella", campionato: "Novità moto", url: "https://www.insella.it/feed", leggiPagina: true },
+  { fonte: "Motoblog", campionato: "Novità moto", url: "https://www.motoblog.it/feed", leggiPagina: true },
+  // Motori in generale
+  { fonte: "Motorsport.com", campionato: "Formula 1", url: "https://it.motorsport.com/rss/f1/news/", leggiPagina: true },
+  { fonte: "FormulaPassion", campionato: "Formula 1", url: "https://www.formulapassion.it/feed", leggiPagina: true },
+  { fonte: "Motorsport.com", campionato: "Motori", url: "https://it.motorsport.com/rss/wec/news/", leggiPagina: true },
+  { fonte: "Motorsport.com", campionato: "Motori", url: "https://it.motorsport.com/rss/rally/news/", leggiPagina: true },
+  { fonte: "Automoto.it", campionato: "Motori", url: "https://www.automoto.it/rss/news.xml", leggiPagina: true },
+  { fonte: "Motori.it", campionato: "Motori", url: "https://www.motori.it/feed", leggiPagina: true },
+  { fonte: "Motorionline", campionato: "Motori", url: "https://www.motorionline.com/feed", leggiPagina: true },
 ];
+
+// Categorie della pagina Notizie (come le sezioni delle testate di settore)
+export const CATEGORIE: { slug: string; nome: string; descrizione: string }[] = [
+  { slug: "motogp", nome: "MotoGP", descrizione: "Notizie MotoGP di oggi: piloti, team, mercato e risultati del Motomondiale." },
+  { slug: "moto2-moto3", nome: "Moto2 e Moto3", descrizione: "Notizie di Moto2 e Moto3: i giovani talenti del Motomondiale." },
+  { slug: "superbike", nome: "Superbike", descrizione: "Notizie del Mondiale Superbike WorldSBK e della Supersport." },
+  { slug: "corse-moto", nome: "Corse moto", descrizione: "Le altre corse in moto: campionati nazionali, endurance e road racing." },
+  { slug: "off-road", nome: "Off-road", descrizione: "Motocross, enduro, Dakar e rally raid: tutte le notizie dell'off-road." },
+  { slug: "novita-moto", nome: "Novità moto", descrizione: "Nuove moto, prove, anteprime e mercato delle due ruote." },
+  { slug: "formula-1", nome: "Formula 1", descrizione: "Notizie di Formula 1: piloti, scuderie e Gran Premi." },
+  { slug: "motori", nome: "Motori", descrizione: "Motori a 360°: auto, endurance WEC, rally e novità dal mondo a quattro ruote." },
+];
+
+// Le categorie "moto": la home e il giornalista IA guardano soprattutto queste
+export const CAMPIONATI_MOTO = ["MotoGP", "Moto2 e Moto3", "Superbike", "Corse moto", "Off-road", "Novità moto"];
 
 const AGGIORNA_OGNI = 1800; // secondi (30 minuti)
 const CACHE_IMMAGINI = 86400; // secondi (24 ore) — l'immagine di un articolo non cambia
@@ -268,9 +296,15 @@ export async function getTutteLeNotizie(): Promise<Notizia[]> {
     .sort((a, b) => (b.data ?? "").localeCompare(a.data ?? ""));
 }
 
-export async function getNotizie(quante: number = MAX_NOTIZIE): Promise<Notizia[]> {
-  const notizie = (await getTutteLeNotizie()).slice(0, quante);
-  return completaImmagini(notizie);
+// filtro: un nome di categoria, oppure "moto" per tutte le categorie di moto
+export async function getNotizie(quante: number = MAX_NOTIZIE, filtro?: string): Promise<Notizia[]> {
+  const tutte = await getTutteLeNotizie();
+  const scelte = !filtro
+    ? tutte
+    : filtro === "moto"
+      ? tutte.filter((n) => CAMPIONATI_MOTO.includes(n.campionato))
+      : tutte.filter((n) => n.campionato === filtro);
+  return completaImmagini(scelte.slice(0, quante));
 }
 
 export async function getNotiziaDaSlug(slug: string): Promise<Notizia | undefined> {

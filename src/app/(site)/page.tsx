@@ -53,7 +53,7 @@ const DOMANDE: { d: string; r: string }[] = [
 ];
 
 export default async function HomePage() {
-  const [esterne, commenti, nostre] = await Promise.all([getNotizie(9), getCommenti(), getUltimeRedazione(3)]);
+  const [esterne, commenti, nostre] = await Promise.all([getNotizie(9, "moto"), getCommenti(), getUltimeRedazione(3)]);
 
   // Le ultime 3 notizie di Caliumi Racing insieme a quelle delle testate, stesso formato
   const mie: Notizia[] = nostre.map((n) => ({

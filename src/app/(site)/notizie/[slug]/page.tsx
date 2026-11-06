@@ -67,7 +67,7 @@ export default async function NotiziaPage({ params }: Params) {
   const [notizia, commenti, tutte] = await Promise.all([
     getNotiziaDaSlug(slug),
     getCommenti(),
-    getNotizie(13),
+    getNotizie(13, "moto"),
   ]);
 
   if (!notizia) redirect("/notizie");

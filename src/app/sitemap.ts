@@ -1,3 +1,4 @@
+import { CATEGORIE } from "@/sanity/lib/notizie";
 import type { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
 import { getStagioni } from "@/sanity/lib/motogp";
@@ -26,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     pagina("/moto", 0.8, "monthly"),
     pagina("/campionati", 0.8, "monthly"),
     pagina("/notizie", 0.7, "daily"),
+    ...CATEGORIE.map((c) => pagina(`/notizie?categoria=${c.slug}`, 0.6, "daily")),
     pagina("/motogp", 0.9, "daily"),
     pagina("/motogp/orari", 0.8, "daily"),
     pagina("/motogp/statistiche", 0.8, "weekly"),

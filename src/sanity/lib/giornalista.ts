@@ -8,7 +8,7 @@ import { apiVersion, dataset, projectId } from "../env";
 import { sessioniRecenti, datiStoria, type Candidata, type Storia } from "./storie";
 import { getStagione, getCategorie, getClassifica } from "./motogp";
 import { getStagioneSBK, getCategorieSBK, getClassificaSBK } from "./sbk";
-import { getTutteLeNotizie } from "./notizie";
+import { getTutteLeNotizie, CAMPIONATI_MOTO } from "./notizie";
 import { daMarkdown, slugDa } from "./markdown";
 
 const DOC = "segreti.instagram"; // stesso documento privato delle storie
@@ -448,7 +448,7 @@ export async function giroAttualita(
     // per una richiesta su un argomento preciso guardo più indietro (3 giorni)
     const da = Date.now() - (richiesta ? 72 : 30) * 3600000;
     const notizie = (await getTutteLeNotizie())
-      .filter((n) => n.data && Date.parse(n.data) >= da)
+      .filter((n) => n.data && Date.parse(n.data) >= da && (!!richiesta?.argomento || CAMPIONATI_MOTO.includes(n.campionato)))
       .slice(0, richiesta ? 60 : 40)
       .map((n) => `- [${n.campionato} · ${n.fonte}] ${n.titolo}${n.estratto ? ` — ${n.estratto}` : ""}`);
     if (notizie.length < 5 && !richiesta?.note) throw new Error("Poche notizie recenti");
