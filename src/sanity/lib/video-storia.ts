@@ -2,7 +2,7 @@
 // e lo carica su Sanity, così Instagram lo può scaricare da un indirizzo pubblico.
 
 import { execFile } from "node:child_process";
-import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
@@ -25,10 +25,21 @@ async function percorsoFfmpeg(): Promise<string> {
   return p;
 }
 
-async function tracciaACaso(): Promise<string> {
+let ultimaTraccia = "";
+
+// Traccia a caso (mai la stessa due volte di fila) e punto di partenza a caso dentro la traccia,
+// così le storie hanno musiche sempre diverse
+async function tracciaACaso(): Promise<{ file: string; inizio: number }> {
   const tracce = (await readdir(CARTELLA_MUSICA)).filter((f) => f.toLowerCase().endsWith(".mp3"));
   if (tracce.length === 0) throw new Error("Nessuna traccia in assets/musica");
-  return join(CARTELLA_MUSICA, tracce[Math.floor(Math.random() * tracce.length)]);
+  const scelte = tracce.length > 1 ? tracce.filter((t) => t !== ultimaTraccia) : tracce;
+  const traccia = scelte[Math.floor(Math.random() * scelte.length)];
+  ultimaTraccia = traccia;
+  const file = join(CARTELLA_MUSICA, traccia);
+  // le tracce da 60 secondi (circa 900 KB) permettono di partire in punti diversi; quelle corte partono da 0
+  const lunga = (await stat(file)).size > 600_000;
+  const inizio = lunga ? Math.floor(Math.random() * 40) : 0;
+  return { file, inizio };
 }
 
 export type VideoCaricato = { url: string; assetId: string };
@@ -47,9 +58,9 @@ export async function creaVideoStoria(immagine: Buffer, nome: string): Promise<V
       [
         "-y", "-v", "error",
         "-loop", "1", "-framerate", "30", "-t", "15", "-i", img,
-        "-i", musica,
+        "-ss", String(musica.inizio), "-i", musica.file,
         "-filter_complex",
-        "[0:v]scale=1080:1920,format=yuv420p,fade=t=in:st=0:d=0.6[v];[1:a]loudnorm=I=-31:TP=-9:LRA=11,afade=t=out:st=13.3:d=1.4,aresample=48000[a]",
+        "[0:v]scale=1080:1920,format=yuv420p,fade=t=in:st=0:d=0.6[v];[1:a]loudnorm=I=-31:TP=-9:LRA=11,afade=t=in:st=0:d=0.8,afade=t=out:st=13.3:d=1.4,aresample=48000[a]",
         "-map", "[v]", "-map", "[a]",
         "-c:v", "libx264", "-preset", "veryfast", "-tune", "stillimage", "-crf", "23",
         "-profile:v", "high", "-level", "4.1",
