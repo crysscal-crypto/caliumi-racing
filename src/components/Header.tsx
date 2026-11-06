@@ -62,7 +62,7 @@ export default function Header() {
         </Link>
 
         <nav className="hidden gap-6 md:flex">
-          {navLinks.map((link) =>
+          {navLinks.map((link, n) =>
             link.sotto ? (
               <div key={link.href} className="group relative">
                 <Link
@@ -73,7 +73,7 @@ export default function Header() {
                   {link.label} <span className="text-[10px] text-racing-yellow">▾</span>
                 </Link>
                 {/* menu a tendina: compare passando sopra o con la tastiera */}
-                <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                <div className={`invisible absolute top-full z-50 pt-3 ${n === navLinks.length - 1 ? "right-0" : "left-1/2 -translate-x-1/2"} opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100`}>
                   <ul className="min-w-[220px] overflow-hidden rounded-md border border-racing-yellow/30 bg-carbon-900 py-1 shadow-xl">
                     {link.sotto.map((s) => (
                       <li key={s.href}>
