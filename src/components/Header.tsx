@@ -28,9 +28,17 @@ const navLinks: Voce[] = [
     ],
   },
   { href: "/civ", label: "CIV" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/articoli", label: "Articoli" },
-  { href: "/chi-sono", label: "Chi Sono" },
+  {
+    href: "/chi-sono",
+    label: "Chi Sono",
+    sotto: [
+      { href: "/chi-sono", label: "La mia storia" },
+      { href: "/articoli", label: "La mia carriera" },
+      { href: "/campionati", label: "I miei campionati" },
+      { href: "/moto", label: "Le mie moto" },
+      { href: "/gallery", label: "Gallery" },
+    ],
+  },
 ];
 
 export default function Header() {
