@@ -49,7 +49,7 @@ export async function creaVideoStoria(immagine: Buffer, nome: string): Promise<V
         "-loop", "1", "-framerate", "30", "-t", "15", "-i", img,
         "-i", musica,
         "-filter_complex",
-        "[0:v]scale=1080:1920,format=yuv420p,fade=t=in:st=0:d=0.6[v];[1:a]afade=t=out:st=13.3:d=1.4,aresample=48000[a]",
+        "[0:v]scale=1080:1920,format=yuv420p,fade=t=in:st=0:d=0.6[v];[1:a]loudnorm=I=-26:TP=-4:LRA=11,afade=t=out:st=13.3:d=1.4,aresample=48000[a]",
         "-map", "[v]", "-map", "[a]",
         "-c:v", "libx264", "-preset", "veryfast", "-tune", "stillimage", "-crf", "23",
         "-profile:v", "high", "-level", "4.1",
