@@ -55,7 +55,7 @@ const DOMANDE: { d: string; r: string }[] = [
 export default async function HomePage() {
   const [esterne, commenti, nostre] = await Promise.all([getNotizie(9), getCommenti(), getUltimeRedazione(3)]);
 
-  // Le ultime 3 notizie di Caliumi Racing insieme a quelle delle testate, stesso formato, in ordine di data
+  // Le ultime 3 notizie di Caliumi Racing insieme a quelle delle testate, stesso formato
   const mie: Notizia[] = nostre.map((n) => ({
     id: n._id,
     slug: n.slug,
@@ -67,9 +67,14 @@ export default async function HomePage() {
     campionato: n.campionato,
     immagine: urlCopertina(n.copertina, 400, 300),
   }));
-  const notizie = [...mie, ...esterne.slice(0, 9 - mie.length)].sort(
-    (a, b) => Date.parse(b.data ?? "0") - Date.parse(a.data ?? "0")
+  // Precedenza alle nostre: quelle degli ultimi 3 giorni stanno in cima, poi tutto il resto in ordine di data
+  const IN_EVIDENZA = 3 * 24 * 3600 * 1000;
+  const quando = (n: Notizia) => Date.parse(n.data ?? "0");
+  const inCima = mie.filter((n) => Date.now() - quando(n) < IN_EVIDENZA);
+  const resto = [...mie.filter((n) => !inCima.includes(n)), ...esterne.slice(0, 9 - mie.length)].sort(
+    (a, b) => quando(b) - quando(a)
   );
+  const notizie = [...inCima, ...resto];
   const commentiPerLink = mappaCommenti(commenti);
 
   return (
