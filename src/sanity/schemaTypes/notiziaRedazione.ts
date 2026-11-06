@@ -71,9 +71,10 @@ export default defineType({
     defineField({
       name: "sommario",
       title: "Sommario (2 righe: compare nell'anteprima e su Google)",
+      description: "Puoi lasciarlo vuoto: dopo il Publish lo scrive l'IA da sola entro 5 minuti.",
       type: "text",
       rows: 3,
-      validation: (Rule) => Rule.required().max(220),
+      validation: (Rule) => Rule.max(220),
     }),
     defineField({
       name: "testo",

@@ -15,7 +15,7 @@ import {
   lasciaBlocco,
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
-import { giroArticoli, giroAttualita, pubblicaBozzeScadute } from "@/sanity/lib/giornalista";
+import { giroArticoli, giroAttualita, pubblicaBozzeScadute, riempiSommari } from "@/sanity/lib/giornalista";
 import { importaBozze } from "@/sanity/lib/importa-bozze";
 import { client } from "@/sanity/lib/client";
 import { facebookAttivo, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
@@ -82,6 +82,10 @@ async function giro(): Promise<Esito> {
     // bozze dell'IA non pubblicate entro 2 ore: escono da sole (poi partono storia e post Facebook)
     const uscite = await pubblicaBozzeScadute().catch((e) => [`auto-pubblicazione: ${(e as Error).message}`]);
     if (uscite.length) return { pubblicate: [], articoli: uscite };
+
+    // articoli senza sommario: lo scrive l'IA prima di annunciarli sui social
+    const sommari = await riempiSommari().catch(() => [] as string[]);
+    if (sommari.length) return { pubblicate: [], articoli: sommari };
 
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
@@ -177,7 +181,7 @@ type ArticoloDaAnnunciare = { _id: string; slug: string; titolo: string; sommari
 async function articoliDaAnnunciare(fatte: string[], prefisso = "articolo:"): Promise<ArticoloDaAnnunciare[]> {
   try {
     const elenco = await client.fetch<ArticoloDaAnnunciare[]>(
-      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione > $da && dataPubblicazione <= now()] | order(dataPubblicazione asc){ _id, "slug": slug.current, titolo, sommario, campionato }`,
+      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione > $da && dataPubblicazione <= now()] | order(dataPubblicazione asc){ _id, "slug": slug.current, titolo, "sommario": coalesce(sommario, ""), campionato }`,
       { da: new Date(Date.now() - 48 * 3600000).toISOString() },
       { cache: "no-store" }
     );

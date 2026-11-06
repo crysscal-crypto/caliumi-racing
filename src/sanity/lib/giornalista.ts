@@ -69,6 +69,38 @@ function sanity() {
   return createClient({ projectId, dataset, apiVersion, token, useCdn: false, perspective: "raw" });
 }
 
+// Articoli senza sommario (scritti da Cristian): lo scrive l'IA
+export async function riempiSommari(): Promise<string[]> {
+  if (!process.env.SANITY_API_WRITE_TOKEN || (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY)) return [];
+  const c = sanity();
+  const docs = await c.fetch<{ _id: string; titolo?: string; testo?: string }[]>(
+    `*[_type == "notiziaRedazione" && (!defined(sommario) || sommario == "") && defined(testo) && _updatedAt > $da][0...3]{ _id, titolo, "testo": pt::text(testo) }`,
+    { da: new Date(Date.now() - 30 * 86400000).toISOString() }
+  );
+  const fatti: string[] = [];
+  for (const d of docs) {
+    if (!d.testo || d.testo.length < 80) continue;
+    const prompt = `Scrivi il sommario di questo articolo di motociclismo in italiano: massimo 200 caratteri, una o due frasi, chiaro e accattivante, solo fatti presenti nel testo, senza virgolette e senza ripetere il titolo parola per parola. Rispondi SOLO con il sommario.
+
+Titolo: ${d.titolo ?? ""}
+
+Testo:
+${d.testo.slice(0, 6000)}`;
+    let risposta = "";
+    try {
+      risposta = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
+    } catch {
+      continue; // riprovo al giro dopo; intanto il sito usa l'inizio del testo
+    }
+    let sommario = risposta.replace(/^["'«\s]+|["'»\s]+$/g, "").replace(/\s+/g, " ").trim();
+    if (sommario.length > 220) sommario = `${sommario.slice(0, 217).replace(/\s\S*$/, "")}…`;
+    if (!sommario) continue;
+    await c.patch(d._id).set({ sommario }).commit();
+    fatti.push(`sommario: ${d.titolo ?? d._id}`);
+  }
+  return fatti;
+}
+
 export function tipoArticolo(c: Candidata): string | null {
   const t = c.tipo.toUpperCase();
   const k = `${c.serie}:${c.serie === "sbk" && /^SP\d*$/.test(t) && t !== "SPRC" ? "SP" : t}`;
