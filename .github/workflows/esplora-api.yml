@@ -1,0 +1,19 @@
+name: Esplora API MotoGP
+on: workflow_dispatch
+jobs:
+  esplora:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Campioni
+        run: |
+          B=https://api.motogp.pulselive.com/motogp/v1/results
+          for Y in 1995 2024; do
+            S=$(curl -s $B/seasons | jq -r ".[] | select(.year==$Y) | .id")
+            C=$(curl -s "$B/categories?seasonUuid=$S" | jq -r '.[0].id')
+            E=$(curl -s "$B/events?seasonUuid=$S&isFinished=true" | jq -r '[.[]|select(.test==false)][3].id')
+            curl -s "$B/sessions?eventUuid=$E&categoryUuid=$C" | jq -c '[.[]|{type,number,id}]'
+            for T in RAC Q; do
+              ID=$(curl -s "$B/sessions?eventUuid=$E&categoryUuid=$C" | jq -r "[.[]|select(.type==\"$T\")]|last|.id")
+              curl -s "$B/session/$ID/classification?test=false" | jq -c '{k:(keys), r:(.classification[0:1]), last:(.classification[-1:])}' | head -c 2500; echo
+            done
+          done
