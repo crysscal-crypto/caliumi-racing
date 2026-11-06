@@ -17,6 +17,39 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+const AGGIORNATO = "6 novembre 2026";
+
+const DOMANDE: { d: string; r: string }[] = [
+  {
+    d: "Che cos'è Caliumi Racing?",
+    r: "Caliumi Racing è un sito italiano dedicato al motociclismo sportivo. Raccoglie ogni giorno le notizie di MotoGP e Superbike, pubblica risultati e classifiche aggiornate di MotoGP, Mondiale Superbike e CIV e racconta la carriera di Cristian Caliumi, ex pilota di Carpi (Modena).",
+  },
+  {
+    d: "Dove trovo i risultati della MotoGP di oggi?",
+    r: "Nella sezione MotoGP di caliumiracing.com trovi i risultati di prove libere, qualifiche, Sprint e gara di ogni Gran Premio, con la classifica piloti aggiornata. I risultati vengono pubblicati in automatico poco dopo la fine di ogni sessione.",
+  },
+  {
+    d: "Dove vedo la classifica del Mondiale Superbike?",
+    r: "Nella sezione Superbike ci sono i risultati di Superpole, Gara 1, Superpole Race e Gara 2 di ogni round del Mondiale WorldSBK, insieme alla classifica del campionato.",
+  },
+  {
+    d: "Ci sono i risultati storici della MotoGP?",
+    r: "Sì. L'archivio della sezione MotoGP permette di consultare le stagioni passate della classe regina e delle classi minori, Gran Premio per Gran Premio. Quando un risultato manca nell'archivio ufficiale viene integrato da fonti pubbliche, indicate nella pagina.",
+  },
+  {
+    d: "Chi è Cristian Caliumi?",
+    r: "Cristian Caliumi è un ex pilota motociclistico nato a Carpi nel 1972. Ha corso nel Trofeo Gilera, nella Sport Production e nel Campionato Italiano ed Europeo GP, con una wild card nel Motomondiale classe 125 al Mugello nel 1995 e alcune gare nel Mondiale Superbike nel 2002. Dal 2007 al 2014 è stato direttore sportivo del Team Azione Corse.",
+  },
+  {
+    d: "Come posso seguire Caliumi Racing sui social?",
+    r: "Su Instagram, nel profilo @sblisgass_motorsport, escono in automatico le storie con i risultati di ogni sessione MotoGP e Superbike e gli avvisi dei nuovi articoli. Sulla pagina Facebook Sblisgass Motor Sport vengono pubblicati risultati e articoli.",
+  },
+  {
+    d: "Caliumi Racing è gratuito?",
+    r: "Sì, tutti i contenuti del sito sono gratuiti e non serve registrarsi. Il sito si sostiene con la pubblicità e con alcuni link di affiliazione ai prodotti consigliati.",
+  },
+];
+
 export default async function HomePage() {
   const [notizie, commenti] = await Promise.all([getNotizie(9), getCommenti()]);
   const commentiPerLink = mappaCommenti(commenti);
@@ -105,6 +138,89 @@ export default async function HomePage() {
             Scopri la carriera
           </Link>
         </div>
+      </section>
+
+      {/* Cosa trovi sul sito */}
+      <section className="carbon-bg">
+        <div className="content-panel mx-auto max-w-4xl px-4 py-12 sm:px-6">
+          <h2 className={`${racingFont.className} text-2xl text-racing-yellow sm:text-3xl`}>
+            Cosa trovi su Caliumi Racing
+          </h2>
+          <div className="mt-6 grid grid-cols-1 gap-6 text-white/80 md:grid-cols-2">
+            <div>
+              <h3 className="font-semibold text-white">
+                <Link href="/notizie" className="hover:text-racing-yellow">Notizie MotoGP e Superbike</Link>
+              </h3>
+              <p className="mt-1">
+                Le notizie più importanti dal paddock raccolte ogni giorno, più gli articoli della
+                redazione su gare, piloti e curiosità del motociclismo.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">
+                <Link href="/motogp" className="hover:text-racing-yellow">Risultati e classifiche MotoGP</Link>
+              </h3>
+              <p className="mt-1">
+                Calendario, tempi di prove, qualifiche, Sprint e gara, classifica piloti e un archivio
+                storico con le stagioni passate del Motomondiale.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">
+                <Link href="/superbike" className="hover:text-racing-yellow">Mondiale Superbike e CIV</Link>
+              </h3>
+              <p className="mt-1">
+                Risultati di ogni round del WorldSBK e del{" "}
+                <Link href="/civ" className="text-racing-yellow hover:underline">Campionato Italiano Velocità</Link>,
+                con le classifiche sempre aggiornate.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">
+                <Link href="/gallery" className="hover:text-racing-yellow">La storia di un pilota</Link>
+              </h3>
+              <p className="mt-1">
+                Foto storiche, le{" "}
+                <Link href="/moto" className="text-racing-yellow hover:underline">moto usate in carriera</Link>{" "}
+                e le{" "}
+                <Link href="/campionati" className="text-racing-yellow hover:underline">classifiche</Link>{" "}
+                del Trofeo Gilera e della Sport Production.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Domande frequenti */}
+      <section className="carbon-bg">
+        <div className="content-panel mx-auto max-w-3xl px-4 py-12 sm:px-6">
+          <h2 className={`${racingFont.className} text-2xl text-racing-yellow sm:text-3xl`}>
+            Domande frequenti
+          </h2>
+          <div className="mt-6 space-y-6">
+            {DOMANDE.map((q) => (
+              <div key={q.d}>
+                <h3 className="font-semibold text-white">{q.d}</h3>
+                <p className="mt-1 text-white/80">{q.r}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-xs text-white/50">Aggiornato il {AGGIORNATO}</p>
+        </div>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: DOMANDE.map((q) => ({
+                "@type": "Question",
+                name: q.d,
+                acceptedAnswer: { "@type": "Answer", text: q.r },
+              })),
+            }),
+          }}
+        />
       </section>
     </>
   );

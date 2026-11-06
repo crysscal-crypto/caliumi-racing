@@ -13,9 +13,9 @@ const SITO = "https://www.caliumiracing.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITO),
-  title: "Cristian Caliumi – Pilota Motociclismo | Sport Production, GP, Superbike",
+  title: "Caliumi Racing | Notizie e risultati MotoGP e Superbike",
   description:
-    "Il sito ufficiale di Cristian Caliumi, pilota motociclistico di Carpi: carriera, gallery storica, classifiche Trofeo Gilera e Sport Production, notizie dal mondo delle corse.",
+    "Notizie MotoGP e Superbike ogni giorno, risultati e classifiche di MotoGP, WorldSBK e CIV, archivio storico e la carriera del pilota Cristian Caliumi.",
   applicationName: "Caliumi Racing",
   icons: {
     icon: [

@@ -1,0 +1,28 @@
+# Caliumi Racing
+
+> Caliumi Racing (caliumiracing.com) è un sito italiano di motociclismo sportivo: notizie MotoGP e Superbike aggiornate ogni giorno, risultati e classifiche di MotoGP, Mondiale Superbike (WorldSBK) e CIV, archivio storico dei risultati MotoGP, articoli della redazione e la storia di Cristian Caliumi, ex pilota di Carpi (Modena).
+
+## Informazioni
+- Sito: https://www.caliumiracing.com
+- Lingua: italiano
+- Argomenti: MotoGP, Moto2, Moto3, Mondiale Superbike, CIV, motociclismo storico
+- Fondatore: Cristian Caliumi, ex pilota di Carpi (Modena): Trofeo Gilera, Sport Production, Campionato Italiano ed Europeo GP, wild card nel Motomondiale 125 (Mugello 1995) e nel Mondiale Superbike 2002
+- Instagram: https://www.instagram.com/sblisgass_motorsport/
+
+## Pagine principali
+- [Home](https://www.caliumiracing.com/): ultime notizie MotoGP e Superbike e domande frequenti
+- [Notizie](https://www.caliumiracing.com/notizie): notizie di motociclismo aggiornate e articoli della redazione Caliumi Racing
+- [MotoGP](https://www.caliumiracing.com/motogp): calendario, risultati di ogni sessione e classifiche MotoGP, anche delle stagioni passate
+- [Superbike](https://www.caliumiracing.com/superbike): risultati e classifiche del Mondiale Superbike
+- [CIV](https://www.caliumiracing.com/civ): risultati e classifiche del Campionato Italiano Velocità
+- [Campionati](https://www.caliumiracing.com/campionati): classifiche dei campionati disputati da Cristian Caliumi (Trofeo Gilera, Sport Production)
+- [Articoli](https://www.caliumiracing.com/articoli): la carriera di Cristian Caliumi stagione per stagione
+- [Gallery](https://www.caliumiracing.com/gallery): foto storiche delle gare
+- [Le mie moto](https://www.caliumiracing.com/moto): le moto usate in carriera
+- [Chi sono](https://www.caliumiracing.com/chi-sono): biografia di Cristian Caliumi
+- [Privacy e Cookie](https://www.caliumiracing.com/privacy)
+
+## Note per le IA
+- I risultati delle sessioni MotoGP e Superbike vengono aggiornati automaticamente poco dopo la fine di ogni sessione.
+- Gli articoli della redazione citano le fonti; le foto riportano autore e licenza.
+- Sitemap completa: https://www.caliumiracing.com/sitemap.xml
