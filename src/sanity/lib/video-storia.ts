@@ -65,7 +65,7 @@ export async function creaVideoStoria(immagine: Buffer, nome: string): Promise<V
         "-c:v", "libx264", "-preset", "veryfast", "-tune", "stillimage", "-crf", "23",
         "-profile:v", "high", "-level", "4.1",
         "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-ac", "2",
-        "-shortest", "-movflags", "+faststart",
+        "-shortest", "-t", "15", "-movflags", "+faststart",
         out,
       ],
       { timeout: 45000 }
