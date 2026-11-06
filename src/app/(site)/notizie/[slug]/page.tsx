@@ -6,6 +6,7 @@ import CardNotizia from "@/components/CardNotizia";
 import Pubblicita from "@/components/Pubblicita";
 import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 import ArticoloRedazione from "@/components/ArticoloRedazione";
+import Commenti from "@/components/Commenti";
 import { getRedazioneDaSlug, urlCopertina } from "@/sanity/lib/redazione";
 import {
   getNotizie,
@@ -129,6 +130,8 @@ export default async function NotiziaPage({ params }: Params) {
           </p>
           <FontePreferitaGoogle className="mt-8" />
         </article>
+
+        <Commenti pagina={`/notizie/${notizia.slug}`} titolo={notizia.titolo} />
 
         <Pubblicita posizione="notizia-sotto-testo" className="mt-10" />
 

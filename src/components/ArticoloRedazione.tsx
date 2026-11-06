@@ -6,6 +6,7 @@ import { getUltimeRedazione, urlCopertina, type NotiziaRedazione } from "@/sanit
 import Pubblicita from "@/components/Pubblicita";
 import CardRedazione from "@/components/CardRedazione";
 import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
+import Commenti from "@/components/Commenti";
 
 const SITO = "https://www.caliumiracing.com";
 
@@ -137,6 +138,8 @@ export default async function ArticoloRedazione({ notizia: n }: { notizia: Notiz
           </div>
           <FontePreferitaGoogle className="mt-6" />
         </article>
+
+        <Commenti pagina={`/notizie/${n.slug}`} titolo={n.titolo} />
 
         <Pubblicita posizione="notizia-sotto-testo" className="mt-10" />
 

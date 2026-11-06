@@ -47,8 +47,14 @@ export default function PrivacyPage() {
 
         <Sezione titolo="2. Quali dati raccogliamo">
           <p>
-            Il sito non ha moduli di registrazione, commenti o aree riservate ai visitatori e non chiede di inserire
-            dati personali.
+            Il sito non ha moduli di registrazione o aree riservate ai visitatori.
+          </p>
+          <p>
+            <strong>Commenti.</strong> Sotto le notizie puoi lasciare un commento scrivendo un nome (anche un
+            soprannome) e il testo. Nome, testo e data vengono salvati e, dopo l&apos;approvazione, pubblicati sotto
+            l&apos;articolo. Per bloccare lo spam conserviamo anche un&apos;impronta anonima e non reversibile della
+            connessione (non l&apos;indirizzo IP). Puoi chiedere in qualsiasi momento di modificare o cancellare un tuo
+            commento.
           </p>
           <p>
             <strong>Dati di navigazione.</strong> I server che ospitano il sito (Vercel Inc.) registrano
