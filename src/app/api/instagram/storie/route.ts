@@ -15,7 +15,7 @@ import {
   lasciaBlocco,
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
-import { giroArticoli, giroAttualita } from "@/sanity/lib/giornalista";
+import { giroArticoli, giroAttualita, pubblicaBozzeScadute } from "@/sanity/lib/giornalista";
 import { importaBozze } from "@/sanity/lib/importa-bozze";
 import { client } from "@/sanity/lib/client";
 import { facebookAttivo, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
@@ -78,6 +78,10 @@ async function giro(): Promise<Esito> {
     // bozze preparate a mano: vanno subito nello Studio
     const importate = await importaBozze().catch((e) => [`bozze: ${(e as Error).message}`]);
     if (importate.length) return { pubblicate: [], articoli: importate };
+
+    // bozze dell'IA non pubblicate entro 2 ore: escono da sole (poi partono storia e post Facebook)
+    const uscite = await pubblicaBozzeScadute().catch((e) => [`auto-pubblicazione: ${(e as Error).message}`]);
+    if (uscite.length) return { pubblicate: [], articoli: uscite };
 
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));

@@ -47,6 +47,12 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "autoPubblica",
+      title: "Pubblica da solo dopo 2 ore",
+      description: "Impostato dall'IA: se non pubblichi o cancelli la bozza, esce da sola 2 ore dopo essere stata scritta. Togli la spunta per tenerla ferma.",
+      type: "boolean",
+    }),
+    defineField({
       name: "autore",
       title: "Autore (facoltativo: lascia vuoto e compare solo il logo)",
       type: "string",

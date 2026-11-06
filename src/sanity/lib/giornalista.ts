@@ -28,6 +28,41 @@ const ATTESA: Record<string, number> = {
 
 const chiave = () => Math.random().toString(36).slice(2, 12);
 
+// Le bozze scritte dall'IA con la copertina escono da sole dopo questo tempo, se Cristian non le ha già pubblicate o cancellate
+const ATTESA_PUBBLICAZIONE = 2 * 3600 * 1000;
+
+function oraUscita(): string {
+  return new Date(Date.now() + ATTESA_PUBBLICAZIONE).toLocaleTimeString("it-IT", {
+    timeZone: "Europe/Rome",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export async function pubblicaBozzeScadute(): Promise<string[]> {
+  if (!process.env.SANITY_API_WRITE_TOKEN) return [];
+  const c = sanity();
+  const limite = new Date(Date.now() - ATTESA_PUBBLICAZIONE).toISOString();
+  const bozze = await c.fetch<Record<string, unknown>[]>(
+    `*[_type == "notiziaRedazione" && _id in path("drafts.**") && autoPubblica == true && defined(copertina.asset) && _createdAt < $limite][0...3]`,
+    { limite }
+  );
+  const fatte: string[] = [];
+  for (const b of bozze) {
+    const idBozza = String(b._id);
+    const id = idBozza.replace(/^drafts\./, "");
+    const { _id, _rev, _createdAt, _updatedAt, autoPubblica, ...campi } = b;
+    void _id; void _rev; void _createdAt; void _updatedAt; void autoPubblica;
+    await c
+      .transaction()
+      .createOrReplace({ ...campi, _id: id, _type: "notiziaRedazione", dataPubblicazione: new Date().toISOString() })
+      .delete(idBozza)
+      .commit();
+    fatte.push(`pubblicato: ${String(b.titolo ?? id)}`);
+  }
+  return fatte;
+}
+
 function sanity() {
   const token = process.env.SANITY_API_WRITE_TOKEN;
   if (!token) throw new Error("Manca SANITY_API_WRITE_TOKEN");
@@ -220,7 +255,7 @@ async function avvisa(titolo: string, link: string): Promise<void> {
   try {
     await fetch(`https://ntfy.sh/${canale}`, {
       method: "POST",
-      body: `Nuovo articolo da approvare: ${titolo}`,
+      body: `Nuovo articolo da controllare: ${titolo}`,
       headers: { Title: "Caliumi Racing", Click: link, Tags: "racing_motorcycle" },
       signal: AbortSignal.timeout(10000),
     });
@@ -265,40 +300,24 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
       ]);
       const a = await scriviArticolo(s, classifica, notizie);
 
+      // copertina: la grafica con podio e risultati di QUESTA sessione, così è sempre coerente con l'evento
       let copertina: Record<string, unknown> | undefined;
       try {
-        const vincitore = s.righe[0];
-        const foto = await fotoCommons(vincitore.nomeCompleto, s.campionato);
-        let immagine: Buffer | null = null;
-        let credito: string | undefined;
-        if (foto) {
-          const r = await fetch(foto.url, {
-            headers: { "User-Agent": "CaliumiRacingBot/1.0 (https://www.caliumiracing.com)" },
-            signal: AbortSignal.timeout(30000),
-            cache: "no-store",
+        const q = new URLSearchParams({ serie: x.serie, anno: String(x.anno), evento: x.evento, sessione: x.sessione });
+        const r = await fetch(`${SITO}/storie/copertina?${q}`, { cache: "no-store", signal: AbortSignal.timeout(30000) });
+        if (r.ok) {
+          const asset = await c.assets.upload("image", Buffer.from(await r.arrayBuffer()), {
+            filename: `${slugDa(a.titolo)}.jpg`,
           });
-          if (r.ok) {
-            immagine = Buffer.from(await r.arrayBuffer());
-            credito = foto.credito;
-          }
-        }
-        if (!immagine) {
-          // nessuna foto libera trovata: uso la grafica con il podio
-          const q = new URLSearchParams({ serie: x.serie, anno: String(x.anno), evento: x.evento, sessione: x.sessione });
-          const r = await fetch(`${SITO}/storie/copertina?${q}`, { cache: "no-store", signal: AbortSignal.timeout(30000) });
-          if (r.ok) immagine = Buffer.from(await r.arrayBuffer());
-        }
-        if (immagine) {
-          const asset = await c.assets.upload("image", immagine, { filename: `${slugDa(a.titolo)}.jpg` });
           copertina = {
             _type: "image",
             asset: { _type: "reference", _ref: asset._id },
-            alt: credito ? `${vincitore.nomeCompleto}, ${s.campionato}` : `${s.campionato} ${s.evento}: risultati ${s.sessione}`,
-            ...(credito ? { credito } : {}),
+            alt: `${s.campionato} ${s.evento}: risultati ${s.sessione}`,
+            credito: "Grafica Caliumi Racing",
           };
         }
       } catch {
-        // senza copertina: si aggiunge dallo Studio
+        // senza copertina: resta bozza e si aggiunge dallo Studio
       }
 
       const id = `notizia-${chiave()}${chiave()}`;
@@ -315,9 +334,12 @@ export async function giroArticoli(scadenza: number): Promise<{ scritti: string[
         dataPubblicazione: new Date().toISOString(),
         sommario: a.sommario.slice(0, 220),
         testo: daMarkdown(a.testo),
-        ...(copertina ? { copertina } : {}),
+        ...(copertina ? { copertina, autoPubblica: true } : {}),
       });
-      await avvisa(a.titolo, `${SITO}/studio/structure/notiziaRedazione;${id}`);
+      await avvisa(
+        copertina ? `${a.titolo} (esce da solo alle ${oraUscita()})` : `${a.titolo} (manca la foto: non esce da solo)`,
+        `${SITO}/studio/structure/notiziaRedazione;${id}`
+      );
       scritti.push(`${x.chiave}: ${a.titolo}`);
     } catch (e) {
       errori.push(`${x.chiave}: ${(e as Error).message}`);
@@ -444,9 +466,12 @@ Rispondi SOLO con un JSON valido, senza altro testo:
       dataPubblicazione: new Date().toISOString(),
       sommario: a.sommario.slice(0, 220),
       testo: daMarkdown(a.testo),
-      ...(copertina ? { copertina } : {}),
+      ...(copertina ? { copertina, autoPubblica: true } : {}),
     });
-    await avvisa(`${a.titolo}${copertina ? "" : " (manca la foto)"}`, `${SITO}/studio/structure/notiziaRedazione;${id}`);
+    await avvisa(
+      copertina ? `${a.titolo} (esce da solo alle ${oraUscita()})` : `${a.titolo} (manca la foto: non esce da solo)`,
+      `${SITO}/studio/structure/notiziaRedazione;${id}`
+    );
     scritti.push(`attualità: ${a.titolo}`);
   } catch (e) {
     errori.push(`attualità: ${(e as Error).message}`);
