@@ -1,0 +1,28 @@
+name: Statistiche MotoGP
+# Ricalcola le statistiche storiche (pole, giri veloci, hat-trick, Sprint...) e le pubblica sul sito
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1" # lunedì mattina, dopo il weekend di gara
+permissions:
+  contents: write
+jobs:
+  statistiche:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Calcolo statistiche
+        run: node scripts/statistiche-motogp.mjs
+      - name: Pubblico se cambiate
+        run: |
+          git config user.name "Caliumi Racing Bot"
+          git config user.email "noreply@caliumiracing.com"
+          git add src/data/statistiche-motogp.json
+          if git diff --cached --quiet; then echo "Nessuna novità"; exit 0; fi
+          git commit -m "Statistiche MotoGP aggiornate"
+          git pull --rebase -q
+          git push

@@ -9,6 +9,7 @@ import {
   unisciClassi,
   elencoPiloti,
   serieTitoli,
+  reDeiCircuiti,
   slugClasse,
   nomeClasse,
   type PilotaStat,
@@ -33,7 +34,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     classe === "tutte" ? "Motomondiale" : classe ? classe.replace("moto", "Moto").replace("cc", "cc") : "MotoGP";
   return {
     title: `Statistiche ${nome}: titoli mondiali, vittorie e record di tutti i tempi | Caliumi Racing`,
-    description: `Albo d'oro ${nome} dal 1949, piloti con più titoli, più vittorie e podi, record di stagione, vittorie per costruttore e per nazione. Aggiornate dopo ogni gara.`,
+    description: `Albo d'oro ${nome} dal 1949: titoli, vittorie, podi, pole position, giri veloci, hat-trick, vittorie consecutive, Sprint e record per circuito.`,
     alternates: { canonical: classe ? `/motogp/statistiche?classe=${classe}` : "/motogp/statistiche" },
   };
 }
@@ -123,6 +124,31 @@ export default async function StatistichePage({ searchParams }: Props) {
   const vittorieItalia = c.nazioni["IT"] ?? 0;
   const posItalia = Object.entries(c.nazioni).sort((a, b) => b[1] - a[1]).findIndex(([k]) => k === "IT") + 1;
   const campioniPerAnno = [...c.campioni].sort((a, b) => b.anno - a.anno);
+
+  // statistiche secondarie
+  const top = (campo: (p: PilotaStat) => number, n = 15) =>
+    [...piloti].filter((p) => campo(p) > 0).sort((a, b) => campo(b) - campo(a) || b.v - a.v).slice(0, n);
+  const perPole = top((p) => p.pp ?? 0);
+  const perVeloci = top((p) => p.gv ?? 0);
+  const perHatTrick = top((p) => p.ht ?? 0, 10);
+  const perConsecutive = top((p) => (p.vc ?? 0) >= 2 ? p.vc ?? 0 : 0, 10);
+  const perSprint = top((p) => p.sv ?? 0, 10);
+  const perPodiSprint = top((p) => p.sp ?? 0, 10);
+  const perRitiri = top((p) => p.rt ?? 0, 10);
+  const percentuale = (p: PilotaStat) => Math.round((p.v / p.g) * 1000) / 10;
+  const perPercentuale = [...piloti]
+    .filter((p) => p.g >= 20 && p.v > 0)
+    .sort((a, b) => b.v / b.g - a.v / a.g)
+    .slice(0, 15);
+  const perPercPodi = [...piloti]
+    .filter((p) => p.g >= 20 && p.p > 0)
+    .sort((a, b) => b.p / b.g - a.p / a.g)
+    .slice(0, 10);
+  const senzaVittorie = [...piloti].filter((p) => p.v === 0).sort((a, b) => b.g - a.g).slice(0, 10);
+  const podiSenzaVittorie = [...piloti].filter((p) => p.v === 0 && p.p > 0).sort((a, b) => b.p - a.p || a.g - b.g).slice(0, 10);
+  const circuiti = reDeiCircuiti(c).slice(0, 20);
+  const dal = (anno?: number) => (anno ? ` (dal ${anno})` : "");
+  const haSecondarie = perPole.length > 0 || perPercentuale.length > 0;
 
   const linguette = [
     ...classi.map((x, i) => ({
@@ -251,6 +277,81 @@ export default async function StatistichePage({ searchParams }: Props) {
             righe={nazioni.map(([iso, v]) => ({ nome: paese(iso), iso, valore: v }))}
           />
         </div>
+
+        {haSecondarie && (
+          <>
+            <h2 className={`${racingFont.className} mb-2 text-2xl text-racing-yellow`}>
+              Statistiche secondarie {tutte ? "del Motomondiale" : nome}
+            </h2>
+            <p className="mb-5 text-sm text-white/60">
+              Pole position, giri più veloci, hat-trick, serie di vittorie, Sprint, percentuali e record per circuito.
+              Pole e giri veloci sono disponibili nell&apos;archivio ufficiale solo dagli anni indicati.
+            </p>
+            <div className="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <Classifica
+                titolo={`Più pole position${dal(c.dal?.pole)}`}
+                colonna="Pole"
+                righe={perPole.map((p) => ({ nome: p.n, iso: p.i, valore: p.pp ?? 0, nota: periodo(p) }))}
+              />
+              <Classifica
+                titolo={`Più giri veloci in gara${dal(c.dal?.veloce)}`}
+                colonna="Giri"
+                righe={perVeloci.map((p) => ({ nome: p.n, iso: p.i, valore: p.gv ?? 0, nota: periodo(p) }))}
+              />
+              <Classifica
+                titolo="Percentuale di vittorie (minimo 20 gare)"
+                colonna="%"
+                righe={perPercentuale.map((p) => ({ nome: p.n, iso: p.i, valore: percentuale(p), nota: `${p.v} vittorie su ${p.g} gare` }))}
+              />
+              <Classifica
+                titolo="Percentuale di podi (minimo 20 gare)"
+                colonna="%"
+                righe={perPercPodi.map((p) => ({ nome: p.n, iso: p.i, valore: Math.round((p.p / p.g) * 1000) / 10, nota: `${p.p} podi su ${p.g} gare` }))}
+              />
+              <Classifica
+                titolo={`Hat-trick: pole, vittoria e giro veloce${dal(c.dal?.pole)}`}
+                colonna="Hat-trick"
+                righe={perHatTrick.map((p) => ({ nome: p.n, iso: p.i, valore: p.ht ?? 0, nota: periodo(p) }))}
+              />
+              <Classifica
+                titolo="Più vittorie consecutive"
+                colonna="Di fila"
+                righe={perConsecutive.map((p) => ({ nome: p.n, iso: p.i, valore: p.vc ?? 0, nota: periodo(p) }))}
+              />
+              <Classifica
+                titolo={`Più vittorie nelle Sprint${dal(c.dal?.sprint)}`}
+                colonna="Vittorie"
+                righe={perSprint.map((p) => ({ nome: p.n, iso: p.i, valore: p.sv ?? 0, nota: `${p.sp ?? 0} podi Sprint` }))}
+              />
+              <Classifica
+                titolo={`Più podi nelle Sprint${dal(c.dal?.sprint)}`}
+                colonna="Podi"
+                righe={perPodiSprint.map((p) => ({ nome: p.n, iso: p.i, valore: p.sp ?? 0, nota: `${p.sv ?? 0} vittorie Sprint` }))}
+              />
+              <Classifica
+                titolo="Più podi senza mai vincere"
+                colonna="Podi"
+                righe={podiSenzaVittorie.map((p) => ({ nome: p.n, iso: p.i, valore: p.p, nota: `${p.g} gare · ${periodo(p)}` }))}
+              />
+              <Classifica
+                titolo="Più gare senza mai vincere"
+                colonna="Gare"
+                righe={senzaVittorie.map((p) => ({ nome: p.n, iso: p.i, valore: p.g, nota: `${p.p} podi · ${periodo(p)}` }))}
+              />
+              <Classifica
+                titolo="Più ritiri e gare non concluse"
+                colonna="Ritiri"
+                righe={perRitiri.map((p) => ({ nome: p.n, iso: p.i, valore: p.rt ?? 0, nota: `su ${p.g} gare · ${periodo(p)}` }))}
+              />
+              <Classifica
+                titolo="Il re di ogni circuito"
+                colonna="Vittorie"
+                righe={circuiti.map((x) => ({ nome: `${x.circuito}: ${x.n}`, iso: x.i, valore: x.v, nota: `su ${x.totale} gare vinte in totale su questa pista` }))}
+              />
+            </div>
+            <Pubblicita posizione="motogp-classifica" className="mb-10" />
+          </>
+        )}
 
         {campioniPerAnno.length > 0 && (
           <div className="mb-10">

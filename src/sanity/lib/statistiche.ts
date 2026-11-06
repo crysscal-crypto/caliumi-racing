@@ -20,6 +20,13 @@ export type PilotaStat = {
   g: number; // gare
   t: number[]; // anni dei titoli
   a: [number, number]; // primo e ultimo anno
+  pp?: number; // pole position
+  gv?: number; // giri più veloci
+  ht?: number; // hat-trick (pole + vittoria + giro veloce)
+  rt?: number; // ritiri / non classificato
+  vc?: number; // massimo vittorie consecutive
+  sv?: number; // vittorie Sprint
+  sp?: number; // podi Sprint
 };
 export type Campione = { anno: number; k: string; n: string; i: string; c: string; pt: number | null; cl: string };
 export type RecordStagione = { anno: number; k: string; n: string; i: string; v: number; gp: number };
@@ -35,6 +42,8 @@ export type ClasseStat = {
   nazioni: Record<string, number>;
   campioni: Campione[];
   recordStagione: RecordStagione[];
+  circuiti?: Record<string, Record<string, number>>; // circuito → { pilota: vittorie }
+  dal?: { pole?: number; veloce?: number; sprint?: number }; // primo anno con questi dati
 };
 type FileStat = { aggiornato: string | null; ultimaStagione: number | null; classi: ClasseStat[] };
 
@@ -141,6 +150,21 @@ export function unisciClassi(classi: ClasseStat[]): ClasseStat {
       t.g += p.g;
       t.t.push(...p.t);
       t.a = [Math.min(t.a[0], p.a[0]), Math.max(t.a[1], p.a[1])];
+      t.pp = (t.pp ?? 0) + (p.pp ?? 0);
+      t.gv = (t.gv ?? 0) + (p.gv ?? 0);
+      t.ht = (t.ht ?? 0) + (p.ht ?? 0);
+      t.rt = (t.rt ?? 0) + (p.rt ?? 0);
+      t.sv = (t.sv ?? 0) + (p.sv ?? 0);
+      t.sp = (t.sp ?? 0) + (p.sp ?? 0);
+      t.vc = Math.max(t.vc ?? 0, p.vc ?? 0);
+    }
+    for (const [circ, vinc] of Object.entries(c.circuiti ?? {})) {
+      const tc = ((tot.circuiti ??= {})[circ] ??= {});
+      for (const [k, v] of Object.entries(vinc)) tc[k] = (tc[k] ?? 0) + v;
+    }
+    for (const chiave of ["pole", "veloce", "sprint"] as const) {
+      const anno = c.dal?.[chiave];
+      if (anno && (!tot.dal?.[chiave] || anno < (tot.dal[chiave] as number))) (tot.dal ??= {})[chiave] = anno;
     }
     for (const [k, v] of Object.entries(c.costruttori)) tot.costruttori[k] = (tot.costruttori[k] ?? 0) + v;
     for (const [k, v] of Object.entries(c.nazioni)) tot.nazioni[k] = (tot.nazioni[k] ?? 0) + v;
@@ -169,4 +193,17 @@ export function serieTitoli(c: ClasseStat): { n: string; i: string; da: number; 
     }
   }
   return migliore;
+}
+
+// Per ogni circuito il pilota con più vittorie (solo circuiti con almeno 5 GP vinti in totale)
+export function reDeiCircuiti(c: ClasseStat): { circuito: string; n: string; i: string; v: number; totale: number }[] {
+  const out: { circuito: string; n: string; i: string; v: number; totale: number }[] = [];
+  for (const [circuito, vinc] of Object.entries(c.circuiti ?? {})) {
+    const totale = Object.values(vinc).reduce((a, b) => a + b, 0);
+    if (totale < 5) continue;
+    const [k, v] = Object.entries(vinc).sort((a, b) => b[1] - a[1])[0];
+    const p = c.piloti[k];
+    if (p && v >= 2) out.push({ circuito, n: p.n, i: p.i, v, totale });
+  }
+  return out.sort((a, b) => b.v - a.v || b.totale - a.totale);
 }

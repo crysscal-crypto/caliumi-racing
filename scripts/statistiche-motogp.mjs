@@ -1,5 +1,6 @@
 // Crea src/data/statistiche-motogp.json con le statistiche storiche del Motomondiale
-// (tutte le stagioni CONCLUSE). La stagione in corso viene aggiunta in automatico dal sito.
+// (tutte le stagioni concluse + le gare già disputate della stagione in corso).
+// Gira da solo ogni lunedì su GitHub (.github/workflows/statistiche-motogp.yml).
 // Uso (dalla cartella del progetto):  node scripts/statistiche-motogp.mjs
 // Durata: circa 10-20 minuti. Non tocca Sanity.
 
@@ -58,7 +59,8 @@ const daWikipedia = (righe) =>
   }));
 
 const stagioni = (await api("/seasons")) ?? [];
-const concluse = stagioni.filter((s) => !s.current).sort((a, b) => a.year - b.year);
+// tutte le stagioni, compresa quella in corso (solo le gare già finite)
+const concluse = stagioni.filter((s) => s.year <= new Date().getFullYear()).sort((a, b) => a.year - b.year);
 if (concluse.length === 0) {
   console.error("Impossibile leggere le stagioni. Controlla la connessione e riprova.");
   process.exit(1);
@@ -82,6 +84,9 @@ function classe(cat) {
       nazioni: {},
       campioni: [],
       recordStagione: [],
+      circuiti: {}, // circuito → { pilota: vittorie }
+      dal: {}, // primo anno con dati di pole, giri veloci e Sprint
+      _serie: { k: null, n: 0 }, // vittorie consecutive in corso (solo per il calcolo)
     };
   }
   const c = classi[cat.id];
@@ -110,7 +115,16 @@ for (const stagione of concluse) {
       const cl = await api(`/session/${gara.id}/classification?test=false`);
       const ufficiale = cl?.classification ?? [];
       const righe = ufficiale.length ? ufficiale : daWikipedia(INTEGRAZIONI[gara.id]?.righe ?? []);
-      return { ev, righe };
+      const record = cl?.records ?? [];
+      const sprint = sessioni.filter((s) => s.type === "SPR").pop();
+      const clSprint = sprint ? await api(`/session/${sprint.id}/classification?test=false`) : null;
+      return {
+        ev,
+        righe,
+        pole: record.find((x) => x.type === "poleLap")?.rider ?? null,
+        veloce: record.find((x) => x.type === "fastestLap")?.rider ?? null,
+        sprint: clSprint?.classification ?? [],
+      };
     });
 
     for (const r of risultati) {
@@ -129,14 +143,31 @@ for (const stagione of concluse) {
           g: 0, // gare
           t: [], // anni titoli
           a: [stagione.year, stagione.year], // primo e ultimo anno
+          pp: 0, // pole position
+          gv: 0, // giri più veloci in gara
+          ht: 0, // hat-trick: pole + vittoria + giro più veloce
+          rt: 0, // ritiri / non classificato
+          vc: 0, // massimo di vittorie consecutive
+          sv: 0, // vittorie Sprint
+          sp: 0, // podi Sprint
         });
         p.n = riga.rider.full_name;
         p.g++;
         p.a[1] = stagione.year;
         puntiStagione[k] = (puntiStagione[k] ?? 0) + (riga.points ?? 0);
         if (riga.position >= 1 && riga.position <= 3) p.p++;
+        if (!riga.rider.wiki && (riga.position === null || riga.status === "OUTSTND")) p.rt++;
         if (riga.position === 1) {
           p.v++;
+          // vittorie consecutive nella classe
+          if (c._serie.k === k) c._serie.n++;
+          else c._serie = { k, n: 1 };
+          if (c._serie.n > p.vc) p.vc = c._serie.n;
+          const circ = r.ev.circuit?.name;
+          if (circ) {
+            const cc = (c.circuiti[circ] ??= {});
+            cc[k] = (cc[k] ?? 0) + 1;
+          }
           vittorieStagione[k] = (vittorieStagione[k] ?? 0) + 1;
           const cos = riga.constructor?.name;
           if (cos) c.costruttori[cos] = (c.costruttori[cos] ?? 0) + 1;
@@ -144,10 +175,38 @@ for (const stagione of concluse) {
           if (iso) c.nazioni[iso] = (c.nazioni[iso] ?? 0) + 1;
         }
       }
+
+      const vincitore = r.righe.find((x) => x.position === 1)?.rider;
+      const kVinc = vincitore ? chiavePilota(vincitore) : null;
+      const kPole = r.pole ? r.pole.riders_api_uuid || r.pole.riders_id || null : null;
+      const kVeloce = r.veloce ? r.veloce.riders_api_uuid || r.veloce.riders_id || null : null;
+      if (kPole && c.piloti[kPole]) {
+        c.piloti[kPole].pp++;
+        c.dal.pole ??= stagione.year;
+      }
+      if (kVeloce && c.piloti[kVeloce]) {
+        c.piloti[kVeloce].gv++;
+        c.dal.veloce ??= stagione.year;
+      }
+      if (kVinc && kVinc === kPole && kVinc === kVeloce) c.piloti[kVinc].ht++;
+      for (const riga of r.sprint) {
+        if (!riga.rider || !riga.position || riga.position > 3) continue;
+        const k = chiavePilota(riga.rider);
+        if (!c.piloti[k]) continue; // conto solo chi ha anche corso le gare lunghe
+        c.piloti[k].sp++;
+        if (riga.position === 1) c.piloti[k].sv++;
+        c.dal.sprint ??= stagione.year;
+      }
     }
 
     if (gpClasse === 0) continue;
     c.anni.push(stagione.year);
+    if (stagione.current) {
+      // stagione in corso: niente campione, ma il record di vittorie sì
+      const [kM, vM] = Object.entries(vittorieStagione).sort((a, b) => b[1] - a[1])[0] ?? [];
+      if (kM) c.recordStagione.push({ anno: stagione.year, k: kM, n: c.piloti[kM].n, i: c.piloti[kM].i, v: vM, gp: gpClasse });
+      continue;
+    }
 
     // Campione: dalla classifica ufficiale, altrimenti dai punti sommati
     const classifica = await api(
@@ -181,10 +240,16 @@ for (const stagione of concluse) {
 }
 
 mkdirSync("src/data", { recursive: true });
+for (const c of Object.values(classi)) delete c._serie;
 const uscita = {
   aggiornato: new Date().toISOString(),
+  // il sito aggiunge da solo solo le stagioni successive a questa
   ultimaStagione: concluse.at(-1).year,
   classi: Object.values(classi).sort((a, b) => a.legacy - b.legacy),
 };
+if (uscita.classi.reduce((t, c) => t + c.gp, 0) < 1000) {
+  console.error("Dati incompleti (API non raggiungibile?): file NON aggiornato.");
+  process.exit(1);
+}
 writeFileSync("src/data/statistiche-motogp.json", JSON.stringify(uscita));
 console.log("\nFATTO: creato src/data/statistiche-motogp.json");
