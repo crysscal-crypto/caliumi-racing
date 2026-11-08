@@ -16,7 +16,7 @@ import {
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", types: { "application/rss+xml": [{ url: "/feed.xml", title: "Caliumi Racing - Notizie" }] } },
 };
 
 const AGGIORNATO = "6 novembre 2026";

@@ -6,7 +6,7 @@ import { getStagioniSBK } from "@/sanity/lib/sbk";
 import { stagioniCIV } from "@/sanity/lib/civ";
 import { getSlugRedazione } from "@/sanity/lib/redazione";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 
 const SITO = "https://www.caliumiracing.com";
 

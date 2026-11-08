@@ -93,6 +93,12 @@ async function giro(): Promise<Esito> {
     if (sommari.length) return { pubblicate: [], articoli: sommari };
 
     const [candidate, stato] = await Promise.all([sessioniRecenti(), leggiStato()]);
+    // IndexNow: avviso subito Bing, Yandex, Seznam (e chi usa i loro indici, come ChatGPT e Copilot) dei nuovi articoli
+    const daIndicizzare = await articoliDaAnnunciare(stato.pubblicate, "indexnow:");
+    if (daIndicizzare.length && (await avvisaIndexNow(daIndicizzare.map((a) => `${SITO}/notizie/${a.slug}`)))) {
+      for (const a of daIndicizzare) await segnaPubblicata(`indexnow:${a._id}`, stato);
+    }
+
     const nuove = candidate.filter((c) => !stato.pubblicate.includes(c.chiave));
     const nuoviArticoli = await articoliDaAnnunciare(stato.pubblicate);
     const perFacebook = await sessioniPerFacebook(stato.pubblicate);
@@ -220,5 +226,27 @@ async function pubblicaConMusica(
     pubblicate.push(`${chiave} (immagine)`);
   } finally {
     if (video) await eliminaVideo(video.assetId);
+  }
+}
+
+const CHIAVE_INDEXNOW = "89957587f42874fb5cb2789aa3f5bc27"; // file in public/
+
+async function avvisaIndexNow(url: string[]): Promise<boolean> {
+  try {
+    const r = await fetch("https://api.indexnow.org/indexnow", {
+      method: "POST",
+      headers: { "content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        host: "www.caliumiracing.com",
+        key: CHIAVE_INDEXNOW,
+        keyLocation: `${SITO}/${CHIAVE_INDEXNOW}.txt`,
+        urlList: [...url, `${SITO}/notizie`, `${SITO}/`],
+      }),
+      signal: AbortSignal.timeout(10000),
+      cache: "no-store",
+    });
+    return r.ok || r.status === 202;
+  } catch {
+    return false;
   }
 }

@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     title: "Notizie MotoGP, Superbike e motori di oggi | Caliumi Racing",
     description:
       "Le ultime notizie di MotoGP, Superbike, Moto2, motocross, novità moto, Formula 1 e motori dalle principali testate italiane, aggiornate ogni 30 minuti.",
-    alternates: { canonical: "/notizie" },
+    alternates: { canonical: "/notizie", types: { "application/rss+xml": [{ url: "/feed.xml", title: "Caliumi Racing - Notizie" }] } },
   };
 }
 
