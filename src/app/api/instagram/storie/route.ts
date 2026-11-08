@@ -57,7 +57,12 @@ export async function GET(req: Request) {
 
   try {
     const esito = await giro();
-    return NextResponse.json(esito, { status: esito.errori?.length && !esito.pubblicate?.length ? 500 : 200 });
+    // controllo manuale (GitHub): mostro anche lo stato delle ultime richieste di articoli
+    const richieste = await client
+      .withConfig({ useCdn: false, token: process.env.SANITY_API_WRITE_TOKEN, perspective: "raw" })
+      .fetch(`*[_type == "richiestaArticolo"] | order(_createdAt desc)[0...4]{ _id, argomento, esito, tentativi }`)
+      .catch(() => []);
+    return NextResponse.json({ ...esito, richieste }, { status: esito.errori?.length && !esito.pubblicate?.length ? 500 : 200 });
   } catch (e) {
     return NextResponse.json({ errore: (e as Error).message }, { status: 500 });
   }
