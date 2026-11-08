@@ -402,19 +402,25 @@ export async function giroRichieste(scadenza: number): Promise<{ scritti: string
     return { scritti: [], errori: [] };
   }
   const c = sanity();
-  const r = await c.fetch<Richiesta | null>(
-    `*[_type == "richiestaArticolo" && !(_id in path("drafts.**")) && !defined(esito)] | order(_createdAt asc)[0]{ _id, argomento, note }`
+  // nuove, oppure fallite (fino a 3 tentativi), oppure rimaste "in lavorazione" da più di 15 minuti
+  const r = await c.fetch<(Richiesta & { tentativi?: number }) | null>(
+    `*[_type == "richiestaArticolo" && !(_id in path("drafts.**")) && (
+        !defined(esito) ||
+        (string::startsWith(esito, "❌") && coalesce(tentativi, 1) < 3) ||
+        (esito == "In lavorazione…" && _updatedAt < $vecchio)
+      )] | order(_createdAt asc)[0]{ _id, argomento, note, tentativi }`,
+    { vecchio: new Date(Date.now() - 15 * 60000).toISOString() }
   );
   if (!r) return { scritti: [], errori: [] };
   // segno subito come "in lavorazione" per non scriverlo due volte
-  await c.patch(r._id).set({ esito: "In lavorazione…" }).commit();
+  await c.patch(r._id).set({ esito: "In lavorazione…", tentativi: (r.tentativi ?? 0) + 1 }).commit();
   const esito = await giroAttualita(scadenza, r);
   await c
     .patch(r._id)
     .set({
       esito: esito.scritti.length
         ? `✅ Scritto: ${esito.scritti[0].replace(/^attualità: /, "")} — trovi la bozza in "Notizia scritta da me"`
-        : `❌ Non riuscito: ${esito.errori[0] ?? "errore sconosciuto"}. Crea una nuova richiesta per riprovare.`,
+        : `❌ Non riuscito: ${esito.errori[0] ?? "nessun articolo scritto"}. Riprovo da solo (massimo 3 tentativi).`,
     })
     .commit();
   return esito;
