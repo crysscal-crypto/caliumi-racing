@@ -49,3 +49,30 @@ export async function pubblicaArticoloFacebook(a: { titolo: string; sommario: st
   const messaggio = `📰 ${a.titolo}\n\n${a.sommario}\n\n👉 Leggi l'articolo completo su Caliumi Racing`;
   await chiama("feed", { message: messaggio, link: `${SITO}/notizie/${a.slug}` });
 }
+
+// Reel Instagram dopo Sprint e gare (MotoGP) e gare Superbike: arrivano anche a chi non segue il profilo
+const DA_REEL = ["motogp:SPR", "motogp:RAC", "sbk:RC1", "sbk:RC2"];
+
+export async function sessioniPerReel(fatte: string[]): Promise<Candidata[]> {
+  return (await sessioniRecenti()).filter(
+    (c) =>
+      DA_REEL.includes(tipoArticolo(c) ?? "") &&
+      !fatte.includes(`reel:${c.chiave}`) &&
+      fatte.includes(c.chiave) && // dopo la storia, così i risultati sono sicuramente pronti
+      Date.now() - Date.parse(c.quando) < 8 * 3600000
+  );
+}
+
+export async function didascaliaReel(c: Candidata): Promise<string | null> {
+  const s = await datiStoria(c.serie, c.anno, c.evento, c.sessione);
+  if (!s || s.righe.length < 3) return null;
+  const podio = s.righe
+    .slice(0, 3)
+    .map((r, i) => `${["🥇", "🥈", "🥉"][i]} ${r.nomeCompleto}`)
+    .join("\n");
+  const hashtag =
+    s.serie === "motogp"
+      ? "#MotoGP #MotoGP2026 #Motomondiale #Moto #Racing #Bike"
+      : "#WorldSBK #Superbike #SBK #Moto #Racing #Bike";
+  return `🏁 ${s.campionato} · ${s.evento} · ${s.sessione}\n\n${podio}\n\nChi è stato il migliore secondo te? Scrivilo nei commenti 👇\n\n📊 Classifica completa e tempi: link in bio · caliumiracing.com\n\n${hashtag} #SblisgassMotorSport #CaliumiRacing`;
+}

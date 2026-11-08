@@ -99,16 +99,22 @@ async function chiama(percorso: string, token: string, corpo?: Record<string, st
   return j;
 }
 
-export async function pubblicaStoria(media: { immagine?: string; video?: string }, token: string): Promise<string> {
+export async function pubblicaStoria(
+  media: { immagine?: string; video?: string; reel?: { didascalia: string } },
+  token: string
+): Promise<string> {
   const utente = process.env.INSTAGRAM_USER_ID;
   if (!utente) throw new Error("Manca la variabile INSTAGRAM_USER_ID");
 
   const contenitore = await chiama(
     `/${utente}/media`,
     token,
-    media.video
-      ? { video_url: media.video, media_type: "STORIES" }
-      : { image_url: media.immagine ?? "", media_type: "STORIES" }
+    media.reel && media.video
+      ? // Reel: compare nel profilo e lo vede anche chi non ti segue
+        { video_url: media.video, media_type: "REELS", caption: media.reel.didascalia, share_to_feed: "true" }
+      : media.video
+        ? { video_url: media.video, media_type: "STORIES" }
+        : { image_url: media.immagine ?? "", media_type: "STORIES" }
   );
   const id = String(contenitore.id);
 

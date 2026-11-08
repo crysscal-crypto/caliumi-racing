@@ -7,6 +7,7 @@ import Pubblicita from "@/components/Pubblicita";
 import CardRedazione from "@/components/CardRedazione";
 import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 import Commenti from "@/components/Commenti";
+import Approfondisci from "@/components/Approfondisci";
 
 const SITO = "https://www.caliumiracing.com";
 
@@ -136,6 +137,7 @@ export default async function ArticoloRedazione({ notizia: n }: { notizia: Notiz
               X
             </a>
           </div>
+          <Approfondisci campionato={n.campionato} />
           <FontePreferitaGoogle className="mt-6" />
         </article>
 

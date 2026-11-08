@@ -55,7 +55,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description: (commento?.commento || notizia.estratto || notizia.titolo).slice(0, 160),
     alternates: { canonical: `/notizie/${slug}` },
     // Indicizzata da Google solo se c'è il commento di Cristian (contenuto originale)
-    robots: commento ? { index: true, follow: true } : { index: false, follow: true },
+    robots: commento
+      ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } }
+      : { index: false, follow: true },
   };
 }
 

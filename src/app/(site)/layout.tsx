@@ -17,6 +17,12 @@ export const metadata: Metadata = {
   description:
     "Notizie MotoGP e Superbike ogni giorno, risultati e classifiche di MotoGP, WorldSBK e CIV, archivio storico e la carriera del pilota Cristian Caliumi.",
   applicationName: "Caliumi Racing",
+  // Google Discover e immagini: anteprime grandi (più clic dal telefono)
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
   alternates: { types: { "application/rss+xml": [{ url: "/feed.xml", title: "Caliumi Racing - Notizie" }] } },
   icons: {
     icon: [

@@ -18,7 +18,7 @@ import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
 import { giroArticoli, giroAttualita, giroRichieste, pubblicaBozzeScadute, riempiSommari } from "@/sanity/lib/giornalista";
 import { importaBozze } from "@/sanity/lib/importa-bozze";
 import { client } from "@/sanity/lib/client";
-import { facebookAttivo, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
+import { facebookAttivo, sessioniPerReel, didascaliaReel, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -103,7 +103,14 @@ async function giro(): Promise<Esito> {
     const nuoviArticoli = await articoliDaAnnunciare(stato.pubblicate);
     const perFacebook = await sessioniPerFacebook(stato.pubblicate);
     const articoliFacebook = facebookAttivo() ? await articoliDaAnnunciare(stato.pubblicate, "fb:articolo:") : [];
-    if (nuove.length === 0 && nuoviArticoli.length === 0 && perFacebook.length === 0 && articoliFacebook.length === 0) {
+    const perReel = await sessioniPerReel(stato.pubblicate);
+    if (
+      nuove.length === 0 &&
+      nuoviArticoli.length === 0 &&
+      perFacebook.length === 0 &&
+      articoliFacebook.length === 0 &&
+      perReel.length === 0
+    ) {
       return { pubblicate: [], ...(await articoli(inizio)) };
     }
 
@@ -152,6 +159,28 @@ async function giro(): Promise<Esito> {
         errori.push(`${chiave}: ${(e as Error).message}`);
       }
     }
+    // Reel Instagram dopo Sprint e gare (uno per giro: l'elaborazione del video richiede tempo)
+    for (const c of perReel.slice(0, 1)) {
+      if (Date.now() - inizio > 120_000) break;
+      const chiave = `reel:${c.chiave}`;
+      const didascalia = await didascaliaReel(c);
+      if (!didascalia) continue;
+      await segnaPubblicata(chiave, stato);
+      let video: Awaited<ReturnType<typeof creaVideoStoria>> | null = null;
+      try {
+        const res = await fetch(`${urlImmagine(c)}&v=${Date.now()}`, { cache: "no-store", signal: AbortSignal.timeout(30000) });
+        if (!res.ok) throw new Error(`Immagine ${res.status}`);
+        video = await creaVideoStoria(Buffer.from(await res.arrayBuffer()), chiave);
+        await pubblicaStoria({ video: video.url, reel: { didascalia } }, token);
+        pubblicate.push(chiave);
+      } catch (e) {
+        // non riprovo all'infinito: un Reel perso non è grave
+        errori.push(`${chiave}: ${(e as Error).message}`);
+      } finally {
+        if (video) await eliminaVideo(video.assetId);
+      }
+    }
+
     for (const a of articoliFacebook.slice(0, 1)) {
       const chiave = `fb:articolo:${a._id}`;
       await segnaPubblicata(chiave, stato);
