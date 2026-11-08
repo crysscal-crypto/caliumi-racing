@@ -34,7 +34,7 @@ ${articoli
     </news:news>
   </url>`
   )
-  .join("\\n")}
+  .join("\n")}
 </urlset>`;
 
   return new Response(corpo, {

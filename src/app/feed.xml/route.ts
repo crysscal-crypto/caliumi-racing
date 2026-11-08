@@ -41,7 +41,7 @@ ${articoli
       ${a.foto ? `<media:content url="${xml(`${a.foto}?w=1200&h=675&fit=crop`)}" medium="image" />` : ""}
     </item>`
   )
-  .join("\\n")}
+  .join("\n")}
   </channel>
 </rss>`;
 
