@@ -6,7 +6,7 @@
 import { createClient } from "next-sanity";
 import { apiVersion, dataset, projectId } from "../env";
 import { sessioniRecenti, datiStoria, type Candidata, type Storia } from "./storie";
-import { getStagione, getCategorie, getClassifica } from "./motogp";
+import { getStagione, getCategorie, getClassifica, getEventi, eventoFinito } from "./motogp";
 import { getStagioneSBK, getCategorieSBK, getClassificaSBK } from "./sbk";
 import { getTutteLeNotizie, CAMPIONATI_MOTO } from "./notizie";
 import { daMarkdown, slugDa } from "./markdown";
@@ -180,16 +180,23 @@ async function gemini(prompt: string): Promise<string> {
   );
   let ultimo = "";
   for (const modello of modelli) {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modello}:generateContent`, {
-      method: "POST",
-      headers: { "x-goog-api-key": process.env.GEMINI_API_KEY ?? "", "content-type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0.7 },
-      }),
-      signal: AbortSignal.timeout(90000),
-      cache: "no-store",
-    });
+    let res: Response;
+    try {
+      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modello}:generateContent`, {
+        method: "POST",
+        headers: { "x-goog-api-key": process.env.GEMINI_API_KEY ?? "", "content-type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: "application/json", temperature: 0.7 },
+        }),
+        signal: AbortSignal.timeout(55000),
+        cache: "no-store",
+      });
+    } catch (e) {
+      // troppo lento o non raggiungibile: provo il modello successivo
+      ultimo = `${modello}: ${(e as Error).message}`;
+      continue;
+    }
     const j = (await res.json().catch(() => ({}))) as {
       candidates?: { content?: { parts?: { text?: string }[] } }[];
       error?: { message?: string };
@@ -396,6 +403,28 @@ type ArticoloAttualita = Articolo & { campionato?: string; protagonista?: string
 
 type Richiesta = { _id: string; argomento?: string; note?: string };
 
+// Classifica piloti MotoGP aggiornata + GP e punti ancora in palio: per articoli su calcoli e previsioni
+async function situazioneMondiale(): Promise<string> {
+  try {
+    const stagione = await getStagione();
+    if (!stagione) return "";
+    const [categorie, eventi] = await Promise.all([getCategorie(stagione), getEventi(stagione)]);
+    const motogp = categorie.find((c) => /motogp/i.test(c.name)) ?? categorie[0];
+    const classifica = await getClassifica(stagione, motogp);
+    const rimasti = eventi.filter((e) => !eventoFinito(e) && e.status !== "CANCELLED");
+    const righe = classifica
+      .slice(0, 10)
+      .map((r) => `${r.position}. ${r.rider.full_name} ${r.points} punti`)
+      .join("\n");
+    return `CLASSIFICA PILOTI MOTOGP ${stagione.year} AGGIORNATA (dati ufficiali):
+${righe}
+GP ANCORA DA CORRERE: ${rimasti.length} (${rimasti.map((e) => e.name).join(", ") || "nessuno"}).
+PUNTI IN PALIO PER OGNI GP: 37 (Sprint 12-9-7-6-5-4-3-2-1 ai primi 9, Gara 25-20-16-13-11-10-9-8-7-6-5-4-3-2-1 ai primi 15). Totale ancora disponibile: ${rimasti.length * 37}.`;
+  } catch {
+    return "";
+  }
+}
+
 // Articoli chiesti da Cristian dallo Studio ("Chiedi un articolo all'IA"): li scrive subito
 export async function giroRichieste(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
   if (!process.env.SANITY_API_WRITE_TOKEN || (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY)) {
@@ -403,17 +432,20 @@ export async function giroRichieste(scadenza: number): Promise<{ scritti: string
   }
   const c = sanity();
   // nuove, oppure fallite (fino a 3 tentativi), oppure rimaste "in lavorazione" da più di 15 minuti
-  const r = await c.fetch<(Richiesta & { tentativi?: number }) | null>(
+  const r = await c.fetch<(Richiesta & { tentativi?: number; riprova?: boolean }) | null>(
     `*[_type == "richiestaArticolo" && !(_id in path("drafts.**")) && (
-        !defined(esito) ||
+        !defined(esito) || riprova == true ||
         (string::startsWith(esito, "❌") && coalesce(tentativi, 1) < 3) ||
         (esito == "In lavorazione…" && _updatedAt < $vecchio)
-      )] | order(_createdAt asc)[0]{ _id, argomento, note, tentativi }`,
+      )] | order(_createdAt asc)[0]{ _id, argomento, note, tentativi, riprova }`,
     { vecchio: new Date(Date.now() - 15 * 60000).toISOString() }
   );
   if (!r) return { scritti: [], errori: [] };
   // segno subito come "in lavorazione" per non scriverlo due volte
-  await c.patch(r._id).set({ esito: "In lavorazione…", tentativi: (r.tentativi ?? 0) + 1 }).commit();
+  await c
+    .patch(r._id)
+    .set({ esito: "In lavorazione…", riprova: false, tentativi: r.riprova ? 1 : (r.tentativi ?? 0) + 1 })
+    .commit();
   const esito = await giroAttualita(scadenza, r);
   await c
     .patch(r._id)
@@ -459,8 +491,10 @@ export async function giroAttualita(
       .map((n) => `- [${n.campionato} · ${n.fonte}] ${n.titolo}${n.estratto ? ` — ${n.estratto}` : ""}`);
     if (notizie.length < 5 && !richiesta?.note) throw new Error("Poche notizie recenti");
 
-    const argomento = richiesta?.argomento?.trim();
-    const note = richiesta?.note?.trim();
+    // se Cristian ha scritto la richiesta solo nelle informazioni, la uso come argomento
+    const argomento = (richiesta?.argomento?.trim() || richiesta?.note?.trim().slice(0, 400)) ?? undefined;
+    const note = richiesta?.argomento?.trim() ? richiesta?.note?.trim() : undefined;
+    const mondiale = richiesta ? await situazioneMondiale() : "";
     const compito = argomento
       ? `COMPITO:
 1. L'argomento è deciso dal direttore: "${argomento}". Scrivi su questo, usando le notizie qui sopra che lo riguardano${note ? " e le informazioni del direttore qui sotto" : ""}.
@@ -481,12 +515,12 @@ ${notizie.join("\n")}
 
 ARTICOLI GIÀ SCRITTI DA NOI (non ripetere lo stesso argomento${argomento ? ", salvo quello richiesto dal direttore" : ""}):
 ${giaScritti.map((t) => `- ${t}`).join("\n") || "- nessuno"}
-${note ? `\nINFORMAZIONI DEL DIRETTORE (fatti verificati, puoi usarli):\n${note.slice(0, 4000)}\n` : ""}
+${note ? `\nINFORMAZIONI DEL DIRETTORE (fatti verificati, puoi usarli):\n${note.slice(0, 4000)}\n` : ""}${mondiale ? `\n${mondiale}\n(Se l'argomento riguarda il Mondiale, fai i calcoli SOLO con questi numeri: sono ufficiali.)\n` : ""}
 ${compito}
 
 REGOLE:
 - Non nominare la redazione né chi scrive: niente firme, niente "noi di Caliumi Racing".
-- Usa solo i fatti presenti nei titoli, nei sommari${note ? " e nelle informazioni del direttore" : ""}. Non inventare dichiarazioni, numeri, date o dettagli.
+- Usa solo i fatti presenti nei titoli, nei sommari${note ? ", nelle informazioni del direttore" : ""}${mondiale ? " e nella classifica ufficiale" : ""}. Non inventare dichiarazioni, numeri, date o dettagli.
 - Se un fatto è riportato da una sola testata, scrivi "secondo [testata]".
 - Nessuna frase copiata: rielabora con parole tue, tono appassionato ma serio.
 - 300-450 parole. Un paragrafo d'apertura forte, poi 2 sezioni con titoletti Markdown "## ".

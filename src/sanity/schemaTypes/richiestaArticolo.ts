@@ -8,7 +8,7 @@ export default defineType({
   fields: [
     defineField({
       name: 'argomento',
-      title: 'Argomento (facoltativo)',
+      title: 'Argomento: cosa vuoi che scriva (facoltativo)',
       description:
         "Es. \"Marquez campione del mondo in Qatar\". Lascia vuoto e l'IA sceglie la notizia più interessante del momento.",
       type: 'string',
@@ -21,12 +21,19 @@ export default defineType({
       rows: 6,
     }),
     defineField({
+      name: 'riprova',
+      title: 'Riprova',
+      description: "Se l'esito è ❌, spunta e clicca Publish: l'IA ci riprova.",
+      type: 'boolean',
+    }),
+    defineField({
       name: 'esito',
       title: 'Esito',
       description: 'Si compila da solo dopo il Publish (entro circa 5 minuti).',
       type: 'string',
       readOnly: true,
     }),
+    defineField({ name: 'tentativi', title: 'Tentativi', type: 'number', readOnly: true, hidden: true }),
   ],
   preview: {
     select: { argomento: 'argomento', esito: 'esito' },
