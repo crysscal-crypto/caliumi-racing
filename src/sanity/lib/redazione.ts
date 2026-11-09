@@ -32,11 +32,11 @@ function conSommario<T extends { sommario: string; estratto?: string } | null>(n
   return n;
 }
 
-export async function getUltimeRedazione(quante = 6): Promise<NotiziaRedazione[]> {
+export async function getUltimeRedazione(quante = 6, campionato?: string): Promise<NotiziaRedazione[]> {
   try {
     const elenco = await client.fetch<NotiziaRedazione[]>(
-      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione <= now()] | order(dataPubblicazione desc)[0...$n]{ ${CAMPI} }`,
-      { n: quante },
+      `*[_type == "notiziaRedazione" && defined(slug.current) && dataPubblicazione <= now() && (!defined($c) || campionato == $c)] | order(dataPubblicazione desc)[0...$n]{ ${CAMPI} }`,
+      { n: quante, c: campionato ?? null },
       { next: { revalidate: 120 } }
     );
     return elenco.map(conSommario);

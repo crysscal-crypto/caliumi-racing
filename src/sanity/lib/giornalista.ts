@@ -525,7 +525,7 @@ REGOLE:
 - Nessuna frase copiata: rielabora con parole tue, tono appassionato ma serio.
 - 300-450 parole. Un paragrafo d'apertura forte, poi 2 sezioni con titoletti Markdown "## ".
 - Titolo SEO max 90 caratteri. Sommario max 200 caratteri.
-- "campionato": uno tra "MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Moto".
+- "campionato": uno tra "MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Tecnica", "Moto" ("Tecnica" per articoli su come sono fatte le moto: motori, telai, aerodinamica, elettronica, gomme).
 - "protagonista": nome e cognome completi del pilota principale dell'articolo, oppure "" se non c'è.
 
 Rispondi SOLO con un JSON valido, senza altro testo:
@@ -534,7 +534,7 @@ Rispondi SOLO con un JSON valido, senza altro testo:
     const testo = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
     const a = JSON.parse(testo.slice(testo.indexOf("{"), testo.lastIndexOf("}") + 1)) as ArticoloAttualita;
     if (!a.titolo || !a.sommario || !a.testo) throw new Error("Risposta dell'IA incompleta");
-    const campionati = ["MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Moto"];
+    const campionati = ["MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Tecnica", "Moto"];
     const campionato = campionati.includes(a.campionato ?? "") ? (a.campionato as string) : "Moto";
 
     // foto vera (licenza libera) del protagonista, se c'è

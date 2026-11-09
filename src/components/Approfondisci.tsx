@@ -23,6 +23,11 @@ const LINK: Record<string, { href: string; label: string }[]> = {
     { href: "/civ", label: "Risultati e classifiche CIV" },
     { href: "/notizie?categoria=corse-moto", label: "Notizie dalle altre corse" },
   ],
+  Tecnica: [
+    { href: "/notizie?categoria=tecnica", label: "Tutti gli articoli di tecnica" },
+    { href: "/motogp/statistiche", label: "Statistiche e record MotoGP" },
+    { href: "/moto", label: "Le moto di Cristian Caliumi" },
+  ],
   Motocross: [{ href: "/notizie?categoria=off-road", label: "Notizie motocross e off-road" }],
 };
 

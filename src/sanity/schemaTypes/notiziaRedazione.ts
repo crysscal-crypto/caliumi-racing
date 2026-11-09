@@ -30,6 +30,7 @@ export default defineType({
           { title: "Superbike", value: "Superbike" },
           { title: "CIV", value: "CIV" },
           { title: "Motocross / Enduro", value: "Motocross" },
+          { title: "Tecnica (come sono fatte le moto)", value: "Tecnica" },
           { title: "Altro", value: "Moto" },
         ],
         layout: "radio",

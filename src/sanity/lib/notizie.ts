@@ -57,6 +57,7 @@ export const CATEGORIE: { slug: string; nome: string; descrizione: string }[] = 
   { slug: "superbike", nome: "Superbike", descrizione: "Notizie del Mondiale Superbike WorldSBK e della Supersport." },
   { slug: "corse-moto", nome: "Corse moto", descrizione: "Le altre corse in moto: campionati nazionali, endurance e road racing." },
   { slug: "off-road", nome: "Off-road", descrizione: "Motocross, enduro, Dakar e rally raid: tutte le notizie dell'off-road." },
+  { slug: "tecnica", nome: "Tecnica", descrizione: "Come sono fatte le moto da corsa: motori, telai, aerodinamica, elettronica e gomme spiegati da Caliumi Racing." },
   { slug: "novita-moto", nome: "Novità moto", descrizione: "Nuove moto, prove, anteprime e mercato delle due ruote." },
   { slug: "formula-1", nome: "Formula 1", descrizione: "Notizie di Formula 1: piloti, scuderie e Gran Premi." },
   { slug: "motori", nome: "Motori", descrizione: "Motori a 360°: auto, endurance WEC, rally e novità dal mondo a quattro ruote." },

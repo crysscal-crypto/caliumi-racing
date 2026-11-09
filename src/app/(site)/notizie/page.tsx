@@ -44,9 +44,10 @@ export default async function NotiziePage({ searchParams }: Props) {
   const { categoria } = await searchParams;
   const cat = CATEGORIE.find((c) => c.slug === categoria);
   const [notizie, commenti, nostre] = await Promise.all([
-    getNotizie(cat ? 45 : 60, cat?.nome),
+    cat?.slug === "tecnica" ? Promise.resolve([]) : getNotizie(cat ? 45 : 60, cat?.nome),
     getCommenti(),
-    cat ? Promise.resolve([]) : getUltimeRedazione(7),
+    // Tecnica: solo articoli di Caliumi Racing
+    cat?.slug === "tecnica" ? getUltimeRedazione(60, "Tecnica") : cat ? Promise.resolve([]) : getUltimeRedazione(7),
   ]);
   const fonti = Array.from(new Set(FEEDS.map((f) => f.fonte)));
   const commentiPerLink = mappaCommenti(commenti);
@@ -155,6 +156,12 @@ export default async function NotiziePage({ searchParams }: Props) {
           </div>
         )}
 
+        {cat?.slug === "tecnica" ? (
+          nostre.length === 0 && (
+            <p className="text-center text-white/60">I primi articoli di tecnica stanno arrivando.</p>
+          )
+        ) : (
+        <>
         <h2 className={`${racingFont.className} mb-4 text-2xl text-racing-yellow`}>
           {cat ? `Ultime notizie ${cat.nome}` : "Ultime notizie"}
         </h2>
@@ -180,6 +187,8 @@ export default async function NotiziePage({ searchParams }: Props) {
               </Fragment>
             ))}
           </div>
+        )}
+        </>
         )}
 
         <p className="mt-10 text-center text-xs text-white/40">

@@ -7,7 +7,7 @@
 //   "titolo": "Bagnaia vince a Phillip Island",          (obbligatorio)
 //   "sommario": "Due righe di riassunto...",              (obbligatorio, max 220 caratteri)
 //   "testo": "Testo in Markdown: paragrafi, ## titoletti, > citazioni, - elenchi, **grassetto**, [link](https://...)", (obbligatorio)
-//   "campionato": "MotoGP" | "Moto2 / Moto3" | "Superbike" | "CIV" | "Motocross" | "Moto",
+//   "campionato": "MotoGP" | "Moto2 / Moto3" | "Superbike" | "CIV" | "Motocross" | "Tecnica" | "Moto",
 //   "immagine": "https://.../foto.jpg",                   (facoltativo: viene caricata su Sanity)
 //   "credito": "© MotoGP.com",                            (facoltativo)
 //   "pubblica": false                                     (false = BOZZA da approvare nello Studio — consigliato)
@@ -23,7 +23,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const CAMPIONATI = ["MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Moto"];
+const CAMPIONATI = ["MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Tecnica", "Moto"];
 const SITO = "https://www.caliumiracing.com";
 
 const chiave = () => Math.random().toString(36).slice(2, 12);
