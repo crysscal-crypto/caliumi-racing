@@ -1,24 +1,46 @@
-# Pubblica su Instagram le storie con i risultati delle sessioni MotoGP e WorldSBK appena concluse.
-# Il controllo principale arriva ogni 5 minuti da cron-job.org; questo è solo un controllo di riserva
-# (GitHub lo fa partire quando può) e si può lanciare a mano con "Run workflow".
+# Giro di pubblicazione automatica: storie Instagram (video con musica), Reel, post Facebook,
+# IndexNow e articoli dell'IA. Gira qui su GitHub perché serve ffmpeg (su Cloudflare non c'è).
+# Lo fa partire il sito ogni 5 minuti (cron-job.org -> /api/instagram/storie?sfondo=1 -> GitHub);
+# il controllo programmato qui sotto è solo una riserva. Si può lanciare a mano con "Run workflow".
 name: Storie Instagram
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/15 * * * 5,6,0"
     - cron: "*/15 0-10 * * 1"
-  workflow_dispatch:
+
+# un giro alla volta: se ne arriva un altro mentre lavora, aspetta
+concurrency:
+  group: giro-pubblicazione
+  cancel-in-progress: false
 
 jobs:
   pubblica:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
     steps:
-      - name: Pubblica storie
-        run: |
-          RISPOSTA=$(curl -sS --max-time 290 -w ' [HTTP %{http_code}]' \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            https://www.caliumiracing.com/api/instagram/storie || true)
-          echo "$RISPOSTA"
-          echo "::notice title=Risposta del sito::$RISPOSTA"
-          case "$RISPOSTA" in *"[HTTP 200]") ;; *) exit 1 ;; esac
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Installo
+        run: npm ci --no-audit --no-fund
+      - name: Giro di pubblicazione
+        run: npm run giro
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
+          NEXT_PUBLIC_SITE_URL: https://www.caliumiracing.com
+          NEXT_PUBLIC_AMAZON_TAG: caliumiracing-21
+          SANITY_API_WRITE_TOKEN: ${{ secrets.SANITY_API_WRITE_TOKEN }}
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}

@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "caliumi-racing",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // le variabili d'ambiente si gestiscono dal pannello Cloudflare: il deploy non le cancella
+  "keep_vars": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // ottimizzazione immagini di next/image (logo e foto in apertura)
+  "images": { "binding": "IMAGES" },
+  "services": [
+    { "binding": "WORKER_SELF_REFERENCE", "service": "caliumi-racing" }
+  ],
+  "r2_buckets": [
+    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "caliumi-racing-cache" }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }
+  ],
+  // tetto di sicurezza: massimo 30 secondi di CPU per richiesta
+  "limits": { "cpu_ms": 30000 },
+  "observability": { "enabled": true }
+}

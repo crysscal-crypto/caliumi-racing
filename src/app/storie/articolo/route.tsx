@@ -2,9 +2,8 @@
 // Esempio: /storie/articolo?slug=<slug-della-notizia>
 
 import { ImageResponse } from "next/og";
-import sharp from "sharp";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { pngInJpeg } from "@/lib/jpeg";
+import { leggiAsset } from "@/lib/asset-storie";
 import { getRedazioneDaSlug, urlCopertina } from "@/sanity/lib/redazione";
 
 export const runtime = "nodejs";
@@ -16,7 +15,8 @@ const ROSSO = "#E10600";
 
 async function font(file: string): Promise<ArrayBuffer | null> {
   try {
-    const b = await readFile(join(process.cwd(), "assets", "fonts", file));
+    const b = await leggiAsset(`fonts/${file}`);
+    if (!b) return null;
     return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) as ArrayBuffer;
   } catch {
     return null;
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
     font("racing-sans-one-latin-400-normal.woff"),
     font("barlow-condensed-latin-600-normal.woff"),
     font("barlow-condensed-latin-800-normal.woff"),
-    readFile(join(process.cwd(), "assets", "logo-storie.png")).catch(() => null),
+    leggiAsset("logo-storie.png"),
   ]);
   const fonts = [
     ...(titolo ? [{ name: "Racing", data: titolo, weight: 400 as const, style: "normal" as const }] : []),
@@ -134,6 +134,6 @@ export async function GET(req: Request) {
     { width: 1080, height: 1920, ...(fonts.length ? { fonts } : {}) }
   ).arrayBuffer();
 
-  const jpg = await sharp(Buffer.from(png)).jpeg({ quality: 90 }).toBuffer();
+  const jpg = pngInJpeg(png, 90);
   return new Response(new Uint8Array(jpg), { headers: { "Content-Type": "image/jpeg", "Cache-Control": "no-store" } });
 }

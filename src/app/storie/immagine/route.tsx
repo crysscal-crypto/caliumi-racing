@@ -2,9 +2,8 @@
 // Esempio: /storie/immagine?serie=motogp&anno=2026&evento=aus&sessione=<id>
 
 import { ImageResponse } from "next/og";
-import sharp from "sharp";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { pngInJpeg } from "@/lib/jpeg";
+import { leggiAsset } from "@/lib/asset-storie";
 import { datiStoria, type Storia } from "@/sanity/lib/storie";
 
 export const runtime = "nodejs";
@@ -21,7 +20,8 @@ type Font = { name: string; data: ArrayBuffer; weight: 400 | 600 | 700 | 800; st
 // Font inclusi nel progetto (cartella assets/fonts)
 async function font(file: string): Promise<ArrayBuffer | null> {
   try {
-    const b = await readFile(join(process.cwd(), "assets", "fonts", file));
+    const b = await leggiAsset(`fonts/${file}`);
+    if (!b) return null;
     return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) as ArrayBuffer;
   } catch {
     return null;
@@ -179,7 +179,7 @@ export async function GET(req: Request) {
   const [s, fonts] = await Promise.all([datiStoria(serie, anno, evento, sessione), caricaFont()]);
   if (!s || s.righe.length === 0) return new Response("Risultati non disponibili", { status: 404 });
 
-  const logoFile = await readFile(join(process.cwd(), "assets", "logo-storie.png")).catch(() => null);
+  const logoFile = await leggiAsset("logo-storie.png");
   const logo = logoFile ? `data:image/png;base64,${logoFile.toString("base64")}` : `${u.origin}/icon-512.png`;
   const disegna = async (bandiere: boolean) =>
     new ImageResponse(<Grafica s={s} logo={logo} bandiere={bandiere} />, {
@@ -198,7 +198,7 @@ export async function GET(req: Request) {
   }
 
   // Instagram vuole JPEG
-  const jpg = await sharp(Buffer.from(png)).jpeg({ quality: 90 }).toBuffer();
+  const jpg = pngInJpeg(png, 90);
   return new Response(new Uint8Array(jpg), {
     headers: { "Content-Type": "image/jpeg", "Cache-Control": "no-store" },
   });

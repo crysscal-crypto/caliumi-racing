@@ -37,8 +37,19 @@ const nextConfig = {
       { source: "/home-page/press-e-media", destination: "/articoli", permanent: true },
       { source: "/home-page/press-and-media", destination: "/articoli", permanent: true },
       { source: "/home-page/:path*", destination: "/", permanent: true },
+      // dominio senza www -> www (come su Vercel)
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "caliumiracing.com" }],
+        destination: "https://www.caliumiracing.com/:path*",
+        permanent: true,
+      },
     ];
   },
 };
 
 export default nextConfig;
+
+// In sviluppo (npm run dev) rende disponibili le risorse di Cloudflare
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+initOpenNextCloudflareForDev();

@@ -8,3 +8,8 @@ scripts/.tessdata
 foto-gallery/
 testi-seo/
 scripts/.cache-integra-motogp.json
+
+# Cloudflare
+.open-next
+.wrangler
+.dev.vars
