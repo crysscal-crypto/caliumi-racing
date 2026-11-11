@@ -8,10 +8,11 @@ import { tipoArticolo } from "./giornalista";
 const GRAPH = "https://graph.facebook.com/v24.0";
 const SITO = "https://www.caliumiracing.com";
 
-export const facebookAttivo = () => !!process.env.FACEBOOK_PAGE_TOKEN && !!process.env.FACEBOOK_PAGE_ID;
+// Basta il token della Pagina: senza FACEBOOK_PAGE_ID uso "me" (con un token di Pagina indica la Pagina stessa)
+export const facebookAttivo = () => !!process.env.FACEBOOK_PAGE_TOKEN;
 
 async function chiama(percorso: string, corpo: Record<string, string>): Promise<string> {
-  const res = await fetch(`${GRAPH}/${process.env.FACEBOOK_PAGE_ID}/${percorso}`, {
+  const res = await fetch(`${GRAPH}/${process.env.FACEBOOK_PAGE_ID || "me"}/${percorso}`, {
     method: "POST",
     body: new URLSearchParams({ ...corpo, access_token: process.env.FACEBOOK_PAGE_TOKEN ?? "" }),
     cache: "no-store",

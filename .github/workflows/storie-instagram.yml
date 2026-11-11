@@ -30,8 +30,8 @@ jobs:
       - name: Giro di pubblicazione
         run: npm run giro
         env:
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: qlueiocu
+          NEXT_PUBLIC_SANITY_DATASET: production
           NEXT_PUBLIC_SITE_URL: https://www.caliumiracing.com
           NEXT_PUBLIC_AMAZON_TAG: caliumiracing-21
           SANITY_API_WRITE_TOKEN: ${{ secrets.SANITY_API_WRITE_TOKEN }}

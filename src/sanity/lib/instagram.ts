@@ -99,11 +99,21 @@ async function chiama(percorso: string, token: string, corpo?: Record<string, st
   return j;
 }
 
+// Se manca INSTAGRAM_USER_ID lo chiedo a Instagram con il token
+async function idUtente(token: string): Promise<string | undefined> {
+  try {
+    const j = await chiama("/me?fields=user_id", token);
+    return j.user_id ? String(j.user_id) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function pubblicaStoria(
   media: { immagine?: string; video?: string; reel?: { didascalia: string } },
   token: string
 ): Promise<string> {
-  const utente = process.env.INSTAGRAM_USER_ID;
+  const utente = process.env.INSTAGRAM_USER_ID || (await idUtente(token));
   if (!utente) throw new Error("Manca la variabile INSTAGRAM_USER_ID");
 
   const contenitore = await chiama(
