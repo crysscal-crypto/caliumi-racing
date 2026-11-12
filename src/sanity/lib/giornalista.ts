@@ -227,13 +227,16 @@ async function githubModels(prompt: string): Promise<string> {
         signal: AbortSignal.timeout(60000),
         cache: "no-store",
       });
-      const j = (await res.json().catch(() => ({}))) as {
-        choices?: { message?: { content?: string } }[];
-        error?: { message?: string };
-      };
+      const grezzo = await res.text();
+      let j: { choices?: { message?: { content?: string } }[]; error?: { message?: string } } = {};
+      try {
+        j = JSON.parse(grezzo);
+      } catch {
+        // risposta non JSON
+      }
       const testo = j.choices?.[0]?.message?.content ?? "";
       if (res.ok && testo) return testo;
-      ultimo = `${modello}: ${j.error?.message ?? res.status}`;
+      ultimo = `${modello}: ${j.error?.message ?? `${res.status} ${grezzo.slice(0, 200)}`}`;
     } catch (e) {
       ultimo = `${modello}: ${(e as Error).message}`;
     }
