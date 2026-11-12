@@ -71,7 +71,12 @@ async function api<T>(percorso: string, cache: number): Promise<T | null> {
   try {
     const res = await fetch(indirizzo, {
       // Stagione in corso: sempre dati freschi (la cache restava ferma per giorni). Stagioni passate: cache lunga.
-      ...(cache <= ORA ? { cache: "no-store" as const } : { next: { revalidate: cache } }),
+      // Con il ponte la stagione in corso si aggiorna ogni 60 secondi (il ponte ha un limite di richieste al giorno)
+      ...(cache <= ORA
+        ? ponte
+          ? { next: { revalidate: 60 } }
+          : { cache: "no-store" as const }
+        : { next: { revalidate: cache } }),
       headers: ponte
         ? { Accept: "application/json" }
         : {
