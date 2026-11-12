@@ -382,7 +382,7 @@ async function avvisa(titolo: string, link: string): Promise<void> {
 export async function giroArticoli(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
   const scritti: string[] = [];
   const errori: string[] = [];
-  if !iaDisponibile() return { scritti, errori };
+  if (!iaDisponibile()) return { scritti, errori };
 
   const c = sanity();
   type StatoArticoli = { articoli?: string[]; articoliFalliti?: string[]; versioneArticoli?: number };
@@ -540,7 +540,7 @@ export async function giroAttualita(
 ): Promise<{ scritti: string[]; errori: string[] }> {
   const scritti: string[] = [];
   const errori: string[] = [];
-  if !iaDisponibile() return { scritti, errori };
+  if (!iaDisponibile()) return { scritti, errori };
   const c = sanity();
 
   if (!richiesta) {
