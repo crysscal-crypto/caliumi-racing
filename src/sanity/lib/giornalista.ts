@@ -71,7 +71,7 @@ function sanity() {
 
 // Articoli senza sommario (scritti da Cristian): lo scrive l'IA
 export async function riempiSommari(): Promise<string[]> {
-  if (!process.env.SANITY_API_WRITE_TOKEN || (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY)) return [];
+  if (!process.env.SANITY_API_WRITE_TOKEN || !iaDisponibile()) return [];
   const c = sanity();
   const docs = await c.fetch<{ _id: string; titolo?: string; testo?: string }[]>(
     `*[_type == "notiziaRedazione" && (!defined(sommario) || sommario == "") && defined(testo) && _updatedAt > $da][0...3]{ _id, titolo, "testo": pt::text(testo) }`,
@@ -88,7 +88,7 @@ Testo:
 ${d.testo.slice(0, 6000)}`;
     let risposta = "";
     try {
-      risposta = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
+      risposta = await ia(prompt);
     } catch {
       continue; // riprovo al giro dopo; intanto il sito usa l'inizio del testo
     }
@@ -165,17 +165,93 @@ REGOLE:
 Rispondi SOLO con un JSON valido, senza altro testo:
 {"titolo": "...", "sommario": "...", "testo": "...markdown..."}`;
 
-  const testo = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
+  const testo = await ia(prompt);
   const json = testo.slice(testo.indexOf("{"), testo.lastIndexOf("}") + 1);
   const a = JSON.parse(json) as Articolo;
   if (!a.titolo || !a.sommario || !a.testo) throw new Error("Risposta dell'IA incompleta");
   return a;
 }
 
+// Quale IA usare: tutte gratuite tranne Claude (a pagamento, solo se c'è la chiave e nessun'altra)
+function iaDisponibile(): boolean {
+  return Boolean(process.env.GEMINI_API_KEY || process.env.GITHUB_TOKEN || process.env.ANTHROPIC_API_KEY);
+}
+
+// Prova Gemini; se è sovraccarico passa a GitHub Models (gratis con GitHub, nessuna chiave in più)
+async function ia(prompt: string): Promise<string> {
+  const errori: string[] = [];
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      return await gemini(prompt);
+    } catch (e) {
+      errori.push((e as Error).message);
+    }
+  }
+  if (process.env.GITHUB_TOKEN) {
+    try {
+      return await githubModels(prompt);
+    } catch (e) {
+      errori.push((e as Error).message);
+    }
+  }
+  if (process.env.ANTHROPIC_API_KEY) {
+    try {
+      return await claude(prompt);
+    } catch (e) {
+      errori.push((e as Error).message);
+    }
+  }
+  throw new Error(errori.join(" | ") || "Nessuna IA configurata");
+}
+
+// GitHub Models: incluso gratis con GitHub (funziona dentro GitHub Actions con il GITHUB_TOKEN del workflow)
+async function githubModels(prompt: string): Promise<string> {
+  const modelli = ["openai/gpt-4.1-mini", "openai/gpt-4o-mini", "openai/gpt-4.1-nano"];
+  let ultimo = "";
+  for (const modello of modelli) {
+    try {
+      const res = await fetch("https://models.github.ai/inference/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          "content-type": "application/json",
+          Accept: "application/vnd.github+json",
+        },
+        body: JSON.stringify({
+          model: modello,
+          messages: [{ role: "user", content: prompt }],
+          ...(/json/i.test(prompt) ? { response_format: { type: "json_object" } } : {}),
+          temperature: 0.7,
+          max_tokens: 4000,
+        }),
+        signal: AbortSignal.timeout(60000),
+        cache: "no-store",
+      });
+      const j = (await res.json().catch(() => ({}))) as {
+        choices?: { message?: { content?: string } }[];
+        error?: { message?: string };
+      };
+      const testo = j.choices?.[0]?.message?.content ?? "";
+      if (res.ok && testo) return testo;
+      ultimo = `${modello}: ${j.error?.message ?? res.status}`;
+    } catch (e) {
+      ultimo = `${modello}: ${(e as Error).message}`;
+    }
+  }
+  throw new Error(`GitHub Models: ${ultimo}`);
+}
+
 // Google Gemini: piano GRATUITO (chiave da aistudio.google.com, senza carta)
 async function gemini(prompt: string): Promise<string> {
   // Se un modello è sovraccarico provo i successivi (tutti gratuiti)
-  const modelli = [process.env.GEMINI_MODEL, "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest"].filter(
+  const modelli = [
+    process.env.GEMINI_MODEL,
+    "gemini-flash-latest",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-flash-lite-latest",
+  ].filter(
     (m, i, a): m is string => !!m && a.indexOf(m) === i
   );
   let ultimo = "";
@@ -306,7 +382,7 @@ async function avvisa(titolo: string, link: string): Promise<void> {
 export async function giroArticoli(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
   const scritti: string[] = [];
   const errori: string[] = [];
-  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
+  if !iaDisponibile() return { scritti, errori };
 
   const c = sanity();
   type StatoArticoli = { articoli?: string[]; articoliFalliti?: string[]; versioneArticoli?: number };
@@ -427,7 +503,7 @@ PUNTI IN PALIO PER OGNI GP: 37 (Sprint 12-9-7-6-5-4-3-2-1 ai primi 9, Gara 25-20
 
 // Articoli chiesti da Cristian dallo Studio ("Chiedi un articolo all'IA"): li scrive subito
 export async function giroRichieste(scadenza: number): Promise<{ scritti: string[]; errori: string[] }> {
-  if (!process.env.SANITY_API_WRITE_TOKEN || (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY)) {
+  if (!process.env.SANITY_API_WRITE_TOKEN || !iaDisponibile()) {
     return { scritti: [], errori: [] };
   }
   const c = sanity();
@@ -464,7 +540,7 @@ export async function giroAttualita(
 ): Promise<{ scritti: string[]; errori: string[] }> {
   const scritti: string[] = [];
   const errori: string[] = [];
-  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return { scritti, errori };
+  if !iaDisponibile() return { scritti, errori };
   const c = sanity();
 
   if (!richiesta) {
@@ -531,7 +607,7 @@ REGOLE:
 Rispondi SOLO con un JSON valido, senza altro testo:
 {"titolo": "...", "sommario": "...", "testo": "...markdown...", "campionato": "...", "protagonista": "..."}`;
 
-    const testo = process.env.GEMINI_API_KEY ? await gemini(prompt) : await claude(prompt);
+    const testo = await ia(prompt);
     const a = JSON.parse(testo.slice(testo.indexOf("{"), testo.lastIndexOf("}") + 1)) as ArticoloAttualita;
     if (!a.titolo || !a.sommario || !a.testo) throw new Error("Risposta dell'IA incompleta");
     const campionati = ["MotoGP", "Moto2 / Moto3", "Superbike", "CIV", "Motocross", "Tecnica", "Moto"];
