@@ -7,8 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - shell: bash {0}
+        env:
+          T: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for m in openai/gpt-4.1-mini openai/gpt-4o-mini; do
-            echo "MODELLO $m"
-            curl -s -i -X POST https://models.github.ai/inference/chat/completions -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "content-type: application/json" -d "{\"model\":\"$m\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi in JSON {\\\"ok\\\":\\\"si\\\"}\"}],\"response_format\":{\"type\":\"json_object\"},\"max_tokens\":50}" | head -c 1200; echo
-          done
+          B='{"model":"openai/gpt-4.1-mini","messages":[{"role":"user","content":"Rispondi in JSON con {\"ok\":\"si\"}"}],"response_format":{"type":"json_object"},"max_tokens":50}'
+          echo "A1"; curl -s -X POST https://models.github.ai/inference/chat/completions -H "Authorization: Bearer $T" -H "Content-Type: application/json" -d "$B" | head -c 800; echo
+          echo "A2"; curl -s -X POST https://models.github.ai/orgs/crysscal-crypto/inference/chat/completions -H "Authorization: Bearer $T" -H "Content-Type: application/json" -d "$B" | head -c 800; echo
+          B2='{"model":"gpt-4o-mini","messages":[{"role":"user","content":"Rispondi in JSON con {\"ok\":\"si\"}"}],"response_format":{"type":"json_object"},"max_tokens":50}'
+          echo "A3"; curl -s -X POST https://models.inference.ai.azure.com/chat/completions -H "Authorization: Bearer $T" -H "Content-Type: application/json" -d "$B2" | head -c 800; echo
