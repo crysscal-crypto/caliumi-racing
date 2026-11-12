@@ -61,18 +61,29 @@ export type RigaClassifica = {
   sprint_wins?: number;
 };
 
+// Su Cloudflare l'API MotoGP risponde "403": in quel caso le richieste passano dal ponte
+// Google Apps Script indicato in MOTOGP_PROXY_URL (gratuito). Altrove (GitHub, PC) va diretta.
 async function api<T>(percorso: string, cache: number): Promise<T | null> {
+  const ponte = process.env.MOTOGP_PROXY_URL;
+  const indirizzo = ponte
+    ? `${ponte}?p=${encodeURIComponent(`/results${percorso}`)}`
+    : `${BASE}${percorso}`;
   try {
-    const res = await fetch(`${BASE}${percorso}`, {
+    const res = await fetch(indirizzo, {
       // Stagione in corso: sempre dati freschi (la cache restava ferma per giorni). Stagioni passate: cache lunga.
       ...(cache <= ORA ? { cache: "no-store" as const } : { next: { revalidate: cache } }),
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "Mozilla/5.0 (compatible; CaliumiRacing/1.0; +https://caliumiracing.com)",
-      },
+      headers: ponte
+        ? { Accept: "application/json" }
+        : {
+            Accept: "application/json",
+            "User-Agent": "Mozilla/5.0 (compatible; CaliumiRacing/1.0; +https://caliumiracing.com)",
+          },
     });
     if (!res.ok) return null;
-    return (await res.json()) as T;
+    const dati = (await res.json()) as T & { __errore?: number };
+    // il ponte segnala così gli errori dell'API (es. 404)
+    if (dati && typeof dati === "object" && !Array.isArray(dati) && "__errore" in dati) return null;
+    return dati as T;
   } catch {
     return null;
   }
