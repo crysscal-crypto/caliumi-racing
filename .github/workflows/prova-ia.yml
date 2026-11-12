@@ -10,4 +10,5 @@ jobs:
         run: |
           [ -z "$K" ] && echo "RISULTATO chiave mancante" && exit 0
           B='{"model":"llama-3.3-70b-versatile","messages":[{"role":"user","content":"Rispondi in JSON con {\"ok\":\"si\"}"}],"response_format":{"type":"json_object"},"max_tokens":30}'
+          echo "MODELLI $(curl -s https://api.groq.com/openai/v1/models -H "Authorization: Bearer $K" | jq -c '[.data[].id]')"
           echo "RISULTATO $(curl -s -X POST https://api.groq.com/openai/v1/chat/completions -H "Authorization: Bearer $K" -H "Content-Type: application/json" -d "$B" | head -c 400)"
