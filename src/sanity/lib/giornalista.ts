@@ -174,7 +174,9 @@ Rispondi SOLO con un JSON valido, senza altro testo:
 
 // Quale IA usare: tutte gratuite tranne Claude (a pagamento, solo se c'è la chiave e nessun'altra)
 function iaDisponibile(): boolean {
-  return Boolean(process.env.GEMINI_API_KEY || process.env.GITHUB_TOKEN || process.env.ANTHROPIC_API_KEY);
+  return Boolean(
+    process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY || process.env.GITHUB_TOKEN || process.env.ANTHROPIC_API_KEY
+  );
 }
 
 // Prova Gemini; se è sovraccarico passa a GitHub Models (gratis con GitHub, nessuna chiave in più)
@@ -187,9 +189,27 @@ async function ia(prompt: string): Promise<string> {
       errori.push((e as Error).message);
     }
   }
+  if (process.env.GROQ_API_KEY) {
+    try {
+      // Groq: piano gratuito (chiave da console.groq.com, senza carta)
+      return await compatibileOpenAI(prompt, "Groq", "https://api.groq.com/openai/v1/chat/completions", process.env.GROQ_API_KEY, [
+        "llama-3.3-70b-versatile",
+        "openai/gpt-oss-120b",
+        "llama-3.1-8b-instant",
+      ]);
+    } catch (e) {
+      errori.push((e as Error).message);
+    }
+  }
   if (process.env.GITHUB_TOKEN) {
     try {
-      return await githubModels(prompt);
+      return await compatibileOpenAI(
+        prompt,
+        "GitHub Models",
+        "https://models.github.ai/inference/chat/completions",
+        process.env.GITHUB_TOKEN,
+        ["openai/gpt-4.1-mini", "openai/gpt-4o-mini"]
+      );
     } catch (e) {
       errori.push((e as Error).message);
     }
@@ -204,19 +224,20 @@ async function ia(prompt: string): Promise<string> {
   throw new Error(errori.join(" | ") || "Nessuna IA configurata");
 }
 
-// GitHub Models: incluso gratis con GitHub (funziona dentro GitHub Actions con il GITHUB_TOKEN del workflow)
-async function githubModels(prompt: string): Promise<string> {
-  const modelli = ["openai/gpt-4.1-mini", "openai/gpt-4o-mini", "openai/gpt-4.1-nano"];
+// Servizi con la stessa interfaccia di OpenAI (Groq, GitHub Models)
+async function compatibileOpenAI(
+  prompt: string,
+  nome: string,
+  url: string,
+  chiave: string,
+  modelli: string[]
+): Promise<string> {
   let ultimo = "";
   for (const modello of modelli) {
     try {
-      const res = await fetch("https://models.github.ai/inference/chat/completions", {
+      const res = await fetch(url, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          "content-type": "application/json",
-          Accept: "application/vnd.github+json",
-        },
+        headers: { Authorization: `Bearer ${chiave}`, "content-type": "application/json" },
         body: JSON.stringify({
           model: modello,
           messages: [{ role: "user", content: prompt }],
@@ -241,7 +262,7 @@ async function githubModels(prompt: string): Promise<string> {
       ultimo = `${modello}: ${(e as Error).message}`;
     }
   }
-  throw new Error(`GitHub Models: ${ultimo}`);
+  throw new Error(`${nome}: ${ultimo}`);
 }
 
 // Google Gemini: piano GRATUITO (chiave da aistudio.google.com, senza carta)
