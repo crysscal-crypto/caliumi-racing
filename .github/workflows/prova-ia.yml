@@ -1,0 +1,14 @@
+name: Prova IA
+on: workflow_dispatch
+permissions:
+  models: read
+jobs:
+  prova:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash {0}
+        run: |
+          for m in openai/gpt-4.1-mini openai/gpt-4o-mini; do
+            echo "MODELLO $m"
+            curl -s https://models.github.ai/inference/chat/completions -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "content-type: application/json" -d "{\"model\":\"$m\",\"messages\":[{\"role\":\"user\",\"content\":\"Rispondi in JSON {\\\"ok\\\":\\\"si\\\"}\"}],\"response_format\":{\"type\":\"json_object\"},\"max_tokens\":50}" | head -c 600; echo
+          done
