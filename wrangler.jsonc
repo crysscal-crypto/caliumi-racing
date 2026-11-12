@@ -6,6 +6,10 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   // le variabili d'ambiente si gestiscono dal pannello Cloudflare: il deploy non le cancella
   "keep_vars": true,
+  // ponte Google Apps Script per i dati MotoGP (da Cloudflare l'API MotoGP risponde 403)
+  "vars": {
+    "MOTOGP_PROXY_URL": "https://script.google.com/macros/s/AKfycbwdQyASw6U0A3AgypKw8JP0qCD3Zbh0ZWTBgPWam0FdDrY-cMASFAhxUyK_OiVlcHQJKg/exec"
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
