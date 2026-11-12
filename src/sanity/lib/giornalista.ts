@@ -243,7 +243,7 @@ async function compatibileOpenAI(
           messages: [{ role: "user", content: prompt }],
           ...(/json/i.test(prompt) ? { response_format: { type: "json_object" } } : {}),
           temperature: 0.7,
-          max_tokens: 4000,
+          max_tokens: 8000,
         }),
         signal: AbortSignal.timeout(60000),
         cache: "no-store",
