@@ -7,6 +7,7 @@ import Pubblicita from "@/components/Pubblicita";
 import CardRedazione from "@/components/CardRedazione";
 import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 import Commenti from "@/components/Commenti";
+import PubblicitaMultiplex from "@/components/PubblicitaMultiplex";
 import Approfondisci from "@/components/Approfondisci";
 
 const SITO = "https://www.caliumiracing.com";
@@ -142,6 +143,8 @@ export default async function ArticoloRedazione({ notizia: n }: { notizia: Notiz
         </article>
 
         <Commenti pagina={`/notizie/${n.slug}`} titolo={n.titolo} />
+
+        <PubblicitaMultiplex className="mt-12" />
 
         <Pubblicita posizione="notizia-sotto-testo" className="mt-10" />
 

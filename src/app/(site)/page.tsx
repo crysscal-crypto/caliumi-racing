@@ -1,3 +1,4 @@
+import PubblicitaMultiplex from "@/components/PubblicitaMultiplex";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -211,6 +212,12 @@ export default async function HomePage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="carbon-bg">
+        <div className="content-panel mx-auto max-w-6xl px-4 py-8 sm:px-6">
+          <PubblicitaMultiplex />
         </div>
       </section>
 

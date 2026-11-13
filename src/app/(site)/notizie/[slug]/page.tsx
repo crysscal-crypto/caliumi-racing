@@ -7,6 +7,7 @@ import Pubblicita from "@/components/Pubblicita";
 import FontePreferitaGoogle from "@/components/FontePreferitaGoogle";
 import ArticoloRedazione from "@/components/ArticoloRedazione";
 import Commenti from "@/components/Commenti";
+import PubblicitaMultiplex from "@/components/PubblicitaMultiplex";
 import { getRedazioneDaSlug, urlCopertina } from "@/sanity/lib/redazione";
 import {
   getNotizie,
@@ -163,6 +164,7 @@ export default async function NotiziaPage({ params }: Params) {
         )}
 
         <Pubblicita posizione="notizia-fondo" className="mt-14" />
+        <PubblicitaMultiplex className="mt-12" />
 
         <div className="mt-14 rounded-lg bg-carbon-800 p-5 text-center">
           <p className="text-white/80">

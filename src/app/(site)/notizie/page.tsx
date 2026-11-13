@@ -1,3 +1,4 @@
+import PubblicitaMultiplex from "@/components/PubblicitaMultiplex";
 import type { Metadata } from "next";
 import { racingFont } from "@/sanity/lib/fonts";
 import { Fragment } from "react";
@@ -195,6 +196,7 @@ export default async function NotiziePage({ searchParams }: Props) {
           Fonti: {fonti.join(", ")}. Titoli e marchi appartengono ai rispettivi
           editori. Aggiornamento automatico ogni 30 minuti.
         </p>
+        <PubblicitaMultiplex className="mt-12" />
       </div>
 
       <InstallaApp />

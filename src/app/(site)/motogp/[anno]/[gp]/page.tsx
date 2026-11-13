@@ -1,3 +1,4 @@
+import PubblicitaMultiplex from "@/components/PubblicitaMultiplex";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -151,6 +152,7 @@ export default async function GPPage({ params, searchParams }: Props) {
         )}
 
         <Pubblicita posizione="motogp-gp" className="mt-10" />
+        <PubblicitaMultiplex className="mt-12" />
 
         <div className="mt-10 flex items-center justify-between gap-4 text-sm font-semibold">
           {prec ? (
