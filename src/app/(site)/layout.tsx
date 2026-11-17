@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ADSENSE_CLIENT } from "@/components/adsense";
 import BarraPubblicita from "@/components/BarraPubblicita";
 import PubblicitaLaterale from "@/components/PubblicitaLaterale";
+import SitiAmici from "@/components/SitiAmici";
 
 const GA_ID = "G-HPCQRZ54D4";
 
@@ -93,6 +94,7 @@ export default function SiteLayout({
         />
         <Header />
         <main className="flex-1">{children}</main>
+        <SitiAmici />
         <Footer />
         {/* spazio per non coprire il fondo pagina con la barra pubblicitaria */}
         <div className="h-20 sm:h-28" aria-hidden />
