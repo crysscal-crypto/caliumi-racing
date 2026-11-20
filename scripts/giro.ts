@@ -7,7 +7,10 @@ import { giro } from "../src/sanity/lib/giro";
 giro()
   .then((esito) => {
     console.log(JSON.stringify(esito, null, 2));
-    const fallito = Boolean(esito.errori?.length) && !esito.pubblicate?.length;
+    // Gli errori di Facebook (es. token scaduto) non fanno fallire il giro: Instagram e articoli vanno avanti
+    // e non arriva un'email di errore ogni 5 minuti
+    const gravi = (esito.errori ?? []).filter((e: string) => !e.startsWith("fb:"));
+    const fallito = gravi.length > 0 && !esito.pubblicate?.length;
     process.exit(fallito ? 1 : 0);
   })
   .catch((e) => {

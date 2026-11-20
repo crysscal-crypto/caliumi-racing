@@ -55,6 +55,19 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: `${notizia.titolo} | Notizie ${notizia.campionato}`,
     description: (commento?.commento || notizia.estratto || notizia.titolo).slice(0, 160),
     alternates: { canonical: `/notizie/${slug}` },
+    // anteprima con foto quando si condivide su X, Facebook, WhatsApp
+    openGraph: {
+      type: "article",
+      title: notizia.titolo,
+      description: (commento?.commento || notizia.estratto || notizia.titolo).slice(0, 200),
+      images: [{ url: notizia.immagine || "/og-default.jpg", alt: notizia.titolo }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: notizia.titolo,
+      description: (commento?.commento || notizia.estratto || notizia.titolo).slice(0, 200),
+      images: [notizia.immagine || "/og-default.jpg"],
+    },
     // Indicizzata da Google solo se c'è il commento di Cristian (contenuto originale)
     robots: commento
       ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } }
