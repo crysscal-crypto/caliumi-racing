@@ -69,15 +69,17 @@ export function daMarkdown(md: string): Blocco[] {
     }
 
     const prima = righe[0];
+    // Titolo (## o ###): è SOLO la prima riga; le righe dopo sono testo normale
+    if (/^#{1,3}\s+/.test(prima)) {
+      const style = /^###\s+/.test(prima) ? "h3" : "h2";
+      blocchi.push({ _type: "block", _key: chiave(), style, ...inline(prima.replace(/^#{1,3}\s+/, "").replace(/\*\*/g, "")) });
+      if (righe.length > 1) blocchi.push(...daMarkdown(righe.slice(1).join("\n")));
+      continue;
+    }
+
     let style = "normal";
     let testo = righe.join(" ");
-    if (/^###\s+/.test(prima)) {
-      style = "h3";
-      testo = testo.replace(/^###\s+/, "");
-    } else if (/^#{1,2}\s+/.test(prima)) {
-      style = "h2";
-      testo = testo.replace(/^#{1,2}\s+/, "");
-    } else if (/^>\s?/.test(prima)) {
+    if (/^>\s?/.test(prima)) {
       style = "blockquote";
       testo = righe.map((r) => r.replace(/^>\s?/, "")).join(" ");
     }

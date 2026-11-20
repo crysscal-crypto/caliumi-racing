@@ -13,7 +13,7 @@ import {
   lasciaBlocco,
 } from "@/sanity/lib/instagram";
 import { creaVideoStoria, eliminaVideo } from "@/sanity/lib/video-storia";
-import { giroArticoli, giroAttualita, giroRichieste, pubblicaBozzeScadute, riempiSommari } from "@/sanity/lib/giornalista";
+import { giroArticoli, giroAttualita, giroRichieste, pubblicaBozzeScadute, riempiSommari, riparaTitoliLunghi } from "@/sanity/lib/giornalista";
 import { importaBozze } from "@/sanity/lib/importa-bozze";
 import { client } from "@/sanity/lib/client";
 import { facebookAttivo, sessioniPerReel, didascaliaReel, sessioniPerFacebook, pubblicaRisultatiFacebook, pubblicaArticoloFacebook } from "@/sanity/lib/facebook";
@@ -38,6 +38,10 @@ export async function giro(): Promise<Esito> {
     if (importate.length) return { pubblicate: [], articoli: importate };
 
     // bozze dell'IA non pubblicate entro 2 ore: escono da sole (poi partono storia e post Facebook)
+    // una volta sola: riporta a testo normale i paragrafi finiti per errore nei sottotitoli
+    const riparati = await riparaTitoliLunghi().catch(() => [] as string[]);
+    if (riparati.length) return { pubblicate: [], articoli: riparati };
+
     const uscite = await pubblicaBozzeScadute().catch((e) => [`auto-pubblicazione: ${(e as Error).message}`]);
     if (uscite.length) return { pubblicate: [], articoli: uscite };
 

@@ -691,3 +691,33 @@ Rispondi SOLO con un JSON valido, senza altro testo:
   }
   return { scritti, errori };
 }
+
+// Riparazione una tantum: negli articoli già scritti, un "titolo" lungo è in realtà testo finito per errore
+// nel sottotitolo (giallo e grassetto). Lo riporto a testo normale.
+export async function riparaTitoliLunghi(): Promise<string[]> {
+  if (!process.env.SANITY_API_WRITE_TOKEN) return [];
+  const c = sanity();
+  const stato = await c.getDocument<{ titoliRiparati?: number }>(DOC);
+  if ((stato?.titoliRiparati ?? 0) >= 1) return [];
+  const docs = await c.fetch<{ _id: string; testo?: { _key: string; _type: string; style?: string; children?: { text?: string }[] }[] }[]>(
+    `*[_type == "notiziaRedazione" && count(testo[style in ["h2", "h3"]]) > 0]{ _id, testo }`
+  );
+  const fatti: string[] = [];
+  for (const d of docs) {
+    let cambiato = false;
+    const testo = (d.testo ?? []).map((b) => {
+      const lunghezza = (b.children ?? []).map((x) => x.text ?? "").join("").length;
+      if (b._type === "block" && (b.style === "h2" || b.style === "h3") && lunghezza > 110) {
+        cambiato = true;
+        return { ...b, style: "normal" };
+      }
+      return b;
+    });
+    if (cambiato) {
+      await c.patch(d._id).set({ testo }).commit();
+      fatti.push(`riparato: ${d._id}`);
+    }
+  }
+  await c.patch(DOC).set({ titoliRiparati: 1 }).commit();
+  return fatti;
+}
