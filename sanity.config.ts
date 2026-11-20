@@ -13,9 +13,14 @@ import {apiVersion, dataset, projectId} from './src/sanity/env'
 import {schema} from './src/sanity/schemaTypes'
 import {structure} from './src/sanity/structure'
 import {CustomNavbar} from './src/components/CustomNavbar'
+import {LogoStudio, IconaStudio} from './src/components/LogoStudio'
+import {temaCaliumi} from './src/sanity/tema'
 
 export default defineConfig({
   basePath: '/studio',
+  title: 'Caliumi Racing',
+  icon: IconaStudio,
+  theme: temaCaliumi,
   projectId,
   dataset,
   // Add and edit the content schema in the './sanity/schemaTypes' folder
@@ -23,6 +28,7 @@ export default defineConfig({
   studio: {
     components: {
       navbar: CustomNavbar,
+      logo: LogoStudio,
     },
   },
   plugins: [
