@@ -98,16 +98,16 @@ export default async function HomePage() {
             <p className="mt-2 text-white/80">
               Pilota motociclistico
             </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
               <Link
                 href="/chi-sono"
-                className="rounded-md bg-racing-yellow px-6 py-3 font-semibold text-carbon-950 transition hover:scale-105"
+                className="rounded-full border border-white/25 bg-black/30 px-3 py-1 text-xs font-medium text-white/70 transition hover:border-racing-yellow hover:text-racing-yellow"
               >
                 La mia storia
               </Link>
               <Link
                 href="/gallery"
-                className="rounded-md border border-white/40 px-6 py-3 font-semibold text-white transition hover:scale-105"
+                className="rounded-full border border-white/25 bg-black/30 px-3 py-1 text-xs font-medium text-white/70 transition hover:border-racing-yellow hover:text-racing-yellow"
               >
                 Gallery
               </Link>
